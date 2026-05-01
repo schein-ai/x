@@ -19,6 +19,7 @@
   const styles = `
 .site-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .site-nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.site-nav.hidden{transform:translateY(-100%)}
 .site-nav *{box-sizing:border-box}
 .site-nav .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px;width:100%;padding:0 56px}
 .site-nav .logo{display:flex;align-items:baseline;gap:6px;text-decoration:none}
@@ -166,12 +167,42 @@ body.menu-open{overflow:hidden}
     document.head.appendChild(styleEl);
     document.body.insertAdjacentHTML('afterbegin', html);
 
-    // Scroll handler for .scrolled state (in case page doesn't have its own)
+    // Smart header: condense on scroll, hide on scroll down, reveal on scroll up
     const nav = document.getElementById('nav');
     if (nav){
-      const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 80);
+      const condenseAt = 80;
+      const hideAt = 160;
+      const dirThreshold = 6;
+      let lastY = window.scrollY;
+      let ticking = false;
+
+      const update = () => {
+        const y = window.scrollY;
+        const diff = y - lastY;
+        const menuOpen = document.body.classList.contains('menu-open');
+
+        nav.classList.toggle('scrolled', y > condenseAt);
+
+        if (menuOpen || y <= hideAt) {
+          nav.classList.remove('hidden');
+        } else if (diff > dirThreshold) {
+          nav.classList.add('hidden');
+        } else if (diff < -dirThreshold) {
+          nav.classList.remove('hidden');
+        }
+
+        lastY = y;
+        ticking = false;
+      };
+
+      const onScroll = () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      };
       window.addEventListener('scroll', onScroll, {passive:true});
-      onScroll();
+      update();
     }
 
     // Theme toggle (visual only — icon swap)
