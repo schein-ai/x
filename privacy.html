@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Privacy — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff;background:rgba(11,27,63,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+
+  /* ===== HEADER ===== */
+  .legal-head{padding:160px 56px 70px;background:var(--bg-warm);border-bottom:1px solid var(--line)}
+  .legal-head .crumb{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+  .legal-head .crumb a{color:var(--accent)}
+  .legal-head .crumb .sep{opacity:.4}
+  .legal-head h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,84px);line-height:1.02;letter-spacing:-.025em;margin:0 0 22px;max-width:18ch}
+  .legal-head h1 em{font-style:italic;color:var(--accent)}
+  .legal-head .meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;display:flex;gap:28px;flex-wrap:wrap}
+  .legal-head .meta b{color:var(--ink);font-weight:500}
+
+  /* ===== ARTICLE ===== */
+  .legal{padding:80px 56px 130px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:80px;align-items:start;background:var(--bg)}
+  .legal-toc{position:sticky;top:110px}
+  .legal-toc h6{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 18px;display:flex;align-items:center;gap:12px}
+  .legal-toc h6::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .legal-toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+  .legal-toc li{counter-increment:t;border-top:1px solid var(--line-2)}
+  .legal-toc li:first-child{border-top:none}
+  .legal-toc a{display:flex;align-items:flex-start;gap:14px;padding:9px 0;font-size:13.5px;color:var(--ink-soft);font-weight:500;line-height:1.4;transition:color .15s}
+  .legal-toc a::before{content:counter(t,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.06em;flex-shrink:0;padding-top:2px}
+  .legal-toc a:hover{color:var(--ink)}
+
+  .legal-body{font-size:16.5px;line-height:1.75;color:var(--ink-soft);max-width:780px}
+  .legal-body p{margin:0 0 18px}
+  .legal-body p b{color:var(--ink);font-weight:600}
+  .legal-body h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(28px,2.8vw,38px);line-height:1.15;letter-spacing:-.018em;color:var(--ink);margin:54px 0 18px;scroll-margin-top:100px}
+  .legal-body h2 em{font-style:italic;color:var(--accent)}
+  .legal-body h2:first-child{margin-top:0}
+  .legal-body .section-mark{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:8px;display:block}
+  .legal-body ul{margin:0 0 22px;padding-left:0;list-style:none}
+  .legal-body ul li{position:relative;padding-left:24px;margin-bottom:8px}
+  .legal-body ul li::before{content:"→";position:absolute;left:0;top:0;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:500}
+  .legal-body a{color:var(--accent);border-bottom:1px solid rgba(37,99,235,.25);transition:border-color .15s}
+  .legal-body a:hover{border-bottom-color:var(--accent)}
+
+  @media (max-width:1080px){
+    .wrap,.legal-head,.legal{padding-left:24px;padding-right:24px}
+    .legal{grid-template-columns:1fr;gap:40px;padding-top:60px}
+    .legal-toc{position:relative;top:auto}
+    .nav-links{display:none}
+  }
+  @media (max-width:560px){
+    .wrap,.legal-head,.legal{padding-left:18px;padding-right:18px}
+    .legal-head{padding-top:130px;padding-bottom:50px}
+    .legal-head h1{font-size:42px}
+    .legal-head .meta{flex-direction:column;gap:8px}
+    .legal-body{font-size:15.5px}
+    .legal-body h2{font-size:24px;margin:42px 0 14px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- ============== HEADER ============== -->
+<header class="legal-head">
+  <div class="crumb"><a href="index.html">xR&amp;D</a><span class="sep">/</span><span>Legal</span><span class="sep">/</span><span>Privacy</span></div>
+  <h1>Privacy <em>policy</em>.</h1>
+  <div class="meta">
+    <span>Last updated · <b>15 April 2026</b></span>
+    <span>Version <b>2.1</b></span>
+    <span>Jurisdiction <b>Vietnam · EU GDPR · CCPA</b></span>
+  </div>
+</header>
+
+<!-- ============== ARTICLE ============== -->
+<section class="legal">
+  <aside class="legal-toc">
+    <h6>On this page</h6>
+    <ol>
+      <li><a href="#who">Who we are</a></li>
+      <li><a href="#what">What we collect</a></li>
+      <li><a href="#how">How we use it</a></li>
+      <li><a href="#share">Sharing &amp; processors</a></li>
+      <li><a href="#rights">Your rights</a></li>
+      <li><a href="#retention">Retention</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </aside>
+  <div class="legal-body">
+    <p style="font-size:18.5px;color:var(--ink);font-weight:500">This policy explains what data we collect when you use xR&amp;D's website, services, and tools, why we collect it, and the choices you have. We try to keep it short and plain — if anything is unclear, write to <a href="mailto:privacy@xrd.studio">privacy@xrd.studio</a>.</p>
+
+    <h2 id="who"><span class="section-mark">01</span>Who we <em>are</em>.</h2>
+    <p><b>xR&amp;D Technologies</b> is an architectural AI studio headquartered in Đà Nẵng, Vietnam, with offices in HCMC, Bangkok, and Singapore. For the purposes of GDPR, the data controller is xR&amp;D Studio Co., Ltd., 128 Bạch Đằng, Hải Châu, Đà Nẵng 550000, Vietnam.</p>
+
+    <h2 id="what"><span class="section-mark">02</span>What we <em>collect</em>.</h2>
+    <p>We collect only what we need to run the studio and serve our clients:</p>
+    <ul>
+      <li><b>Contact details</b> — name, email, organisation, phone — when you submit our contact, intake, or newsletter forms</li>
+      <li><b>Project briefs</b> — the information you choose to share when enquiring about a project</li>
+      <li><b>Aggregate analytics</b> — anonymised page views via a self-hosted Plausible instance, no cookies, no cross-site tracking</li>
+      <li><b>Server logs</b> — request URLs, response codes, and timestamps, retained for 30 days for security review</li>
+    </ul>
+    <p>We do <b>not</b> use third-party advertising trackers, behavioural profiling, or session-replay tools.</p>
+
+    <h2 id="how"><span class="section-mark">03</span>How we <em>use it</em>.</h2>
+    <p>Information is used solely to respond to your enquiry, deliver services you've engaged us for, send the newsletter you subscribed to, and operate the website securely. We do not sell, rent, or share data for marketing purposes.</p>
+
+    <h2 id="share"><span class="section-mark">04</span>Sharing &amp; <em>processors</em>.</h2>
+    <p>The following processors may handle limited personal data on our behalf:</p>
+    <ul>
+      <li><b>Hetzner Cloud</b> (Germany) — primary hosting, EU-located</li>
+      <li><b>Postmark</b> (USA) — transactional email; standard contractual clauses in place</li>
+      <li><b>Buttondown</b> (USA) — newsletter delivery; opt-in only</li>
+    </ul>
+    <p>Where data leaves the EU, we rely on Standard Contractual Clauses and additional encryption at rest and in transit. We never share data with public authorities except when legally compelled.</p>
+
+    <h2 id="rights"><span class="section-mark">05</span>Your <em>rights</em>.</h2>
+    <p>You may request access to, correction of, or deletion of any personal data we hold about you. You may also withdraw consent for the newsletter at any time using the unsubscribe link in any email. We respond to all requests within 30 days.</p>
+
+    <h2 id="retention"><span class="section-mark">06</span>Retention.</h2>
+    <p>Enquiry data is retained for 24 months unless we enter into an engagement, in which case retention follows the contract. Newsletter data is retained until you unsubscribe. Server logs are kept for 30 days. Anonymised analytics are aggregated indefinitely but cannot be linked back to individuals.</p>
+
+    <h2 id="contact"><span class="section-mark">07</span>Contact.</h2>
+    <p>For privacy questions, data requests, or complaints, please write to <a href="mailto:privacy@xrd.studio">privacy@xrd.studio</a>. EU residents may also contact our representative at <a href="mailto:eu-rep@xrd.studio">eu-rep@xrd.studio</a> or lodge a complaint with their local supervisory authority.</p>
+
+    <p style="margin-top:54px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;border-top:1px solid var(--line);padding-top:24px">Version 2.1 · Effective 15 April 2026 · Replaces v2.0 (Jan 2025)</p>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+
+</body>
+</html>

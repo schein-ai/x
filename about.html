@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>About — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .wrap{width:100%;margin:0;padding:0 56px}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .logo .x{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:1}
+  .logo .rd{font-family:'Instrument Serif',serif;font-size:30px;line-height:1}
+  .logo-text{display:flex;flex-direction:column;line-height:1;margin-left:6px}
+  .logo-text span{font-size:13px;opacity:.7;font-weight:500}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+
+  /* ===== SCROLL PROGRESS ===== */
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--ink);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear;mix-blend-mode:difference}
+
+  /* ===== CHAPTER RAIL ===== */
+  .chapter-rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:150;display:flex;flex-direction:column;gap:12px;mix-blend-mode:difference;color:#fff}
+  .chapter-rail .ch{display:flex;flex-direction:row-reverse;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;opacity:.4;cursor:pointer;transition:opacity .25s,color .25s;text-transform:uppercase}
+  .chapter-rail .ch::before{content:"";width:18px;height:1px;background:currentColor;transition:width .3s}
+  .chapter-rail .ch.active{opacity:1;color:#9bb5ff}
+  .chapter-rail .ch.active::before{width:36px}
+
+  /* ===== HUD ===== */
+  .hud{position:fixed;right:20px;bottom:20px;z-index:150;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-align:right;line-height:1.7;text-transform:uppercase;mix-blend-mode:difference;color:#fff;opacity:.65}
+  .hud b{color:#9bb5ff;font-weight:500}
+
+  /* ===== HERO — full-bleed image ===== */
+  .hero{position:relative;height:100vh;min-height:720px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .hero-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.15);will-change:transform}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.25) 0%,rgba(11,27,63,.1) 35%,rgba(11,27,63,.55) 100%)}
+  .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 100px}
+  .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:30px;display:flex;align-items:center;gap:12px}
+  .hero-eyebrow::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  h1.hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(80px,12vw,200px);line-height:.92;letter-spacing:-.03em;margin:0;max-width:14ch}
+  h1.hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .hero-foot .meta{display:flex;gap:38px}
+  .hero-foot .scroll{display:flex;align-items:center;gap:10px}
+  .hero-foot .scroll .ar{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  /* ===== CHAPTER LABEL ===== */
+  .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+
+  /* ===== CH 01 — STATEMENT ===== */
+  .ch01{padding:160px 0;background:var(--bg);text-align:center;border-bottom:1px solid var(--line)}
+  .ch01 .clabel{justify-content:center}
+  .ch01 .clabel::before{display:none}
+  .ch01 h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(56px,8vw,140px);line-height:1;letter-spacing:-.025em;margin:0 auto;max-width:13ch}
+  .ch01 h2 em{font-style:italic;color:var(--accent)}
+  .ch01 .stamp{margin-top:50px;display:inline-flex;gap:32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .ch01 .stamp b{color:var(--ink);font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;letter-spacing:0;font-weight:400;margin-right:8px}
+
+  /* ===== CH 02 — IMAGE GALLERY (mosaic) ===== */
+  .ch02{padding:0;background:var(--bg)}
+  .mosaic{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:14vh;gap:8px;padding:8px}
+  .mtile{position:relative;overflow:hidden;border-radius:6px;background:#0b1b3f;cursor:pointer}
+  .mtile .mimg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .mtile:hover .mimg{transform:scale(1.06)}
+  .mtile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 50%,rgba(11,27,63,.7) 100%);opacity:0;transition:opacity .3s}
+  .mtile:hover::after{opacity:1}
+  .mtile .mlbl{position:absolute;left:14px;bottom:12px;right:14px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#fff;text-transform:uppercase;display:flex;justify-content:space-between;opacity:0;transform:translateY(8px);transition:.3s}
+  .mtile:hover .mlbl{opacity:1;transform:translateY(0)}
+  .mtile .mlbl b{color:#9bb5ff;font-weight:500}
+  .mtile .mtag{position:absolute;top:14px;left:14px;z-index:2;background:rgba(255,255,255,.92);color:var(--ink);padding:5px 10px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(6px)}
+  /* layout: rich asymmetric mosaic */
+  .t-a{grid-column:span 7;grid-row:span 4}
+  .t-b{grid-column:span 5;grid-row:span 2}
+  .t-c{grid-column:span 5;grid-row:span 2}
+  .t-d{grid-column:span 4;grid-row:span 3}
+  .t-e{grid-column:span 4;grid-row:span 3}
+  .t-f{grid-column:span 4;grid-row:span 3}
+  .t-g{grid-column:span 6;grid-row:span 3}
+  .t-h{grid-column:span 6;grid-row:span 3}
+
+  /* ===== CH 03 — SCROLL TIMELINE (sticky image, scrolling list) ===== */
+  .ch03{position:relative;background:var(--bg-warm);padding:140px 0 0;border-top:1px solid var(--line)}
+  .ch03-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.3fr;gap:60px;align-items:end;margin-bottom:80px}
+  .ch03-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,84px);line-height:1;letter-spacing:-.025em;margin:0;max-width:11ch}
+  .ch03-head h2 em{font-style:italic;color:var(--accent)}
+  .ch03-head p{font-size:17px;line-height:1.6;color:var(--ink-soft);margin:0;max-width:520px}
+
+  .scroll-track{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0 56px 0 56px}
+  .scroll-track > .scroll-col{min-height:100%}
+  .scroll-stick{position:sticky;top:0;height:100vh;display:flex;align-items:center;padding-right:40px}
+  .scroll-stage{position:relative;width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#1a2a55;box-shadow:0 40px 80px -30px rgba(11,27,63,.3)}
+  .stage-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.04);transition:opacity 1s cubic-bezier(.4,0,.2,1), transform 1.6s cubic-bezier(.2,.7,.2,1)}
+  .stage-img.in{opacity:1;transform:scale(1)}
+  .stage-progress{position:absolute;left:24px;right:24px;top:24px;z-index:3;display:flex;gap:6px}
+  .stage-progress span{flex:1;height:2px;background:rgba(255,255,255,.2);border-radius:1px;overflow:hidden;position:relative}
+  .stage-progress span::after{content:"";position:absolute;inset:0;background:#9bb5ff;transform:scaleX(0);transform-origin:left;transition:transform .5s}
+  .stage-progress span.done::after{transform:scaleX(1)}
+  .stage-progress span.active::after{transform:scaleX(.5)}
+  .stage-overlay{position:absolute;left:24px;right:24px;bottom:24px;z-index:3;color:#fff}
+  .stage-overlay .y{font-family:'Instrument Serif',serif;font-style:italic;font-size:84px;line-height:1;color:#9bb5ff;font-weight:400;letter-spacing:-.02em}
+  .stage-overlay .meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:rgba(255,255,255,.7);text-transform:uppercase;margin-top:8px}
+  .stage-stamp{position:absolute;top:24px;right:24px;z-index:3;background:rgba(11,27,63,.7);color:#fff;padding:7px 14px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(8px)}
+  .stage-stamp b{color:#9bb5ff;font-weight:500;margin-left:8px}
+
+  .scroll-list{display:flex;flex-direction:column;gap:0;padding-left:60px;border-left:1px solid var(--line)}
+  .sli{min-height:80vh;padding:8vh 0;display:flex;flex-direction:column;justify-content:center;gap:12px;opacity:.2;transition:opacity .6s ease}
+  .sli.active{opacity:1}
+  .sli.passed{opacity:.4}
+  .sli .syear{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--accent);font-weight:400;letter-spacing:.02em}
+  .sli h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:42px;line-height:1.1;margin:0;letter-spacing:-.015em;color:var(--ink);max-width:14ch}
+  .sli h4 em{font-style:italic;color:var(--accent)}
+  .sli .stags{display:flex;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:6px}
+  .sli .stags b{color:var(--ink);font-weight:500}
+
+  /* ===== CH 04 — NUMBERS BAND ===== */
+  .ch04{padding:0;background:var(--bg-warm);border-top:1px solid var(--line);margin-top:120px}
+  .nband{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ncell{padding:80px 40px;border-left:1px solid var(--line);position:relative;overflow:hidden}
+  .ncell:first-child{border-left:none}
+  .ncell .nb{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(80px,8vw,140px);line-height:.95;letter-spacing:-.03em;color:var(--ink);display:flex;align-items:baseline;gap:6px;margin-bottom:14px}
+  .ncell .nb em{font-style:italic;color:var(--accent);font-size:36px;font-weight:400}
+  .ncell .nl{font-size:14px;color:var(--ink);font-weight:500}
+  .ncell .ns{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+
+  /* ===== CH 05 — FULL-BLEED PORTRAIT TRIPTYCH ===== */
+  .ch05{padding:0;background:var(--bg)}
+  .triptych{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  .tcell{position:relative;aspect-ratio:3/4;overflow:hidden;background:#1a2a55;cursor:pointer}
+  .tcell .timg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1);filter:grayscale(.15)}
+  .tcell:hover .timg{transform:scale(1.05);filter:grayscale(0)}
+  .tcell::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 40%,rgba(11,27,63,.85) 100%)}
+  .tcap{position:absolute;left:30px;right:30px;bottom:28px;z-index:3;color:#fff}
+  .tcap .num{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;margin-bottom:8px}
+  .tcap h5{font-family:'Instrument Serif',serif;font-weight:400;font-size:38px;line-height:1.1;margin:0 0 4px;letter-spacing:-.01em}
+  .tcap .role{font-size:13px;color:#9bb5ff;font-weight:500;letter-spacing:.02em}
+
+  /* ===== CH 06 — STUDIO PARALLAX BAND ===== */
+  .ch06{position:relative;height:90vh;min-height:640px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .ch06-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.1);will-change:transform}
+  .ch06-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.3),rgba(11,27,63,.85))}
+  .ch06-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 90px}
+  .ch06 h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(56px,8vw,128px);line-height:.95;letter-spacing:-.025em;margin:0;max-width:14ch}
+  .ch06 h2 em{font-style:italic;color:#9bb5ff}
+  .ch06 .clabel{color:#9bb5ff;margin-bottom:24px}
+  .ch06 .clabel::before{background:#9bb5ff}
+  .ch06-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .ch06-foot .a{display:flex;gap:38px}
+
+  /* ===== CH 07 — RECOG (minimal list) ===== */
+  .ch07{padding:140px 0 160px;background:var(--bg);border-top:1px solid var(--line)}
+  .ch07 .head{padding:0 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:60px}
+  .ch07 h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,84px);line-height:1;letter-spacing:-.025em;margin:0;max-width:12ch}
+  .ch07 h2 em{font-style:italic;color:var(--accent)}
+  .ch07 .head p{font-size:17px;line-height:1.6;color:var(--ink-soft);margin:0;max-width:480px}
+  .recog-list{padding:0 56px}
+  .rrow{display:grid;grid-template-columns:90px 1fr 1fr 40px;gap:32px;align-items:center;padding:28px 0;border-top:1px solid var(--line);transition:.3s;cursor:pointer}
+  .rrow:last-child{border-bottom:1px solid var(--line)}
+  .rrow:hover{padding-left:14px;padding-right:14px}
+  .rrow .ry{font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;color:var(--accent);font-weight:400;line-height:1;letter-spacing:-.01em}
+  .rrow h6{font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;line-height:1.15;margin:0;color:var(--ink);letter-spacing:-.01em}
+  .rrow .rcat{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .rrow .arr{opacity:.4;transition:.2s;font-size:20px;color:var(--accent);text-align:right}
+  .rrow:hover .arr{opacity:1;transform:translateX(6px)}
+
+  /* ===== CTA (shared with projects/solutions) ===== */
+  .eyebrow{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:24px}
+  .btn-light{background:#fff;color:var(--ink);border:1px solid #fff}
+  .btn-light:hover{background:#eef3fb}
+  .btn-outline-light{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25)}
+  .btn-outline-light:hover{background:rgba(255,255,255,.06)}
+  .cta{padding:140px 0;background:#0b1b3f;color:#fff;text-align:center;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 50%, rgba(99,140,255,.18), rgba(99,140,255,0) 60%)}
+  .cta-content{position:relative;z-index:1;max-width:880px;margin:0 auto}
+  .cta h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:72px;line-height:1.05;letter-spacing:-.02em;margin:24px 0 22px}
+  .cta h2 em{font-style:italic;color:#9bb5ff}
+  .cta p{font-size:18px;line-height:1.6;color:#b8c3df;margin:0 auto 38px;max-width:560px}
+  .cta-cta{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+  .cta .btn{padding:14px 24px;border-radius:10px;font-size:16px}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px;border-top:none}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  @media (max-width:768px){
+    .wrap,.hero-content,.hero-foot,.ch03-head,.scroll-track,.ch06-content,.ch06-foot,.ch07 .head,.recog-list{padding-left:24px;padding-right:24px}
+    .chapter-rail,.hud{display:none}
+    .ch03-head,.ch07 .head,.scroll-track{grid-template-columns:1fr}
+    .scroll-stick{display:none}
+    .scroll-list{padding-left:0;border-left:none}
+    .sli{min-height:auto;padding:24px 0;opacity:1;transition:none;display:block}
+    .sli.active,.sli.passed{opacity:1}
+    .sli::before{content:"";display:block;width:100%;aspect-ratio:4/3;background-size:cover;background-position:center;margin-bottom:20px;border-radius:8px;background-color:#1a2a55}
+    .sli[data-i="0"]::before{background-image:url('assets/img1.png')}
+    .sli[data-i="1"]::before{background-image:url('assets/img2.png')}
+    .sli[data-i="2"]::before{background-image:url('assets/img3.png')}
+    .sli[data-i="3"]::before{background-image:url('assets/img4.png')}
+    .sli[data-i="4"]::before{background-image:url('assets/img1.png')}
+    .sli[data-i="5"]::before{background-image:url('assets/img2.png')}
+    .sli[data-i="6"]::before{background-image:url('assets/img3.png')}
+    .sli[data-i="7"]::before{background-image:url('assets/img4.png')}
+    .sli[data-i="8"]::before{background-image:url('assets/hero-bg.png')}
+    .nband,.triptych{grid-template-columns:1fr 1fr}
+    .ncell:nth-child(3){border-left:none}
+    .nav-links{display:none}
+    .mosaic{grid-auto-rows:11vh}
+    .t-a,.t-b,.t-c,.t-d,.t-e,.t-f,.t-g,.t-h{grid-column:span 12;grid-row:span 3}
+  }
+  @media (max-width:560px){
+    .wrap,.hero-content,.hero-foot,.ch03-head,.scroll-track,.ch06-content,.ch06-foot,.ch07 .head,.recog-list{padding-left:18px;padding-right:18px}
+    .nband,.triptych{grid-template-columns:1fr}
+    .ncell{border-left:none;padding:24px 0}
+    .hero-foot{flex-direction:column;align-items:flex-start;gap:8px;left:18px;right:18px;bottom:18px;font-size:9.5px;letter-spacing:.14em}
+    .hero-foot .meta{flex-wrap:wrap;gap:14px}
+    .hero-content{padding:0 18px 110px}
+    h1.hero-h{font-size:clamp(56px,13vw,96px)}
+    .hero-eyebrow{position:absolute;top:64px;left:18px;right:18px;z-index:5;margin:0;font-size:10px;letter-spacing:.18em;gap:8px}
+    .btn{padding:10px 16px;font-size:13.5px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<aside class="chapter-rail" id="chapterRail">
+  <a class="ch active" data-go="hero">00</a>
+  <a class="ch" data-go="ch01">01</a>
+  <a class="ch" data-go="ch02">02</a>
+  <a class="ch" data-go="ch03">03</a>
+  <a class="ch" data-go="ch04">04</a>
+  <a class="ch" data-go="ch05">05</a>
+  <a class="ch" data-go="ch06">06</a>
+  <a class="ch" data-go="ch07">07</a>
+</aside>
+
+<aside class="hud">
+  <div>XRD/ABOUT.000</div>
+  <div>HCMC <b>10.76°N</b></div>
+  <div>EST <b>2018</b></div>
+</aside>
+
+<!-- ===== HERO ===== -->
+<section class="hero" data-chapter="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">About · xR&amp;D Technologies</div>
+    <h1 class="hero-h">A studio of the<br><em>climate</em>.</h1>
+  </div>
+  <div class="hero-foot">
+    <div class="meta">
+      <span>EST · 2018</span>
+      <span>HCMC · VN</span>
+      <span>09 COUNTRIES</span>
+      <span>83 PROJECTS</span>
+    </div>
+    <div class="scroll">SCROLL <div class="ar"><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 1v4m0 0L1.5 3.5M3 5l1.5-1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg></div></div>
+  </div>
+</section>
+
+<!-- ===== CH 01 — STATEMENT ===== -->
+<section class="ch01" data-chapter="ch01">
+  <div class="wrap">
+    <div class="clabel">Chapter 01 · We believe</div>
+    <h2>Climate is the <em>brief</em>.<br>The drawing is an <em>argument</em>.</h2>
+    <div class="stamp">
+      <span><b>i.</b>Listen to the site</span>
+      <span><b>ii.</b>Draw the argument</span>
+      <span><b>iii.</b>Train the local hand</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 02 — MOSAIC ===== -->
+<section class="ch02" data-chapter="ch02">
+  <div class="mosaic">
+    <div class="mtile t-a"><div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <span class="mtag">P—061 · Đà Nẵng</span>
+      <div class="mlbl"><span>Biophilic Research Campus</span><b>2026 →</b></div>
+    </div>
+    <div class="mtile t-b"><div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <span class="mtag">P—047 · Cần Thơ</span>
+      <div class="mlbl"><span>Floating Pavilion</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-c"><div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <span class="mtag">P—058 · Luang Prabang</span>
+      <div class="mlbl"><span>Limestone Music Hall</span><b>2026</b></div>
+    </div>
+    <div class="mtile t-d"><div class="mimg" style="background-image:url('assets/img1.png')"></div>
+      <span class="mtag">P—042 · Mekong</span>
+      <div class="mlbl"><span>Resilience Loop</span><b>2024</b></div>
+    </div>
+    <div class="mtile t-e"><div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <span class="mtag">P—036 · HCMC</span>
+      <div class="mlbl"><span>District 4 Civic Spine</span><b>2022</b></div>
+    </div>
+    <div class="mtile t-f"><div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <span class="mtag">P—029 · Bangkok</span>
+      <div class="mlbl"><span>Chao Phraya School</span><b>2021</b></div>
+    </div>
+    <div class="mtile t-g"><div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <span class="mtag">P—021 · Penang</span>
+      <div class="mlbl"><span>Heritage Shop-house Stack</span><b>2019</b></div>
+    </div>
+    <div class="mtile t-h"><div class="mimg" style="background-image:url('assets/img1.png')"></div>
+      <span class="mtag">P—039 · Singapore</span>
+      <div class="mlbl"><span>Sentosa Lantern Hotel</span><b>2023</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 03 — SCROLL TIMELINE ===== -->
+<section class="ch03" data-chapter="ch03">
+  <div class="ch03-head">
+    <div>
+      <div class="clabel">Chapter 03 · Eight years</div>
+      <h2>From a <em>boatyard</em>.</h2>
+    </div>
+    <p>Scroll through the moments that shaped a practice — from a single river-side classroom to a 60-hectare campus.</p>
+  </div>
+
+  <div class="scroll-track" id="scrollTrack">
+    <div class="scroll-col">
+      <div class="scroll-stick">
+        <div class="scroll-stage">
+          <div class="stage-img in" data-img="0" style="background-image:url('assets/img1.png')"></div>
+          <div class="stage-img" data-img="1" style="background-image:url('assets/img2.png')"></div>
+          <div class="stage-img" data-img="2" style="background-image:url('assets/img3.png')"></div>
+          <div class="stage-img" data-img="3" style="background-image:url('assets/img4.png')"></div>
+          <div class="stage-img" data-img="4" style="background-image:url('assets/img1.png')"></div>
+          <div class="stage-img" data-img="5" style="background-image:url('assets/img2.png')"></div>
+          <div class="stage-img" data-img="6" style="background-image:url('assets/img3.png')"></div>
+          <div class="stage-img" data-img="7" style="background-image:url('assets/img4.png')"></div>
+          <div class="stage-img" data-img="8" style="background-image:url('assets/hero-bg.png')"></div>
+          <div class="stage-progress" id="stageProgress"></div>
+          <div class="stage-stamp" id="stageStamp">YEAR <b>2018</b></div>
+          <div class="stage-overlay"><div class="y" id="stageY">2018</div><div class="meta" id="stageMeta">FOUNDED · HCMC</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-list" id="scrollList">
+      <div class="sli active" data-i="0"><div class="syear">2018</div><h4>The <em>boatyard</em> opens.</h4><div class="stags"><span><b>05</b> people</span><span>HCMC · VN</span></div></div>
+      <div class="sli" data-i="1"><div class="syear">2019</div><h4>Penang <em>shop-house</em> stack.</h4><div class="stags"><span>P—021</span><span><b>14,600</b> m²</span></div></div>
+      <div class="sli" data-i="2"><div class="syear">2020</div><h4>The <em>computational</em> turn.</h4><div class="stags"><span>R&amp;D</span><span><b>14</b> people</span></div></div>
+      <div class="sli" data-i="3"><div class="syear">2021</div><h4>Chao Phraya <em>school</em>.</h4><div class="stags"><span>P—029</span><span><b>27,400</b> m²</span></div></div>
+      <div class="sli" data-i="4"><div class="syear">2022</div><h4>District 4 Civic <em>Spine</em>.</h4><div class="stags"><span>P—036</span><span>ARCASIA Gold</span></div></div>
+      <div class="sli" data-i="5"><div class="syear">2023</div><h4>Sentosa <em>Lantern</em>.</h4><div class="stags"><span>P—039</span><span><b>22,800</b> m²</span></div></div>
+      <div class="sli" data-i="6"><div class="syear">2024</div><h4>Mekong <em>Resilience</em> Loop.</h4><div class="stags"><span>P—042</span><span><b>76,500</b> m²</span></div></div>
+      <div class="sli" data-i="7"><div class="syear">2025</div><h4>Floating <em>pavilion</em>.</h4><div class="stags"><span>P—047</span><span><b>1,200</b>/day</span></div></div>
+      <div class="sli" data-i="8"><div class="syear">2026</div><h4>Biophilic <em>campus</em> begins.</h4><div class="stags"><span>P—061</span><span><b>412,000</b> m²</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 04 — NUMBERS ===== -->
+<section class="ch04" data-chapter="ch04">
+  <div class="nband">
+    <div class="ncell">
+      <div class="nb" data-n="83">0</div>
+      <div class="nl">Projects</div>
+      <div class="ns">2018 → 2026</div>
+    </div>
+    <div class="ncell">
+      <div class="nb"><span data-n="2.4">0</span><em>M m²</em></div>
+      <div class="nl">Built area</div>
+      <div class="ns">Cumulative</div>
+    </div>
+    <div class="ncell">
+      <div class="nb" data-n="83">0</div>
+      <div class="nl">People</div>
+      <div class="ns">07 offices</div>
+    </div>
+    <div class="ncell">
+      <div class="nb" data-n="17">0</div>
+      <div class="nl">Awards</div>
+      <div class="ns">ARCASIA · Aga Khan</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 05 — TRIPTYCH ===== -->
+<section class="ch05" data-chapter="ch05">
+  <div class="triptych">
+    <div class="tcell"><div class="timg" style="background:linear-gradient(135deg,#3a4a72,#1a2a55)"></div>
+      <div class="tcap"><div class="num">P—01 · CEO</div><h5>Tomoki Takaoka</h5><div class="role">Principal Architect</div></div>
+    </div>
+    <div class="tcell"><div class="timg" style="background:linear-gradient(135deg,#445470,#243460)"></div>
+      <div class="tcap"><div class="num">P—02 · Founding partner</div><h5>Nguyễn Trọng Nghĩa</h5><div class="role">Design Director</div></div>
+    </div>
+    <div class="tcell"><div class="timg" style="background:linear-gradient(135deg,#4a5a82,#2a3a65)"></div>
+      <div class="tcap"><div class="num">P—04 · Partner</div><h5>Yuki Watanabe</h5><div class="role">Computational Design</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 06 — STUDIO PARALLAX ===== -->
+<section class="ch06" data-chapter="ch06">
+  <div class="ch06-img" id="ch06Img"></div>
+  <div class="ch06-content">
+    <div class="clabel">Chapter 06 · Studio</div>
+    <h2>The <em>boatyard</em> on the river.</h2>
+  </div>
+  <div class="ch06-foot">
+    <div class="a">
+      <span>HCMC · VN</span>
+      <span>2018 → PRESENT</span>
+      <span>HQ · MODEL SHOP · LIBRARY</span>
+    </div>
+    <span>OPEN STUDIO · 1ST FRIDAY</span>
+  </div>
+</section>
+
+<!-- ===== CH 07 — RECOGNITION ===== -->
+<section class="ch07" data-chapter="ch07">
+  <div class="head">
+    <div>
+      <div class="clabel">Chapter 07 · Recognition</div>
+      <h2>Seventeen quiet <em>nods</em>.</h2>
+    </div>
+    <p>Selected awards from the past four years. The full press archive is available on request.</p>
+  </div>
+  <div class="recog-list">
+    <div class="rrow"><span class="ry">'26</span><h6>Aga Khan Award · Shortlist</h6><span class="rcat">Limestone Music Hall</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">'25</span><h6>AR Emerging Award</h6><span class="rcat">Mekong Floating Pavilion</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">'25</span><h6>WAF · Civic of the Year</h6><span class="rcat">Mekong Resilience Loop</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">'24</span><h6>Dezeen · Studio of the Year (Asia)</h6><span class="rcat">Body of work · 2018–2024</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">'23</span><h6>A+A · Best Educational Building</h6><span class="rcat">Chao Phraya School</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">'22</span><h6>ARCASIA Gold Medal</h6><span class="rcat">District 4 Civic Spine</span><span class="arr">→</span></div>
+  </div>
+</section>
+
+<!-- ============== CTA (shared) ============== -->
+<section class="cta">
+  <div class="wrap cta-content">
+    <div class="eyebrow" style="color:#9bb5ff">Start something</div>
+    <h2>Bring us a <em>brief</em>,<br>a <em>site</em>, or a <em>question</em>.</h2>
+    <p>The first call is free, candid, and usually long. We'll tell you whether we're the right studio — and if we're not, we'll point you to one who is.</p>
+    <div class="cta-cta">
+      <a class="btn btn-light" href="#">Start a Project
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <a class="btn btn-outline-light" href="solutions.html">See our Solutions</a>
+    </div>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  const rail = document.querySelectorAll('#chapterRail .ch');
+  const chapters = document.querySelectorAll('[data-chapter]');
+  const heroImg = document.getElementById('heroImg');
+  const ch06Img = document.getElementById('ch06Img');
+
+  // ===== GSAP entrance + scroll reveals =====
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.hero-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.3});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.45});
+    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.7});
+
+    gsap.utils.toArray('section[data-chapter]:not(.hero)').forEach(sec=>{
+      const headings = sec.querySelectorAll('h2,h3,.eyebrow,.kicker,.section-num');
+      const paragraphs = sec.querySelectorAll('p,li');
+      if (headings.length){
+        gsap.from(headings,{y:30,opacity:0,duration:.9,ease:'power4.out',stagger:.08,scrollTrigger:{trigger:sec,start:'top 82%'}});
+      }
+      if (paragraphs.length){
+        gsap.from(paragraphs,{y:18,opacity:0,duration:.6,ease:'power3.out',stagger:.04,scrollTrigger:{trigger:sec,start:'top 78%'}});
+      }
+    });
+
+    // mosaic / triptych / nband / recog list cards
+    gsap.utils.toArray('.mtile, .tcell, .ncell, .rrow').forEach(el=>{
+      gsap.fromTo(el,{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});
+    });
+
+    // mosaic image scale-ins
+    gsap.utils.toArray('.mimg, .timg, .stage-img').forEach(img=>{
+      gsap.fromTo(img,{scale:1.15},{scale:1,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:img,start:'top 92%'}});
+    });
+
+    // CTA
+    gsap.fromTo('.cta h2',{y:36,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+    gsap.fromTo('.cta p',{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+    gsap.fromTo('.cta-cta > *',{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.1,delay:.2,scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+
+  function onScroll(){
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 80);
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+
+    let active = chapters[0];
+    chapters.forEach(c=>{
+      const r = c.getBoundingClientRect();
+      if (r.top < window.innerHeight*0.45) active = c;
+    });
+    const id = active.dataset.chapter;
+    rail.forEach(r=>r.classList.toggle('active', r.dataset.go === id));
+
+    // hero parallax (translate only, static scale for buffer)
+    if (y < window.innerHeight){
+      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
+    }
+    // ch06 parallax
+    const r6 = ch06Img.parentElement.getBoundingClientRect();
+    if (r6.top < window.innerHeight && r6.bottom > 0){
+      const off = (window.innerHeight - r6.top) * 0.15;
+      ch06Img.style.transform = `scale(1.1) translateY(${-off}px)`;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  rail.forEach(r=>{
+    r.addEventListener('click', e=>{
+      e.preventDefault();
+      const t = document.querySelector(`[data-chapter="${r.dataset.go}"]`);
+      if (t) window.scrollTo({top: t.offsetTop, behavior:'smooth'});
+    });
+  });
+
+  // ===== scroll-driven timeline (sticky image swap) =====
+  const slis = document.querySelectorAll('.sli');
+  const stageImgs = document.querySelectorAll('.stage-img');
+  const stageY = document.getElementById('stageY');
+  const stageStamp = document.getElementById('stageStamp');
+  const stageMeta = document.getElementById('stageMeta');
+  const META = ['FOUNDED · HCMC','BUILT · PENANG','R&D · COMPUTATIONAL','BUILT · BANGKOK','BUILT · HCMC','BUILT · SINGAPORE','BUILT · MEKONG','BUILT · CẦN THƠ','IN CONSTRUCTION · ĐÀ NẴNG'];
+  const YEARS = ['2018','2019','2020','2021','2022','2023','2024','2025','2026'];
+
+  // build progress ticks
+  const stageProgress = document.getElementById('stageProgress');
+  if (stageProgress){
+    stageProgress.innerHTML = Array.from(slis).map(()=>'<span></span>').join('');
+  }
+  const ticks = stageProgress ? stageProgress.querySelectorAll('span') : [];
+  let curIdx = -1;
+
+  function setActive(i){
+    if (i === curIdx) return;
+    curIdx = i;
+    slis.forEach((s,idx)=>{
+      s.classList.toggle('active', idx===i);
+      s.classList.toggle('passed', idx<i);
+    });
+    stageImgs.forEach((img,idx)=>img.classList.toggle('in', idx===i));
+    ticks.forEach((t,idx)=>{
+      t.classList.toggle('done', idx<i);
+      t.classList.toggle('active', idx===i);
+    });
+    stageY.textContent = YEARS[i];
+    stageStamp.innerHTML = `YEAR <b>${YEARS[i]}</b>`;
+    stageMeta.textContent = META[i];
+  }
+
+  // scroll-driven sync via section progress (smooth, deterministic)
+  const track = document.getElementById('scrollTrack');
+  function syncTimeline(){
+    if (!track) return;
+    const r = track.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // active when stick is pinned: section top <= 0 and bottom > vh
+    const total = r.height - vh;
+    if (total <= 0) return;
+    const scrolled = Math.max(0, Math.min(total, -r.top));
+    const p = scrolled / total; // 0..1
+    const i = Math.min(slis.length - 1, Math.floor(p * slis.length));
+    setActive(i);
+  }
+  window.addEventListener('scroll', syncTimeline, {passive:true});
+  window.addEventListener('resize', syncTimeline);
+  syncTimeline();
+
+  // ===== counters =====
+  function animateCount(el){
+    const target = parseFloat(el.dataset.n);
+    const isFloat = String(target).includes('.');
+    const dur = 1500;
+    const start = performance.now();
+    function tick(now){
+      const t = Math.min(1, (now - start)/dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = target * eased;
+      el.textContent = isFloat ? val.toFixed(1) : Math.round(val);
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  const countIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if (e.isIntersecting){
+        const el = e.target;
+        if (!el.dataset.run){ el.dataset.run = '1'; animateCount(el); }
+      }
+    });
+  }, {threshold: 0.6});
+  document.querySelectorAll('[data-n]').forEach(el=>countIO.observe(el));
+})();
+</script>
+
+</body>
+</html>

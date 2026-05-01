@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Careers — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .logo .x{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:1}
+  .logo .rd{font-family:'Instrument Serif',serif;font-size:30px;line-height:1}
+  .logo-text{display:flex;flex-direction:column;line-height:1;margin-left:6px}
+  .logo-text span{font-size:13px;opacity:.7;font-weight:500}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--ink);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear;mix-blend-mode:difference}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;height:100vh;min-height:720px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .hero-img{position:absolute;inset:0;background:url('assets/img2.png') center/cover no-repeat;transform:scale(1.15);will-change:transform;filter:grayscale(.1)}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.35) 0%,rgba(11,27,63,.2) 35%,rgba(11,27,63,.7) 100%)}
+  .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 100px}
+  .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:30px;display:flex;align-items:center;gap:12px}
+  .hero-eyebrow::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  h1.hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(72px,11vw,180px);line-height:.92;letter-spacing:-.03em;margin:0;max-width:13ch}
+  h1.hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .hero-foot .meta{display:flex;gap:38px}
+
+  /* ===== INTRO ===== */
+  .intro{padding:140px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+  .intro-grid{padding:0 56px;display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:start}
+  .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:24px}
+  .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .intro h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:11ch}
+  .intro h2 em{font-style:italic;color:var(--accent)}
+  .intro p{font-size:17px;line-height:1.7;color:var(--ink-soft);margin:0 0 22px;max-width:54ch}
+  .intro p:last-child{margin-bottom:0}
+
+  /* ===== PRINCIPLES ===== */
+  .princ{padding:0 0 140px;background:var(--bg)}
+  .princ-grid{padding:0 56px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .pcell{padding:48px 36px 48px 0;border-left:1px solid var(--line);padding-left:36px}
+  .pcell:first-child{border-left:none;padding-left:0}
+  .pcell .pn{font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;color:var(--accent);font-weight:400;line-height:1;letter-spacing:-.01em;margin-bottom:18px}
+  .pcell h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:26px;line-height:1.15;margin:0 0 12px;letter-spacing:-.012em;color:var(--ink)}
+  .pcell h4 em{font-style:italic;color:var(--accent)}
+  .pcell p{font-size:14.5px;line-height:1.6;color:var(--ink-soft);margin:0}
+
+  /* ===== ROLES ===== */
+  .roles{padding:140px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .roles-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:60px}
+  .roles-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1;letter-spacing:-.022em;margin:0;max-width:12ch}
+  .roles-head h2 em{font-style:italic;color:var(--accent)}
+  .roles-head .stat{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;line-height:1.9;border-left:1px solid var(--line);padding-left:24px}
+  .roles-head .stat b{color:var(--ink);font-weight:500}
+  .roles-head .stat .row{display:flex;justify-content:space-between;gap:20px;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .roles-head .stat .row:last-child{border-bottom:none}
+
+  .role-tabs{padding:0 56px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+  .rtab{padding:9px 18px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid transparent;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+  .rtab:hover{color:var(--ink)}
+  .rtab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .rtab .ct{opacity:.55;font-size:10px}
+  .rtab.active .ct{color:#9bb5ff;opacity:1}
+
+  .role-list{padding:0 56px}
+  .rrow{display:grid;grid-template-columns:60px 1fr 180px 130px 110px 40px;gap:32px;align-items:center;padding:30px 0;border-top:1px solid var(--line);transition:.25s;cursor:pointer}
+  .rrow:last-child{border-bottom:1px solid var(--line)}
+  .rrow:hover{padding-left:14px;padding-right:14px;background:rgba(255,255,255,.4)}
+  .rrow .rid{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .rrow h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;line-height:1.15;margin:0;color:var(--ink);letter-spacing:-.01em}
+  .rrow h4 em{font-style:italic;color:var(--accent)}
+  .rrow .rteam{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase}
+  .rrow .rloc{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--ink-soft);text-transform:uppercase}
+  .rrow .rtype{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;padding:5px 10px;border:1px solid #c8d8ff;border-radius:999px;background:#fff;justify-self:start}
+  .rrow .arr{opacity:.4;transition:.2s;font-size:18px;color:var(--accent);text-align:right}
+  .rrow:hover .arr{opacity:1;transform:translateX(6px)}
+
+  /* ===== STUDIO LIFE ===== */
+  .life{padding:140px 0;background:var(--bg)}
+  .life-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:60px}
+  .life-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1;letter-spacing:-.022em;margin:0;max-width:12ch}
+  .life-head h2 em{font-style:italic;color:var(--accent)}
+  .life-head p{font-size:16px;line-height:1.6;color:var(--ink-soft);margin:0;max-width:520px}
+  .life-mosaic{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:14vh;gap:8px;padding:0 8px}
+  .ltile{position:relative;overflow:hidden;border-radius:6px;background:#0b1b3f;cursor:pointer}
+  .ltile .limg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .ltile:hover .limg{transform:scale(1.06)}
+  .ltile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 50%,rgba(11,27,63,.7) 100%);opacity:.4;transition:opacity .3s}
+  .ltile:hover::after{opacity:.85}
+  .ltile .ltag{position:absolute;left:14px;bottom:12px;right:14px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#fff;text-transform:uppercase;display:flex;justify-content:space-between}
+  .ltile .ltag b{color:#9bb5ff;font-weight:500}
+  .l-a{grid-column:span 7;grid-row:span 4}
+  .l-b{grid-column:span 5;grid-row:span 2}
+  .l-c{grid-column:span 5;grid-row:span 2}
+  .l-d{grid-column:span 4;grid-row:span 3}
+  .l-e{grid-column:span 4;grid-row:span 3}
+  .l-f{grid-column:span 4;grid-row:span 3}
+
+  /* ===== BENEFITS ===== */
+  .ben{padding:140px 0;background:var(--bg-warm);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ben-head{padding:0 56px;margin-bottom:50px}
+  .ben-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,68px);line-height:1;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .ben-head h2 em{font-style:italic;color:var(--accent)}
+  .ben-grid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .bcell{padding:32px;background:var(--bg);border:1px solid var(--line);border-radius:8px;transition:.2s}
+  .bcell:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .bcell .bn{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:16px;font-weight:600}
+  .bcell h5{font-family:'Instrument Serif',serif;font-weight:400;font-size:22px;line-height:1.2;margin:0 0 8px;color:var(--ink);letter-spacing:-.01em}
+  .bcell h5 em{font-style:italic;color:var(--accent)}
+  .bcell p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0}
+
+  /* ===== CTA ===== */
+  .cta{padding:140px 0;background:#0b1b3f;color:#fff;text-align:center;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 50%, rgba(99,140,255,.18), rgba(99,140,255,0) 60%)}
+  .cta-content{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 56px}
+  .cta .clabel{justify-content:center;color:#9bb5ff}
+  .cta .clabel::before{background:#9bb5ff}
+  .cta h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,72px);line-height:1.05;letter-spacing:-.02em;margin:24px 0 22px}
+  .cta h2 em{font-style:italic;color:#9bb5ff}
+  .cta p{font-size:17px;line-height:1.6;color:#b8c3df;margin:0 auto 38px;max-width:560px}
+  .btn-light{background:#fff;color:var(--ink);border:1px solid #fff;padding:14px 24px;border-radius:10px;font-size:15px}
+  .btn-light:hover{background:#eef3fb}
+  .btn-outline-light{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);padding:14px 24px;border-radius:10px;font-size:15px}
+  .btn-outline-light:hover{background:rgba(255,255,255,.06)}
+  .cta-cta{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  @media (max-width:980px){
+    .wrap,.intro-grid,.princ-grid,.roles-head,.role-list,.role-tabs,.life-head,.ben-head,.ben-grid,.cta-content,.hero-content,.hero-foot{padding-left:24px;padding-right:24px}
+    .intro-grid,.roles-head,.life-head{grid-template-columns:1fr;gap:30px}
+    .princ-grid{grid-template-columns:1fr 1fr}
+    .pcell:nth-child(3){border-left:none;padding-left:0}
+    .ben-grid{grid-template-columns:1fr}
+    .rrow{grid-template-columns:60px 1fr;gap:14px}
+    .rrow .rteam,.rrow .rloc,.rrow .rtype,.rrow .arr{display:none}
+    .nav-links{display:none}
+    .l-a,.l-b,.l-c,.l-d,.l-e,.l-f{grid-column:span 12;grid-row:span 3}
+  }
+  @media (max-width:560px){
+    .wrap,.intro-grid,.princ-grid,.roles-head,.role-list,.role-tabs,.life-head,.ben-head,.ben-grid,.cta-content,.hero-content,.hero-foot{padding-left:18px;padding-right:18px}
+    .princ-grid{grid-template-columns:1fr}
+    .pcell{border-left:none;padding-left:0}
+    .role-tabs{flex-wrap:wrap;gap:8px}
+    .role-tabs .chip{font-size:11px;padding:7px 12px}
+    .hero-foot{flex-direction:column;align-items:flex-start;gap:8px;left:18px;right:18px;bottom:18px;font-size:9.5px;letter-spacing:.14em}
+    .hero-foot .meta{flex-wrap:wrap;gap:14px}
+    .hero-content{padding:0 18px 110px}
+    h1.hero-h{font-size:clamp(56px,13vw,96px)}
+    .hero-eyebrow{position:absolute;top:64px;left:18px;right:18px;z-index:5;margin:0;font-size:10px;letter-spacing:.18em;gap:8px}
+    .btn{padding:10px 16px;font-size:13.5px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Careers · 2026</div>
+    <h1 class="hero-h">Come <em>draw</em><br>with us.</h1>
+  </div>
+  <div class="hero-foot">
+    <div class="meta">
+      <span>09 OPEN ROLES</span>
+      <span>04 OFFICES</span>
+      <span>HCMC · BKK · SG · TYO</span>
+    </div>
+    <span>ALWAYS HIRING · QUIETLY</span>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="intro-grid">
+    <div>
+      <div class="clabel">A note from the partners</div>
+      <h2>A small <em>studio</em>,<br>built to <em>last</em>.</h2>
+    </div>
+    <div>
+      <p>We're 83 people across four offices, and we plan to stay roughly that size. We hire slowly, pay fairly, and try to keep the work interesting for everyone — partners and interns alike.</p>
+      <p>If you draw, model, calculate, write, or think for a living, and you're curious about what architecture can do in the tropics — we'd like to meet you. The list below is what's open today; speculative letters are also welcome.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="princ">
+  <div class="princ-grid">
+    <div class="pcell">
+      <div class="pn">i.</div>
+      <h4>Climate is the <em>brief</em>.</h4>
+      <p>Every project starts with the site's weather, water, and people. The building follows.</p>
+    </div>
+    <div class="pcell">
+      <div class="pn">ii.</div>
+      <h4>Draw the <em>argument</em>.</h4>
+      <p>We make a lot of drawings. Bring a pen, bring a tablet — both work. Speed matters less than clarity.</p>
+    </div>
+    <div class="pcell">
+      <div class="pn">iii.</div>
+      <h4>Train the <em>local hand</em>.</h4>
+      <p>We work with local makers everywhere we build. Patience and respect are non-negotiable.</p>
+    </div>
+    <div class="pcell">
+      <div class="pn">iv.</div>
+      <h4>Publish the <em>method</em>.</h4>
+      <p>We share what we learn. Every project ends in a written essay, every researcher writes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section class="roles">
+  <div class="roles-head">
+    <div>
+      <div class="clabel">Open positions · 09</div>
+      <h2>Roles, <em>open</em> today.</h2>
+    </div>
+    <div class="stat">
+      <div class="row"><span>Updated</span><span><b>02 May 2026</b></span></div>
+      <div class="row"><span>Hiring window</span><span><b>Rolling</b></span></div>
+      <div class="row"><span>Decision time</span><span><b>~3 weeks</b></span></div>
+      <div class="row"><span>Interviews</span><span><b>2 rounds + portfolio</b></span></div>
+    </div>
+  </div>
+
+  <div class="role-tabs">
+    <button class="rtab active" data-team="all">All <span class="ct">09</span></button>
+    <button class="rtab" data-team="design">Design <span class="ct">04</span></button>
+    <button class="rtab" data-team="rd">R&amp;D <span class="ct">02</span></button>
+    <button class="rtab" data-team="site">Site &amp; Build <span class="ct">02</span></button>
+    <button class="rtab" data-team="studio">Studio Ops <span class="ct">01</span></button>
+  </div>
+
+  <div class="role-list" id="roleList">
+    <div class="rrow" data-team="design">
+      <span class="rid">R—09</span>
+      <h4>Senior <em>Architect</em>, Civic &amp; Cultural</h4>
+      <span class="rteam">DESIGN · LEAD</span>
+      <span class="rloc">HCMC · VN</span>
+      <span class="rtype">Full-time</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="design">
+      <span class="rid">R—08</span>
+      <h4>Project <em>Architect</em>, Education</h4>
+      <span class="rteam">DESIGN</span>
+      <span class="rloc">Bangkok · TH</span>
+      <span class="rtype">Full-time</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="design">
+      <span class="rid">R—07</span>
+      <h4><em>Designer</em>, mid-level (3–6y)</h4>
+      <span class="rteam">DESIGN</span>
+      <span class="rloc">HCMC · VN</span>
+      <span class="rtype">Full-time</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="design">
+      <span class="rid">R—06</span>
+      <h4><em>Intern</em>, summer 2026</h4>
+      <span class="rteam">DESIGN</span>
+      <span class="rloc">Any office</span>
+      <span class="rtype">12 weeks</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="rd">
+      <span class="rid">R—05</span>
+      <h4>Computational <em>Designer</em></h4>
+      <span class="rteam">R&amp;D</span>
+      <span class="rloc">Tokyo · JP</span>
+      <span class="rtype">Full-time</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="rd">
+      <span class="rid">R—04</span>
+      <h4>Building <em>Performance</em> Engineer</h4>
+      <span class="rteam">R&amp;D</span>
+      <span class="rloc">Singapore</span>
+      <span class="rtype">Full-time</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="site">
+      <span class="rid">R—03</span>
+      <h4>Site <em>Architect</em>, Đà Nẵng campus</h4>
+      <span class="rteam">SITE · BUILD</span>
+      <span class="rloc">Đà Nẵng · VN</span>
+      <span class="rtype">2-yr contract</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="site">
+      <span class="rid">R—02</span>
+      <h4><em>Construction</em> Administrator</h4>
+      <span class="rteam">SITE · BUILD</span>
+      <span class="rloc">Luang Prabang · LA</span>
+      <span class="rtype">18 months</span>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow" data-team="studio">
+      <span class="rid">R—01</span>
+      <h4>Studio <em>Manager</em></h4>
+      <span class="rteam">OPERATIONS</span>
+      <span class="rloc">HCMC · VN</span>
+      <span class="rtype">Full-time</span>
+      <span class="arr">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- STUDIO LIFE -->
+<section class="life">
+  <div class="life-head">
+    <div>
+      <div class="clabel">Studio life · The boatyard</div>
+      <h2>How a <em>day</em> looks.</h2>
+    </div>
+    <p>One open studio on the river, three smaller satellites, and a shared model-shop on Fridays. Quiet mornings, talkative afternoons, beer in the courtyard at six.</p>
+  </div>
+  <div class="life-mosaic">
+    <div class="ltile l-a"><div class="limg" style="background-image:url('assets/img1.png')"></div>
+      <div class="ltag"><span>The boatyard · HCMC</span><b>HQ</b></div></div>
+    <div class="ltile l-b"><div class="limg" style="background-image:url('assets/img3.png')"></div>
+      <div class="ltag"><span>Model shop · Friday</span><b>Weekly</b></div></div>
+    <div class="ltile l-c"><div class="limg" style="background-image:url('assets/img4.png')"></div>
+      <div class="ltag"><span>Site visit · Mekong</span><b>Q2</b></div></div>
+    <div class="ltile l-d"><div class="limg" style="background-image:url('assets/img2.png')"></div>
+      <div class="ltag"><span>Bangkok studio</span><b>SAT.</b></div></div>
+    <div class="ltile l-e"><div class="limg" style="background-image:url('assets/img1.png')"></div>
+      <div class="ltag"><span>Library · ground floor</span><b>14k books</b></div></div>
+    <div class="ltile l-f"><div class="limg" style="background-image:url('assets/img3.png')"></div>
+      <div class="ltag"><span>Tokyo R&amp;D</span><b>EST. '23</b></div></div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="ben">
+  <div class="ben-head">
+    <div class="clabel">Benefits · The basics</div>
+    <h2>What we <em>offer</em>, plainly.</h2>
+  </div>
+  <div class="ben-grid">
+    <div class="bcell"><div class="bn">01 · Pay</div><h5>Transparent <em>bands</em>.</h5><p>Salary bands are published internally. The same role earns the same anywhere; cost-of-living is added on top.</p></div>
+    <div class="bcell"><div class="bn">02 · Time</div><h5>30 days, <em>no questions</em>.</h5><p>Annual leave plus public holidays. Sabbatical month every five years. We expect you to take it.</p></div>
+    <div class="bcell"><div class="bn">03 · Health</div><h5>Full coverage.</h5><p>Medical, dental, vision for you and dependents. Mental health budget, no receipts required.</p></div>
+    <div class="bcell"><div class="bn">04 · Travel</div><h5>Site visits, <em>often</em>.</h5><p>Every project team visits site at least quarterly. Long-haul economy, good hotels, time on the ground.</p></div>
+    <div class="bcell"><div class="bn">05 · Learning</div><h5>Books, <em>conferences</em>, courses.</h5><p>$2,400/year personal learning budget. Plus a quarterly studio stipend for the library.</p></div>
+    <div class="bcell"><div class="bn">06 · Family</div><h5>Six months <em>parental</em>.</h5><p>Equal for all parents. Phased return supported. Family welcome at the studio anytime.</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-content">
+    <div class="clabel">Don't see your role?</div>
+    <h2>Write us a <em>letter</em>.</h2>
+    <p>If the open list doesn't fit, send a short note — what you do, what you're curious about, and one project you're proud of. We read everything.</p>
+    <div class="cta-cta">
+      <a class="btn btn-light" href="mailto:join@xrd.studio">Speculative application
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <a class="btn btn-outline-light" href="contact.html">Visit us instead</a>
+    </div>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  const heroImg = document.getElementById('heroImg');
+  function onScroll(){
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 80);
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+    if (heroImg && y < window.innerHeight){
+      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  const tabs = document.querySelectorAll('.rtab');
+  const rows = document.querySelectorAll('#roleList .rrow');
+  tabs.forEach(t=>{
+    t.addEventListener('click', ()=>{
+      tabs.forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const team = t.dataset.team;
+      rows.forEach(r=>{
+        r.style.display = (team === 'all' || r.dataset.team === team) ? '' : 'none';
+      });
+    });
+  });
+
+  // ===== GSAP entrance + scroll reveals =====
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.hero-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.25});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.4});
+    gsap.from('.hero-lede',{y:24,opacity:0,duration:.9,ease:'power3.out',delay:.6});
+    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.8});
+
+    // Section heading reveals
+    gsap.utils.toArray('section:not(.hero)').forEach(sec=>{
+      try {
+        const heading = sec.querySelector(':scope > .intro-grid > div > h2, :scope > .princ-head h2, :scope > .roles-head h2, :scope > .life-head h2, :scope > .ben-head h2, :scope > .cta-content h2, :scope > h2, :scope > h3');
+        const lede = sec.querySelector(':scope > .intro-grid > div > p, :scope > .princ-head p, :scope > .roles-head p, :scope > .life-head p, :scope > .ben-head p, :scope > .cta-content > p');
+        const label = sec.querySelector(':scope > .intro-grid > div > .clabel, :scope > .princ-head .clabel, :scope > .roles-head .clabel, :scope > .life-head .clabel, :scope > .ben-head .clabel, :scope > .cta-content .clabel');
+        if (label) gsap.from(label,{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:sec,start:'top 82%'}});
+        if (heading) gsap.from(heading,{y:30,opacity:0,duration:.9,ease:'power4.out',delay:.05,scrollTrigger:{trigger:sec,start:'top 82%'}});
+        if (lede) gsap.from(lede,{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.15,scrollTrigger:{trigger:sec,start:'top 80%'}});
+      } catch(e){}
+    });
+
+    // Principles cells
+    gsap.fromTo('.pcell',{y:36,opacity:0},{y:0,opacity:1,duration:.8,ease:'power4.out',stagger:.1,scrollTrigger:{trigger:'.princ-grid',start:'top 85%'}});
+
+    // Role tabs + rows
+    gsap.from('.rtab',{y:14,opacity:0,duration:.5,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.role-tabs',start:'top 90%'}});
+    gsap.fromTo('.rrow',{y:20,opacity:0},{y:0,opacity:1,duration:.6,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.role-list',start:'top 88%'}});
+
+    // Life mosaic
+    gsap.utils.toArray('.life .mosaic > div, .life .ltile').forEach(t=>{
+      gsap.fromTo(t,{y:30,opacity:0},{y:0,opacity:1,duration:.8,ease:'power4.out',scrollTrigger:{trigger:t,start:'top 90%'}});
+      const img = t.querySelector('.limg, .mimg');
+      if (img) gsap.fromTo(img,{scale:1.18},{scale:1,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:t,start:'top 92%'}});
+    });
+
+    // Benefits
+    gsap.fromTo('.bcell',{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.08,scrollTrigger:{trigger:'.ben-grid',start:'top 88%'}});
+
+    // CTA buttons
+    gsap.fromTo('.cta-cta > *',{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.1,delay:.2,scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+})();
+</script>
+
+</body>
+</html>

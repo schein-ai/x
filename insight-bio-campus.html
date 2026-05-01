@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Eighteen months on a biophilic campus — xR&amp;D Insights</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+    --serif:'Source Serif 4',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;font-size:11px}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent-soft);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;height:80vh;min-height:620px;overflow:hidden;background:#0b1b3f;color:#fff;display:flex;flex-direction:column}
+  .hero-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.15);will-change:transform}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.3) 0%,rgba(11,27,63,.2) 35%,rgba(11,27,63,.85) 100%)}
+  .crumb{position:relative;z-index:2;padding:140px 56px 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;display:flex;align-items:center;gap:14px}
+  .crumb a{color:#9bb5ff;border-bottom:1px solid rgba(155,181,255,.25);padding-bottom:1px}
+  .crumb a:hover{border-color:#9bb5ff}
+  .crumb .sep{opacity:.4}
+  .hero-content{position:relative;z-index:2;margin-top:auto;padding:0 56px 90px;max-width:980px}
+  .hero-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px;font-weight:600}
+  .hero-kicker::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  .hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6.6vw,104px);line-height:.96;letter-spacing:-.025em;margin:0 0 28px;max-width:18ch}
+  .hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-lede{font-family:var(--serif);font-size:20px;line-height:1.55;color:rgba(255,255,255,.82);margin:0 0 36px;max-width:60ch;font-weight:400}
+  .hero-byline{display:flex;align-items:center;gap:18px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .hero-byline .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#0b1b3f);border:2px solid rgba(255,255,255,.2)}
+  .hero-byline b{color:#fff;font-weight:600;font-family:'Inter',sans-serif;text-transform:none;letter-spacing:0;font-size:14.5px;display:block;margin-bottom:2px}
+  .hero-byline .meta-sep{display:inline-block;width:1px;height:32px;background:rgba(255,255,255,.18);margin:0 6px}
+  .hero-byline .read b{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+
+  /* ===== ARTICLE LAYOUT ===== */
+  .article{padding:90px 56px 130px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:72px;align-items:start;background:var(--bg)}
+  .article-body{font-family:var(--serif);font-size:18.5px;line-height:1.75;color:#1f2a4a}
+  .article-body > .section-mark{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:14px}
+  .article-body > .section-mark::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .article-body h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(34px,3.4vw,46px);line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin:60px 0 24px;scroll-margin-top:96px}
+  .article-body h2 em{font-style:italic;color:var(--accent)}
+  .article-body h2:first-child{margin-top:0}
+  .article-body h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:26px;line-height:1.2;letter-spacing:-.012em;color:var(--ink);margin:42px 0 14px}
+  .article-body h3 em{font-style:italic;color:var(--accent)}
+  .article-body p{margin:0 0 22px}
+  .article-body p.lede{font-size:22px;line-height:1.55;color:var(--ink);font-weight:500}
+  .article-body p.lede::first-letter{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;float:left;font-size:80px;line-height:.85;margin:6px 12px 0 0;color:var(--accent)}
+  .article-body p b{color:var(--ink);font-weight:600}
+  .article-body a{color:var(--accent);border-bottom:1px solid rgba(37,99,235,.25);transition:border-color .15s}
+  .article-body a:hover{border-bottom-color:var(--accent)}
+  .article-body ul{margin:0 0 26px;padding-left:0;list-style:none}
+  .article-body ul li{position:relative;padding-left:28px;margin-bottom:10px}
+  .article-body ul li::before{content:"→";position:absolute;left:0;top:0;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:500}
+
+  /* article assets — fill article-body width */
+  .art-fig{margin:42px 0;position:relative;width:100%}
+  .art-fig img,.art-fig .ifimg{display:block;width:100%;height:auto;border-radius:10px}
+  .art-fig .ifimg{aspect-ratio:16/9;background-size:cover;background-position:center}
+  .art-fig figcaption{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;line-height:1.7}
+  .art-fig figcaption b{color:var(--ink);font-weight:500}
+  .art-fig.full .ifimg{aspect-ratio:21/9}
+
+  /* video */
+  .art-film{position:relative;margin:48px 0;border-radius:10px;overflow:hidden;background:#0b1b3f;aspect-ratio:16/9;cursor:pointer}
+  .art-film .fimg{position:absolute;inset:0;background:url('assets/img4.png') center/cover no-repeat;transition:transform 1.4s cubic-bezier(.2,.7,.2,1),opacity .4s}
+  .art-film:hover .fimg{transform:scale(1.04)}
+  .art-film::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.15) 0%,rgba(11,27,63,.45) 100%);pointer-events:none;transition:opacity .4s}
+  .art-film .fvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;background:#000;z-index:0;transition:opacity .4s}
+  .art-film .fplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px -10px rgba(0,0,0,.35);transition:transform .3s,background .3s,opacity .3s;border:none;z-index:2;cursor:pointer}
+  .art-film:hover .fplay{transform:translate(-50%,-50%) scale(1.08);background:#fff}
+  .art-film .fplay svg{width:28px;height:28px;margin-left:5px;fill:var(--ink)}
+  .art-film .fcap{position:absolute;left:24px;bottom:18px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#fff;text-transform:uppercase;transition:opacity .3s}
+  .art-film.playing{cursor:default}
+  .art-film.playing .fvid{opacity:1;pointer-events:auto;z-index:5}
+  .art-film.playing .fimg,.art-film.playing .fplay,.art-film.playing .fcap{opacity:0;pointer-events:none}
+  .art-film.playing::after{opacity:0}
+
+  /* pullquote inside article */
+  .art-quote{margin:54px 0;padding:40px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .art-quote q{display:block;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:clamp(28px,2.8vw,38px);line-height:1.25;color:var(--ink);quotes:"\201C""\201D";letter-spacing:-.012em;margin:0 0 22px;max-width:24ch}
+  .art-quote q::before{content:open-quote;color:var(--accent);margin-right:6px}
+  .art-quote q::after{content:close-quote;color:var(--accent);margin-left:4px}
+  .art-quote .qsig{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .art-quote .qsig b{color:var(--ink);font-weight:600}
+  .art-quote .qsig::before{content:"";width:30px;height:1px;background:var(--accent)}
+
+  /* article footer / endnote */
+  .article-end{margin-top:60px;padding-top:36px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;line-height:1.8}
+  .article-end b{color:var(--ink);font-weight:500}
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{position:sticky;top:110px;display:flex;flex-direction:column;gap:28px}
+  .scard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+  .scard h6{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 18px;display:flex;align-items:center;gap:12px}
+  .scard h6::before{content:"";width:24px;height:1px;background:var(--accent)}
+
+  /* TOC */
+  .toc-list{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .toc-list li{counter-increment:toc;border-top:1px solid var(--line-2)}
+  .toc-list li:first-child{border-top:none}
+  .toc-list a{display:flex;align-items:flex-start;gap:14px;padding:11px 0;font-size:14.5px;color:var(--ink-soft);font-weight:500;line-height:1.4;transition:color .15s}
+  .toc-list a::before{content:counter(toc,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.06em;flex-shrink:0;padding-top:2px;transition:color .15s}
+  .toc-list a:hover{color:var(--ink)}
+  .toc-list a.active{color:var(--accent);font-weight:600}
+  .toc-list a.active::before{color:var(--accent)}
+
+  /* author bio */
+  .bio{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+  .bio .av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#0b1b3f);flex-shrink:0;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+  .bio b{display:block;font-size:15px;color:var(--ink);font-weight:600}
+  .bio span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;display:block;margin-top:3px}
+  .scard .biocopy{font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 14px}
+
+  /* share */
+  .share-btns{display:flex;gap:10px;flex-wrap:wrap}
+  .share-btns a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--bg-warm);border:1px solid var(--line);color:var(--ink-soft);transition:.2s}
+  .share-btns a:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .share-btns svg{width:16px;height:16px;fill:currentColor}
+  .share-meta{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;line-height:1.7}
+  .share-meta b{color:var(--ink);font-weight:500}
+
+  /* related side cards */
+  .rel-list{display:flex;flex-direction:column;gap:18px}
+  .rel-item{display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:flex-start}
+  .rel-item .rimg{width:80px;height:80px;border-radius:8px;background-size:cover;background-position:center;flex-shrink:0}
+  .rel-item .rmeta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:6px}
+  .rel-item h5{font-family:'Instrument Serif',serif;font-weight:400;font-size:18px;line-height:1.2;letter-spacing:-.005em;margin:0;color:var(--ink)}
+  .rel-item h5 em{font-style:italic;color:var(--accent)}
+  .rel-item:hover h5{color:var(--accent)}
+
+  /* newsletter */
+  .news-card{background:#0b1b3f;color:#fff;border:none}
+  .news-card h6{color:#9bb5ff}
+  .news-card h6::before{background:#9bb5ff}
+  .news-card h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.18;margin:0 0 10px;letter-spacing:-.012em}
+  .news-card h4 em{font-style:italic;color:#9bb5ff}
+  .news-card p{font-size:13.5px;line-height:1.6;color:#b8c3df;margin:0 0 18px}
+  .news-card .nfield{display:block;margin-bottom:10px}
+  .news-card .nfield input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;color:#fff;outline:none;transition:.2s}
+  .news-card .nfield input:focus{border-color:#9bb5ff;background:rgba(155,181,255,.08)}
+  .news-card .nfield input::placeholder{color:rgba(184,195,223,.5)}
+  .news-card .nbtn{margin-top:6px;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;background:#9bb5ff;color:#0b1b3f;border:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .2s}
+  .news-card .nbtn:hover{background:#fff}
+  .news-card .nfine{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:rgba(184,195,223,.7);text-transform:uppercase;line-height:1.7}
+
+  /* tags */
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tags a{padding:6px 12px;border-radius:999px;background:transparent;border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase;font-weight:500;transition:.15s}
+  .tags a:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* ===== MORE READING (full-width) ===== */
+  .more{padding:120px 0 140px;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .more-head{padding:0 56px;display:flex;align-items:end;justify-content:space-between;margin-bottom:50px;gap:40px}
+  .more-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .more-head h3 em{font-style:italic;color:var(--accent)}
+  .more-head a.go{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--accent);padding-bottom:3px}
+  .mgrid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .mcard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s, box-shadow .25s}
+  .mcard:hover{transform:translateY(-3px);box-shadow:0 22px 50px -30px rgba(11,27,63,.25)}
+  .mcard .mimg{height:200px;background-size:cover;background-position:center}
+  .mcard .mbody{padding:22px 22px 24px}
+  .mcard .mmeta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;font-weight:500;display:flex;justify-content:space-between}
+  .mcard .mmeta b{color:var(--accent);font-weight:600}
+  .mcard h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:-.005em;margin:0 0 10px;color:var(--ink)}
+  .mcard h4 em{font-style:italic;color:var(--accent)}
+  .mcard p{font-size:13.5px;line-height:1.55;color:var(--ink-soft);margin:0}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:1080px){
+    .article{grid-template-columns:1fr;gap:60px;padding:80px 24px 110px}
+    .sidebar{position:relative;top:auto}
+    .crumb,.hero-content,.more-head,.mgrid{padding-left:24px;padding-right:24px}
+    .crumb{padding-top:108px;flex-wrap:wrap}
+    .mgrid{grid-template-columns:1fr}
+    .more-head{flex-direction:column;align-items:flex-start;gap:18px}
+    .nav-links{display:none}
+    .art-fig .ifimg{aspect-ratio:16/10}
+    .art-fig.full .ifimg{aspect-ratio:16/10}
+  }
+  @media (max-width:560px){
+    .article{padding:60px 18px 90px;gap:40px}
+    .crumb,.hero-content,.more-head,.mgrid{padding-left:18px;padding-right:18px}
+    .article-body{font-size:16.5px}
+    .article-body p.lede{font-size:19px}
+    .article-body p.lede::first-letter{font-size:64px;margin:4px 10px 0 0}
+    .article-body h2{font-size:28px;margin:42px 0 16px}
+    .article-body h3{font-size:22px;margin:32px 0 12px}
+    .hero{height:100vh;min-height:0}
+    .crumb{position:absolute;top:64px;left:0;right:0;z-index:5;padding:0 18px;font-size:10px;letter-spacing:.14em;gap:8px;flex-wrap:wrap}
+    .hero-byline{flex-wrap:wrap;gap:10px;font-size:9.5px;letter-spacing:.12em}
+    .hero-byline .meta-sep{display:none}
+    .hero-byline .avatar{width:32px;height:32px}
+    .hero-byline b{font-size:13px}
+    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;flex:1;margin-top:0;padding:0 18px 56px;gap:18px}
+    .hero-h{font-size:clamp(48px,12vw,80px);line-height:.96;max-width:100%}
+    .hero-lede{font-size:14px;line-height:1.5}
+    .hero-kicker{font-size:9.5px;letter-spacing:.18em;margin-bottom:0}
+    .scard{padding:20px}
+    .rel-item{grid-template-columns:64px 1fr;gap:12px}
+    .rel-item .rimg{width:64px;height:64px}
+    .art-film .fplay{width:64px;height:64px}
+    .art-film .fplay svg{width:22px;height:22px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV ============== -->
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <nav class="crumb">
+    <a href="insights.html">Insights</a>
+    <span class="sep">/</span>
+    <span>Build log · Long read</span>
+    <span class="sep">/</span>
+    <span>No. 41</span>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-kicker">Long read · Build log · 17 min</div>
+    <h1 class="hero-h">Eighteen <em>months</em> on a <em>biophilic</em> campus.</h1>
+    <p class="hero-lede">A retrospective from the Đà Nẵng research campus build log — what we got right, what we'd redraw, and the eight detail studies that made the climate work.</p>
+    <div class="hero-byline">
+      <div class="avatar"></div>
+      <div>
+        <b>Lê Nguyễn &amp; Mai Trần</b>
+        <span>Principal · Design Director</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="read"><b>28 Apr 2026</b><br>Issue 41</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ARTICLE ============== -->
+<article class="article">
+  <!-- LEFT: body -->
+  <div class="article-body" id="articleBody">
+
+    <p class="lede">The Đà Nẵng research campus broke ground on October 12, 2024. We've published every two weeks since — site sections, structural decisions, the failed prototypes, the contractor arguments. This is the long-form version: 4,200 words on what eighteen months of construction taught us about designing in the tropics.</p>
+
+    <p>The brief was deceptively simple. <b>A 7,800 m² campus</b> for a research consortium of three Vietnamese universities, on a site that nobody else wanted: a former rice paddy at the edge of Đà Nẵng's industrial belt, hot, flat, exposed to the worst of the South China Sea's monsoons.</p>
+
+    <p>What follows is not a hagiography. The roof leaked in March 2025 and we owe a public apology to the contractor we blamed first. The screen detail we were proudest of in CAD turned out to deflect 14 mm under load — twice what we'd modelled. We redrew it on site over a weekend and a case of beer.</p>
+
+    <h2 id="ch01"><span class="section-mark">01 The site</span>An old paddy, a new <em>weather</em>.</h2>
+    <p>Đà Nẵng's climate is bimodal: a dry, fierce season from February through August, and a wet, fiercer one from September through January. Average rainfall in October exceeds <b>500 mm</b>. The site sits 1.4 km from the coast on land that's been continuously cultivated for at least 600 years.</p>
+
+    <figure class="art-fig">
+      <div class="ifimg" style="background-image:url('assets/img2.png')"></div>
+      <figcaption><b>Site, Sept 2024.</b> &nbsp;·&nbsp; Northeast monsoon arrives 6–8 weeks earlier than the regional norm. The first thing we did on site was install rain gauges.</figcaption>
+    </figure>
+
+    <p>That history matters. The soil is heavy clay overlaid with two metres of organic alluvium, the kind that holds water like a sponge for a week and then releases it all in an afternoon. The neighbourhood — Hòa Vang ward — has flooded eleven times in the past century, the most recent in 2020. The campus had to sit above this without pretending the water wasn't coming.</p>
+
+    <h2 id="ch02"><span class="section-mark">02 The brief</span>What three <em>universities</em> wanted, and what they actually <em>needed</em>.</h2>
+    <p>The first design brief, written in late 2023, asked for a single 7,800 m² building. Three storeys. Air-conditioned throughout. A central atrium, naturally. We held a workshop with the consortium in February 2024 and proposed something different.</p>
+    <p>The campus we ended up with is four <b>medium-sized pavilions</b> linked by a covered colonnade, all under a single deeply-cantilevered roof. Floor area unchanged. Mechanical cooling cut by 62%. The atrium became a courtyard.</p>
+
+    <ul>
+      <li>Four pavilions of 1,500–2,200 m² each, oriented within ±8° of true north–south for cross-ventilation</li>
+      <li>A 4.2 m roof overhang on the east and west façades, shading the entire glazed wall during peak solar hours</li>
+      <li>Operable timber screens on every south-facing opening, calibrated by season</li>
+      <li>A rain-buffer roof — 240 mm of growing medium and reclaimed terracotta — that holds <b>14 hours of rainfall</b> before discharge</li>
+    </ul>
+
+    <h2 id="ch03"><span class="section-mark">03 What we got right</span>The <em>roof</em> as a brief, not a finish.</h2>
+    <p>The single biggest decision on the project was treating the roof as the <b>primary architectural instrument</b>, not a closing gesture. Every climate move begins there: the overhang shades, the pitched plane sheds, the green stratum buffers, the photovoltaic strip generates, and the ridge channels operable cross-ventilation through every interior.</p>
+
+    <figure class="art-fig">
+      <div class="ifimg" style="background-image:url('assets/img3.png')"></div>
+      <figcaption><b>Detail — eaves, June 2025.</b> &nbsp;·&nbsp; The 4.2 m overhang is engineered as a Vierendeel truss in laminated bamboo — 38% lighter than the steel scheme we costed first.</figcaption>
+    </figure>
+
+    <p>Twelve months in, the post-occupancy data tells us the climate strategy is working. Indoor operative temperatures have stayed within the <b>26–29 °C</b> comfort band on 87% of occupied hours, including peak monsoon days. Lighting energy is 41% under the regional baseline. The 240 mm rain-buffer roof has discharged at the design rate every storm so far.</p>
+
+    <h2 id="ch04"><span class="section-mark">04 What we'd redraw</span>The <em>bits</em> we'd redo.</h2>
+    <p>If we were starting again with what we know now, three things would change. We'd raise the colonnade roof another 600 mm. The current clearance feels right at human scale but creates a thermal stack that traps warm air at the higher ceiling junction. A small tweak, big swing.</p>
+    <p>Second: the lecture pavilion's east-facing window should have been operable. We ran the solar gain calculations, decided fixed glazing was thermally cheaper, and now the staff propose meeting in the colonnade because the room is "too still." A rookie mistake — comfort is more than thermal.</p>
+    <p>Third — and we owe drawings on this — the operable screen detail needs another iteration. Hannah, our project architect, is working on a v3 using a thinner timber sandwich panel that we'll prototype this summer. We'll publish it.</p>
+
+    <h2 id="ch05"><span class="section-mark">05 Detail study</span>The <em>operable</em> screen.</h2>
+    <p>The screens are the most-photographed thing on the project, and the most fought-over. Each panel is 2.4 × 1.1 m, weighs 38 kg, and folds back on a single brass pivot. There are <b>184</b> of them. They're calibrated against three seasonal regimes: monsoon (closed, drained), shoulder (half-open, breeze-tuned), dry (open, paired with operable louvres above for stack effect).</p>
+
+    <div class="art-quote">
+      <q>The screens were a half-failure for ten weeks. Then we worked out we'd modelled them dry. They sing in the wet.</q>
+      <div class="qsig"><b>Hannah Phạm</b> · Project Architect</div>
+    </div>
+
+    <p>The brass pivot was contentious. The contractor wanted stainless. We won the argument by buying the brass ourselves and shipping it from Hà Nội. Eighteen months later, the pivots have a beautiful patina; the stainless ones we used as test pieces look exactly like they did the day they arrived.</p>
+
+    <h2 id="ch06"><span class="section-mark">06 Detail study</span>The <em>rain-buffer</em> roof.</h2>
+    <p>The growing roof is the campus's most boring drawing and its most consequential decision. 240 mm of free-draining substrate, a layer of reclaimed terracotta tile sized to the local roof tradition, and a planting palette of three local sedums and one creeping fig. It costs about 11% more than a conventional metal-deck roof. It pays back in five.</p>
+
+    <figure class="art-fig full">
+      <div class="ifimg" style="background-image:url('assets/hero-bg.png')"></div>
+      <figcaption><b>Roof, March 2026.</b> &nbsp;·&nbsp; First fully-vegetated season. The substrate stayed below saturation through eight 100 mm+ events. Photo · Hữu Long.</figcaption>
+    </figure>
+
+    <h2 id="ch07"><span class="section-mark">07 Timelapse</span>Eighteen <em>months</em> in 90 seconds.</h2>
+    <p>One of our partners, Nguyễn Hoa, has been recording the site every Monday at 09:00 since groundbreaking. The film below is the public cut, set to a piece by Bảo Vũ. The full archive (832 stills, 76 short videos) is open on our drive — link in the endnote.</p>
+
+    <div class="art-film" aria-label="Watch timelapse film">
+      <div class="fimg"></div>
+      <video class="fvid" src="assets/pv.mp4" controls playsinline preload="metadata"></video>
+      <button class="fplay" type="button" aria-label="Play timelapse"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="fcap">Timelapse · 1 min 32 sec</div>
+    </div>
+
+    <h2 id="ch08"><span class="section-mark">08 What's next</span>The <em>second</em> draft.</h2>
+    <p>The campus is occupied. The first cohort of students arrived in February. We're still drawing — operable screen v3, a new shading study for the western pavilion, a small pavilion addition that the consortium quietly asked us about over coffee in March.</p>
+    <p>The build log will keep going. The cycle is now tuned to <b>occupied performance</b> rather than construction milestones — we'll publish the first full year's energy and comfort data on the 12th of October, on the project's first anniversary. After that: less often, but for as long as the building is interesting to write about.</p>
+
+    <p>If you'd like to be told when the next entry lands, the newsletter on the right is the only place we publish. Six emails a year, all written by us.</p>
+
+    <div class="article-end">
+      <b>Authors</b> &nbsp;Lê Nguyễn · Mai Trần &nbsp; <br>
+      <b>Photography</b> &nbsp;Hữu Long · Nguyễn Hoa &nbsp; <br>
+      <b>Drawings</b> &nbsp;xR&amp;D Studio · v3 · 2026.04.28 &nbsp; <br>
+      <b>Acknowledgements</b> &nbsp;The campus consortium, the contractor we initially blamed, and the fourteen members of the studio team who lived in Đà Nẵng for parts of these eighteen months.
+    </div>
+  </div>
+
+  <!-- RIGHT: sidebar -->
+  <aside class="sidebar">
+    <!-- TOC -->
+    <div class="scard">
+      <h6>On this page</h6>
+      <ol class="toc-list">
+        <li><a href="#ch01">The site</a></li>
+        <li><a href="#ch02">The brief</a></li>
+        <li><a href="#ch03">What we got right</a></li>
+        <li><a href="#ch04">What we'd redraw</a></li>
+        <li><a href="#ch05">Detail: operable screen</a></li>
+        <li><a href="#ch06">Detail: rain-buffer roof</a></li>
+        <li><a href="#ch07">Timelapse</a></li>
+        <li><a href="#ch08">What's next</a></li>
+      </ol>
+    </div>
+
+    <!-- Author bio -->
+    <div class="scard">
+      <h6>About the authors</h6>
+      <div class="bio">
+        <div class="av"></div>
+        <div>
+          <b>Lê Nguyễn</b>
+          <span>Principal Architect</span>
+        </div>
+      </div>
+      <div class="bio">
+        <div class="av" style="background:linear-gradient(135deg,#9bb5ff,#3b82f6)"></div>
+        <div>
+          <b>Mai Trần</b>
+          <span>Design Director · Editor</span>
+        </div>
+      </div>
+      <p class="biocopy">Lê and Mai co-led the campus from concept to occupation. Both have written for the build log since week one.</p>
+    </div>
+
+    <!-- Share -->
+    <div class="scard">
+      <h6>Share</h6>
+      <div class="share-btns">
+        <a href="#" aria-label="Share on X"><svg viewBox="0 0 24 24"><path d="M18.244 2H21l-6.5 7.43L22 22h-6.91l-4.81-6.3L4.5 22H1.74l6.96-7.96L1.5 2h7.06l4.36 5.76L18.24 2z"/></svg></a>
+        <a href="#" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zM8.34 8h4.37v1.91h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v8.45h-4.56v-7.5c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V22H8.34V8z"/></svg></a>
+        <a href="#" aria-label="Send by email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        <a href="#" aria-label="Copy link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg></a>
+      </div>
+      <div class="share-meta"><b>4,210</b> words · 17 min read</div>
+    </div>
+
+    <!-- Related -->
+    <div class="scard">
+      <h6>Related reading</h6>
+      <div class="rel-list">
+        <a class="rel-item" href="#">
+          <div class="rimg" style="background-image:url('assets/img1.png')"></div>
+          <div>
+            <div class="rmeta">Build log · 12 min</div>
+            <h5>The <em>screen</em> we redrew on a weekend.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="#">
+          <div class="rimg" style="background-image:url('assets/img3.png')"></div>
+          <div>
+            <div class="rmeta">Research · 9 min</div>
+            <h5>Why <em>laminated bamboo</em> beat steel.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="#">
+          <div class="rimg" style="background-image:url('assets/img2.png')"></div>
+          <div>
+            <div class="rmeta">Field note · 6 min</div>
+            <h5>Designing with <em>the wind</em>.</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="scard news-card">
+      <h6>The Friday letter</h6>
+      <h4>Six <em>emails</em> a year. Written by us.</h4>
+      <p>The next one drops with our first-anniversary performance data — Oct 12.</p>
+      <form onsubmit="event.preventDefault();this.querySelector('.nbtn').textContent='Subscribed ✓'">
+        <div class="nfield"><input type="email" placeholder="you@studio.com" required></div>
+        <button class="nbtn" type="submit">Subscribe
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="nfine">9,840 readers · 47 countries · No tracking</div>
+      </form>
+    </div>
+
+    <!-- Tags -->
+    <div class="scard">
+      <h6>Tags</h6>
+      <div class="tags">
+        <a href="#">Build log</a>
+        <a href="#">Climate</a>
+        <a href="#">Đà Nẵng</a>
+        <a href="#">Long read</a>
+        <a href="#">Biophilic</a>
+        <a href="#">Detail</a>
+        <a href="#">Bamboo</a>
+      </div>
+    </div>
+  </aside>
+</article>
+
+<!-- ============== MORE READING ============== -->
+<section class="more">
+  <div class="more-head">
+    <h3>More from the <em>journal</em>.</h3>
+    <a class="go" href="insights.html">All entries →</a>
+  </div>
+  <div class="mgrid">
+    <a class="mcard" href="#">
+      <div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Field note · 6 min</span><b>Apr 2026</b></div>
+        <h4>Designing with the wind: <em>climate</em>-aware massing in Đà Nẵng.</h4>
+        <p>How we calibrated cross-ventilation for a 7,800 m² campus from 35 years of MERRA-2 data.</p>
+      </div>
+    </a>
+    <a class="mcard" href="#">
+      <div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Manifesto · 4 min</span><b>Mar 2026</b></div>
+        <h4>What we mean when we say <em>"human-amplified"</em> architecture.</h4>
+        <p>Three principles, two illustrative projects, and one thing we still get wrong.</p>
+      </div>
+    </a>
+    <a class="mcard" href="#">
+      <div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Case study · 8 min</span><b>Feb 2026</b></div>
+        <h4>Cutting embodied carbon by <em>41%</em> on the Riverwalk competition.</h4>
+        <p>The materials inventory, the swaps that worked, and the one substitution we abandoned.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ============== FOOTER (shared via js/footer.js) ============== -->
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  // Nav scroll + progress bar + hero parallax
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  const heroImg = document.getElementById('heroImg');
+
+  // TOC scroll-spy
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const sectionIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+  function onScroll(){
+    const y = window.scrollY;
+    if (nav) nav.classList.toggle('scrolled', y > 80);
+    if (bar){
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+    }
+    if (heroImg && y < window.innerHeight){
+      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
+    }
+    // Active TOC item
+    let active = sections[0];
+    sections.forEach(s => {
+      if (s.getBoundingClientRect().top < window.innerHeight*0.4) active = s;
+    });
+    if (active){
+      tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+active.id));
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // GSAP entrance + reveals
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.crumb',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.2});
+    gsap.from('.hero-kicker',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.35});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.45});
+    gsap.from('.hero-lede',{y:24,opacity:0,duration:.9,ease:'power3.out',delay:.65});
+    gsap.from('.hero-byline',{y:18,opacity:0,duration:.8,ease:'power3.out',delay:.85});
+
+    // Article: stagger reveal of paragraphs/headings
+    gsap.utils.toArray('.article-body > *').forEach(el=>{
+      gsap.fromTo(el,{y:24,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});
+    });
+
+    // Sidebar cards
+    gsap.utils.toArray('.sidebar .scard').forEach((c,i)=>{
+      gsap.fromTo(c,{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',delay:i*0.05,scrollTrigger:{trigger:c,start:'top 92%'}});
+    });
+
+    // Figures: image scale-in
+    gsap.utils.toArray('.art-fig').forEach(fig=>{
+      const img = fig.querySelector('.ifimg, img');
+      if (img){
+        gsap.fromTo(img,{scale:1.1},{scale:1,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:fig,start:'top 90%'}});
+      }
+    });
+
+    // Film
+    gsap.fromTo('.art-film .fimg',{scale:1.15},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:'.art-film',start:'top 90%'}});
+    gsap.from('.art-film .fplay',{scale:.6,opacity:0,duration:.9,ease:'back.out(1.6)',scrollTrigger:{trigger:'.art-film',start:'top 80%'}});
+
+    // More-reading cards
+    gsap.from('.more-head h3',{y:30,opacity:0,duration:.9,ease:'power4.out',scrollTrigger:{trigger:'.more',start:'top 85%'}});
+    gsap.from('.more-head a.go',{x:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.more',start:'top 85%'}});
+    gsap.fromTo('.mcard',{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:'power4.out',stagger:.12,scrollTrigger:{trigger:'.mgrid',start:'top 85%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+
+  // Film play (independent of GSAP)
+  document.querySelectorAll('.art-film .fplay').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.preventDefault();
+      const sec = btn.closest('.art-film');
+      if (!sec) return;
+      sec.classList.add('playing');
+      const video = sec.querySelector('.fvid');
+      if (video) video.play().catch(()=>{});
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI-Enhanced Design — xR&amp;D Solutions</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+  .btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn-primary:hover{background:#11245a;border-color:#11245a}
+  .btn-outline{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-outline:hover{border-color:var(--ink)}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent-soft);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;height:80vh;min-height:620px;background:#0b1b3f;color:#fff;overflow:hidden;display:flex;flex-direction:column}
+  .hero-bg{position:absolute;inset:0;background-image:url('assets/img2.png');background-size:cover;background-position:center}
+  .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.3) 0%,rgba(11,27,63,.55) 55%,rgba(11,27,63,.95) 100%)}
+  .hero-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 600px at 78% 30%,rgba(99,140,255,.3),rgba(99,140,255,0) 60%)}
+  .crumb{position:relative;z-index:2;padding:140px 56px 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;display:flex;align-items:center;gap:14px}
+  .crumb a{color:#9bb5ff;border-bottom:1px solid rgba(155,181,255,.25);padding-bottom:1px}
+  .crumb a:hover{border-color:#9bb5ff}
+  .crumb .sep{opacity:.4}
+  .hero-content{position:relative;z-index:2;margin-top:auto;padding:0 56px 80px;display:grid;grid-template-columns:1.3fr 1fr;gap:80px;align-items:end}
+  .hero-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px;font-weight:600}
+  .hero-kicker::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  .hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(56px,7vw,116px);line-height:.96;letter-spacing:-.025em;margin:0 0 26px;max-width:14ch}
+  .hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-lede{font-size:18.5px;line-height:1.65;color:rgba(255,255,255,.82);margin:0 0 36px;max-width:54ch}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-cta .btn-primary{background:#9bb5ff;color:#0b1b3f;border-color:#9bb5ff;font-weight:600}
+  .hero-cta .btn-primary:hover{background:#fff;border-color:#fff}
+  .hero-cta .btn-outline{color:#fff;border-color:rgba(255,255,255,.3)}
+  .hero-cta .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.06)}
+  .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;padding:24px 28px;background:rgba(255,255,255,.06);border:1px solid rgba(155,181,255,.18);border-radius:14px}
+  .hero-stats .s{display:flex;flex-direction:column;gap:4px}
+  .hero-stats .s b{font-family:'Instrument Serif',serif;font-size:38px;font-weight:400;color:#fff;letter-spacing:-.012em;line-height:1}
+  .hero-stats .s b em{font-style:italic;color:#9bb5ff}
+  .hero-stats .s span{font-size:11px;color:#9aa9c8;text-transform:uppercase;letter-spacing:.14em;font-weight:500}
+  .hero-foot{position:relative;z-index:2;padding:0 56px 32px;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.65);text-transform:uppercase}
+
+  /* ===== OVERVIEW ===== */
+  .overview{padding:130px 0 110px;background:var(--bg);border-top:1px solid var(--line)}
+  .ov-grid{padding:0 56px;display:grid;grid-template-columns:1.4fr 1fr;gap:80px;align-items:start}
+  .ov-lead .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:24px}
+  .ov-lead .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .ov-lead h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0 0 34px;max-width:18ch}
+  .ov-lead h2 em{font-style:italic;color:var(--accent)}
+  .ov-lead p{font-size:17px;line-height:1.65;color:var(--ink-soft);margin:0 0 18px;max-width:58ch}
+  .ov-lead p b{color:var(--ink);font-weight:500}
+  .ov-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 1px 2px rgba(11,27,63,.04),0 14px 40px -12px rgba(11,27,63,.1)}
+  .ov-card h6{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 22px;display:flex;align-items:center;gap:12px}
+  .ov-card h6::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .ov-list{list-style:none;margin:0;padding:0}
+  .ov-list li{padding:14px 0;border-top:1px dashed var(--line);display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline}
+  .ov-list li:first-child{border-top:none;padding-top:0}
+  .ov-list li::before{content:"→";color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:500;line-height:1.5}
+  .ov-list b{font-size:15px;color:var(--ink);font-weight:600;display:block;margin-bottom:3px}
+  .ov-list small{font-size:13.5px;line-height:1.55;color:var(--ink-soft);font-weight:400}
+
+  /* ===== CAPABILITIES ===== */
+  .caps{padding:120px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .caps-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:end;margin-bottom:60px}
+  .caps-head .clabel{color:var(--accent);display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .caps-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .caps-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(38px,4vw,56px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .caps-head h3 em{font-style:italic;color:var(--accent)}
+  .caps-head p{font-size:16px;line-height:1.65;color:var(--ink-soft);margin:0;max-width:52ch}
+
+  .cap{padding:0 56px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-bottom:80px}
+  .cap:last-of-type{margin-bottom:0}
+  .cap.reverse .cap-text{order:2}
+  .cap-text .num{font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;color:var(--accent);font-weight:400;letter-spacing:-.02em;line-height:1;margin-bottom:18px;display:inline-block}
+  .cap-text h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:34px;line-height:1.12;letter-spacing:-.012em;margin:0 0 18px;color:var(--ink);max-width:18ch}
+  .cap-text h4 em{font-style:italic;color:var(--accent)}
+  .cap-text p{font-size:16px;line-height:1.65;color:var(--ink-soft);margin:0 0 22px;max-width:48ch}
+  .cap-bullets{list-style:none;margin:0 0 24px;padding:0}
+  .cap-bullets li{padding:10px 0;border-top:1px solid var(--line);font-size:14.5px;color:var(--ink);position:relative;padding-left:22px}
+  .cap-bullets li::before{content:"+";position:absolute;left:0;top:10px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:600}
+  .cap-meta{display:flex;gap:32px;padding-top:18px;border-top:1px solid var(--line)}
+  .cap-meta .m b{font-family:'Instrument Serif',serif;font-size:24px;font-weight:400;color:var(--ink);letter-spacing:-.01em;display:block}
+  .cap-meta .m span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500}
+  .cap-img{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:5/4;background:#1a2a55}
+  .cap-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .9s ease}
+  .cap:hover .cap-img-bg{transform:scale(1.04)}
+  .cap-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 60%,rgba(11,27,63,.6) 100%)}
+  .cap-img-tag{position:absolute;left:20px;bottom:18px;z-index:2;display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:rgba(11,27,63,.85);border:1px solid rgba(155,181,255,.3);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#9bb5ff;text-transform:uppercase;font-weight:600}
+  .cap-img-tag .d{width:6px;height:6px;border-radius:50%;background:#9bb5ff}
+
+  /* ===== INLINE FILM ===== */
+  .film{position:relative;width:100%;height:72vh;min-height:560px;overflow:hidden;background:#0b1b3f;cursor:pointer;border:none}
+  .film-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transition:transform 1.4s cubic-bezier(.2,.7,.2,1),opacity .4s}
+  .film:hover .film-img{transform:scale(1.03)}
+  .film::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.15) 0%,rgba(11,27,63,.5) 100%);pointer-events:none;z-index:1;transition:opacity .4s}
+  .film-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;background:#000;z-index:0;transition:opacity .4s}
+  .film-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:108px;height:108px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px -10px rgba(0,0,0,.35);transition:transform .3s,background .3s,opacity .3s;z-index:3;border:none;cursor:pointer}
+  .film:hover .film-play{transform:translate(-50%,-50%) scale(1.08);background:#fff}
+  .film-play svg{width:32px;height:32px;margin-left:5px;fill:var(--ink)}
+  .film-cap{position:absolute;left:56px;bottom:36px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.85);text-transform:uppercase;transition:opacity .3s}
+  .film-cap b{color:#fff;font-weight:500}
+  .film-tag{position:absolute;right:56px;top:36px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;transition:opacity .3s}
+  .film.playing{cursor:default}
+  .film.playing .film-video{opacity:1;pointer-events:auto;z-index:5}
+  .film.playing .film-img,.film.playing .film-play,.film.playing .film-tag,.film.playing .film-cap{opacity:0;pointer-events:none}
+  .film.playing::after{opacity:0}
+
+  /* ===== PROCESS ===== */
+  .proc{padding:130px 0;background:#0b1b3f;color:#fff;position:relative;overflow:hidden}
+  .proc::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 80% 20%, rgba(99,140,255,.16), rgba(99,140,255,0) 60%);pointer-events:none}
+  .proc-inner{position:relative;z-index:1;padding:0 56px}
+  .proc-head{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:end;margin-bottom:70px}
+  .proc-head .clabel{color:#9bb5ff;display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;margin-bottom:20px}
+  .proc-head .clabel::before{content:"";width:30px;height:1px;background:#9bb5ff}
+  .proc-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,60px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch;color:#fff}
+  .proc-head h3 em{font-style:italic;color:#9bb5ff}
+  .proc-head p{font-size:16px;line-height:1.65;color:#b8c3df;margin:0;max-width:50ch}
+  .proc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid rgba(155,181,255,.18);border-bottom:1px solid rgba(155,181,255,.18)}
+  .pstep{padding:42px 28px;border-left:1px solid rgba(155,181,255,.18);position:relative}
+  .pstep:first-child{border-left:none;padding-left:0}
+  .pstep .pn{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .pstep h5{font-family:'Instrument Serif',serif;font-weight:400;font-size:22px;line-height:1.2;margin:0 0 12px;color:#fff;letter-spacing:-.012em}
+  .pstep h5 em{font-style:italic;color:#9bb5ff}
+  .pstep p{font-size:13.5px;line-height:1.6;color:#b8c3df;margin:0 0 12px}
+  .pstep .pdur{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(184,195,223,.6);text-transform:uppercase;font-weight:500;padding-top:12px;border-top:1px dashed rgba(155,181,255,.18)}
+  .pstep .pdur b{color:#9bb5ff;font-weight:600}
+
+  /* ===== SHOWCASE ===== */
+  .show{padding:130px 0;background:var(--bg);border-top:1px solid var(--line)}
+  .show-head{padding:0 56px;display:flex;align-items:end;justify-content:space-between;gap:60px;margin-bottom:50px}
+  .show-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,60px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .show-head h3 em{font-style:italic;color:var(--accent)}
+  .show-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .show-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .show-card{margin:0 56px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1.2fr 1fr;box-shadow:0 1px 2px rgba(11,27,63,.04),0 16px 50px -16px rgba(11,27,63,.14)}
+  .show-img{position:relative;aspect-ratio:auto;min-height:480px;background:url('assets/img4.png') center/cover no-repeat}
+  .show-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 60%,rgba(11,27,63,.55) 100%)}
+  .show-tag{position:absolute;left:24px;top:24px;z-index:2;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(11,27,63,.65);border:1px solid rgba(155,181,255,.35);border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9bb5ff;backdrop-filter:blur(8px);font-family:'JetBrains Mono',monospace}
+  .show-body{padding:48px 44px;display:flex;flex-direction:column;justify-content:center}
+  .show-body .skicker{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:14px}
+  .show-body h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:38px;line-height:1.1;letter-spacing:-.018em;margin:0 0 18px;color:var(--ink)}
+  .show-body h4 em{font-style:italic;color:var(--accent)}
+  .show-body p{font-size:15.5px;line-height:1.65;color:var(--ink-soft);margin:0 0 28px}
+  .show-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:24px}
+  .show-stats .s b{font-family:'Instrument Serif',serif;font-style:italic;font-size:34px;color:var(--accent);font-weight:400;letter-spacing:-.02em;display:block;line-height:1;margin-bottom:6px}
+  .show-stats .s span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500}
+  .show-cta{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--accent);padding-bottom:3px;align-self:flex-start;transition:gap .2s}
+  .show-cta:hover{gap:14px}
+
+  /* ===== TIERS ===== */
+  .tiers{padding:130px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .tiers-head{padding:0 56px;max-width:760px;margin-bottom:50px}
+  .tiers-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:22px}
+  .tiers-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .tiers-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,60px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:16ch}
+  .tiers-head h3 em{font-style:italic;color:var(--accent)}
+  .tiers-grid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+  .tier{background:#fff;border:1px solid var(--line);border-radius:14px;padding:36px 32px 32px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+  .tier:hover{transform:translateY(-3px);box-shadow:0 22px 50px -30px rgba(11,27,63,.25)}
+  .tier.featured{background:#0b1b3f;color:#fff;border-color:#0b1b3f;position:relative}
+  .tier.featured::before{content:"Most chosen";position:absolute;top:-12px;left:32px;padding:5px 12px;background:#9bb5ff;color:#0b1b3f;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;border-radius:999px}
+  .tier .tlabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:12px}
+  .tier.featured .tlabel{color:#9bb5ff}
+  .tier h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:32px;line-height:1.12;letter-spacing:-.012em;margin:0 0 14px;color:var(--ink)}
+  .tier.featured h4{color:#fff}
+  .tier h4 em{font-style:italic;color:var(--accent)}
+  .tier.featured h4 em{color:#9bb5ff}
+  .tier > p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 24px}
+  .tier.featured > p{color:#b8c3df}
+  .tier .tprice{display:flex;align-items:baseline;gap:8px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:22px}
+  .tier.featured .tprice{border-color:rgba(155,181,255,.18)}
+  .tier .tprice b{font-family:'Instrument Serif',serif;font-size:42px;font-weight:400;color:var(--ink);letter-spacing:-.018em;line-height:1}
+  .tier.featured .tprice b{color:#fff}
+  .tier .tprice span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500}
+  .tier.featured .tprice span{color:#9aa9c8}
+  .tier ul{list-style:none;margin:0 0 28px;padding:0;flex:1}
+  .tier ul li{font-size:14px;line-height:1.55;color:var(--ink);padding:10px 0 10px 24px;position:relative;border-top:1px dashed var(--line)}
+  .tier.featured ul li{color:#fff;border-color:rgba(155,181,255,.12)}
+  .tier ul li:first-child{border-top:none}
+  .tier ul li::before{content:"✓";position:absolute;left:0;top:10px;color:var(--accent);font-weight:700;font-size:13px}
+  .tier.featured ul li::before{color:#9bb5ff}
+  .tier .tcta{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;border:1px solid var(--ink);color:var(--ink);transition:.2s}
+  .tier .tcta:hover{background:var(--ink);color:#fff}
+  .tier.featured .tcta{background:#9bb5ff;color:#0b1b3f;border-color:#9bb5ff}
+  .tier.featured .tcta:hover{background:#fff;border-color:#fff}
+
+  /* ===== FAQ ===== */
+  .faq{padding:130px 0;background:var(--bg);border-top:1px solid var(--line)}
+  .faq-grid{padding:0 56px;display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:start}
+  .faq-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:22px}
+  .faq-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .faq-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,60px);line-height:1.05;letter-spacing:-.022em;margin:0 0 16px;max-width:14ch}
+  .faq-head h3 em{font-style:italic;color:var(--accent)}
+  .faq-head p{font-size:15.5px;line-height:1.65;color:var(--ink-soft);margin:0;max-width:38ch}
+  .faq-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+  .faq-item{border-bottom:1px solid var(--line);cursor:pointer}
+  .faq-item summary{padding:24px 0;font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;letter-spacing:-.005em;line-height:1.3;color:var(--ink);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:24px}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary::after{content:"+";font-family:'JetBrains Mono',monospace;font-size:24px;color:var(--accent);font-weight:300;transition:transform .25s}
+  .faq-item[open] summary::after{transform:rotate(45deg)}
+  .faq-item .ans{padding:0 0 26px;font-size:15.5px;line-height:1.65;color:var(--ink-soft);max-width:60ch}
+  .faq-item .ans p{margin:0 0 12px}
+  .faq-item .ans p:last-child{margin-bottom:0}
+
+  /* ===== CTA ===== */
+  .cta{padding:140px 0;background:#0b1b3f;color:#fff;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 0%, rgba(99,140,255,.2), rgba(99,140,255,0) 60%);pointer-events:none}
+  .cta-inner{position:relative;z-index:1;padding:0 56px;display:grid;grid-template-columns:1.5fr 1fr;gap:80px;align-items:center}
+  .cta-left .clabel{color:#9bb5ff;display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;margin-bottom:24px}
+  .cta-left .clabel::before{content:"";width:30px;height:1px;background:#9bb5ff}
+  .cta-left h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,5vw,76px);line-height:1.02;letter-spacing:-.025em;margin:0 0 28px;max-width:18ch;color:#fff}
+  .cta-left h3 em{font-style:italic;color:#9bb5ff}
+  .cta-left p{font-size:17px;line-height:1.6;color:#b8c3df;margin:0 0 14px;max-width:48ch}
+  .cta-form{background:rgba(255,255,255,.04);border:1px solid rgba(155,181,255,.18);border-radius:14px;padding:32px}
+  .cta-form .cflabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+  .cta-form .cflabel::before{content:"";width:24px;height:1px;background:#9bb5ff}
+  .cta-form h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:26px;line-height:1.18;margin:0 0 18px;color:#fff;letter-spacing:-.012em}
+  .cta-form h4 em{font-style:italic;color:#9bb5ff}
+  .cta-form .cf-field{display:block;margin-bottom:12px}
+  .cta-form .cf-field input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;color:#fff;outline:none;transition:.2s}
+  .cta-form .cf-field input:focus{border-color:#9bb5ff;background:rgba(155,181,255,.08)}
+  .cta-form .cf-field input::placeholder{color:rgba(184,195,223,.5)}
+  .cta-form .cfbtn{margin-top:8px;display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;background:#9bb5ff;color:#0b1b3f;border:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .2s}
+  .cta-form .cfbtn:hover{background:#fff}
+
+  /* ===== RELATED ===== */
+  .related{padding:120px 0 140px;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .related-head{padding:0 56px;display:flex;align-items:end;justify-content:space-between;margin-bottom:50px;gap:40px}
+  .related-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:18ch}
+  .related-head h3 em{font-style:italic;color:var(--accent)}
+  .related-head a.go{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--accent);padding-bottom:3px}
+  .rgrid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .rcard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+  .rcard:hover{transform:translateY(-3px);box-shadow:0 22px 50px -30px rgba(11,27,63,.25)}
+  .rcard .rimg{position:relative;aspect-ratio:4/3;background-size:cover;background-position:center;overflow:hidden}
+  .rcard .rimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 55%,rgba(11,27,63,.55) 100%)}
+  .rcard .rimg-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .9s ease}
+  .rcard:hover .rimg-bg{transform:scale(1.05)}
+  .rcard .rbody{padding:28px 28px 28px;display:flex;flex-direction:column;flex:1}
+  .rcard .rnum{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;color:var(--accent);font-weight:400;letter-spacing:-.02em;margin-bottom:14px}
+  .rcard h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.18;letter-spacing:-.01em;margin:0 0 12px;color:var(--ink)}
+  .rcard h4 em{font-style:italic;color:var(--accent)}
+  .rcard p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 22px;flex:1}
+  .rcard .rcta{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;font-weight:600;align-self:flex-start;transition:gap .2s}
+  .rcard:hover .rcta{gap:14px}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:1080px){
+    .crumb,.hero-content,.hero-foot,.ov-grid,.caps-head,.cap,.proc-inner,.show-head,.show-card,.tiers-head,.tiers-grid,.faq-grid,.cta-inner,.related-head,.rgrid{padding-left:24px;padding-right:24px}
+    .crumb{padding-top:108px;flex-wrap:wrap}
+    .show-card{margin:0 24px}
+    .hero-content,.ov-grid,.caps-head,.cap,.proc-head,.show-card,.faq-grid,.cta-inner{grid-template-columns:1fr;gap:40px}
+    .hero-content{align-items:stretch}
+    .cap.reverse .cap-text{order:0}
+    .show-img{min-height:340px;aspect-ratio:16/10}
+    .proc-grid{grid-template-columns:1fr 1fr}
+    .pstep:nth-child(3){border-left:none;padding-left:0}
+    .pstep:nth-child(n+3){border-top:1px solid rgba(155,181,255,.18)}
+    .tiers-grid,.rgrid{grid-template-columns:1fr}
+    .tier.featured::before{left:24px}
+    .film-cap{left:24px;bottom:24px}
+    .film-tag{right:24px;top:24px}
+    .related-head{flex-direction:column;align-items:flex-start;gap:18px}
+    .nav-links{display:none}
+  }
+  @media (max-width:560px){
+    .crumb,.hero-content,.hero-foot,.ov-grid,.caps-head,.cap,.proc-inner,.show-head,.show-card,.tiers-head,.tiers-grid,.faq-grid,.cta-inner,.related-head,.rgrid{padding-left:18px;padding-right:18px}
+    .show-card{margin:0 18px}
+    .show-body{padding:28px 24px}
+    .show-stats{grid-template-columns:1fr;gap:16px}
+    .proc-grid{grid-template-columns:1fr}
+    .pstep{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18)}
+    .pstep:first-child{border-top:none}
+    .hero{height:100vh;min-height:0}
+    .crumb{position:absolute;top:64px;left:0;right:0;z-index:5;padding:0 18px;font-size:10px;letter-spacing:.14em;gap:8px;flex-wrap:wrap}
+    .hero-stats{grid-template-columns:1fr 1fr;gap:12px 18px;padding:16px}
+    .hero-stats .s b{font-size:24px}
+    .hero-stats .s span{font-size:9.5px;letter-spacing:.12em}
+    .hero-cta{flex-direction:column;align-items:stretch;gap:10px}
+    .hero-cta .btn{justify-content:center;font-size:13px;padding:11px 18px}
+    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;flex:1;margin-top:0;padding:0 18px 48px;gap:18px}
+    .hero-h{font-size:clamp(48px,12vw,84px);line-height:.96;max-width:100%;margin-bottom:0}
+    .hero-lede{font-size:14px;line-height:1.5;margin-bottom:0}
+    .hero-kicker{font-size:9.5px;letter-spacing:.18em;margin-bottom:0}
+    .hero-foot{padding:0 18px 18px;flex-direction:column;align-items:flex-start;gap:8px;font-size:9.5px;letter-spacing:.14em}
+    .ov-card{padding:24px}
+    .cap-meta{flex-wrap:wrap;gap:18px}
+    .tier{padding:28px 22px}
+    .film-play{width:80px;height:80px}
+    .film-play svg{width:26px;height:26px}
+    .faq-item summary{font-size:18px}
+    .cta-form{padding:24px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV ============== -->
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="hero-bg" id="heroImg"></div>
+  <nav class="crumb">
+    <a href="solutions.html">Solutions</a>
+    <span class="sep">/</span>
+    <span>Practice 01</span>
+    <span class="sep">/</span>
+    <span>AI-Enhanced Design</span>
+  </nav>
+  <div class="hero-content">
+    <div>
+      <div class="hero-kicker">Practice 01 · Generative co-pilot</div>
+      <h1 class="hero-h">Concept at the speed of <em>conversation</em>.</h1>
+      <p class="hero-lede">Plain-language briefs become dozens of credible massings — ranked by daylight, view, and program. The studio remains the author.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="contact.html">Start a pilot
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </a>
+        <a class="btn btn-outline" href="#process">See how it works</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="s"><b>2,400<em>+</em></b><span>Schemes per hour</span></div>
+      <div class="s"><b>14 <em>days</em></b><span>Concept turnaround</span></div>
+      <div class="s"><b>62%</b><span>Less manual iteration</span></div>
+      <div class="s"><b>Rhino · Revit</b><span>Native export targets</span></div>
+    </div>
+  </div>
+  <div class="hero-foot">
+    <div>XRD/SOLUTIONS · 01 / 04</div>
+    <div>SCROLL ↓</div>
+  </div>
+</section>
+
+<!-- ============== OVERVIEW ============== -->
+<section class="overview" id="overview">
+  <div class="ov-grid">
+    <div class="ov-lead">
+      <div class="clabel">In brief</div>
+      <h2>A <em>generative</em> studio partner that widens — not replaces — the design space.</h2>
+      <p>From the first napkin sketch, our generative co-pilots test thousands of massings, façades, and circulation patterns against site, brief, and program in <b>minutes, not months</b>. The studio reviews, edits, and ships — every output is a starting point your designers can take further.</p>
+      <p>Built for architectural practices that already have strong design culture and want to amplify it. Not a generic SaaS, not a black box: <b>we tune the model on your studio's reference library</b>, your typological preferences, your local code envelope, and the constraints you actually care about.</p>
+      <p>Studio-private models. Your IP never trains anyone else's tool.</p>
+    </div>
+    <aside class="ov-card">
+      <h6>Practice in brief</h6>
+      <ul class="ov-list">
+        <li><div><b>Tuned for architecture</b><small>Not a generic LLM — a model trained on regional typologies and your studio's library.</small></div></li>
+        <li><div><b>Editable everything</b><small>All outputs export to Rhino &amp; Revit. Geometry, not pictures.</small></div></li>
+        <li><div><b>Studio-private</b><small>Your IP, your data, your model weights. Hosted on infra you choose.</small></div></li>
+        <li><div><b>Climate-aware</b><small>Solar, wind, noise, view corridors are inputs from minute one.</small></div></li>
+        <li><div><b>Designer-led</b><small>Not autonomous. Every scheme is curated by a partner before it leaves.</small></div></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- ============== CAPABILITIES ============== -->
+<section class="caps" id="capabilities">
+  <div class="caps-head">
+    <div>
+      <div class="clabel">Capabilities</div>
+      <h3>Three <em>moves</em>, one tuned co-pilot.</h3>
+    </div>
+    <p>Each capability is delivered as a standalone module or as part of an integrated practice retainer. Below are the three we ship most often — the fourth (custom-tuned models for your typology) is available on enquiry.</p>
+  </div>
+
+  <div class="cap">
+    <div class="cap-text">
+      <span class="num">01</span>
+      <h4>Text and sketch <em>to massing</em>.</h4>
+      <p>Describe a project in plain language — "a 12,000 m² research campus on a flood-prone coastal site, three buildings linked by colonnade, monsoon-resilient" — and watch dozens of credible massings appear. Edit any of them in Rhino. Re-prompt for variations.</p>
+      <ul class="cap-bullets">
+        <li>Plain-language to 3D massing in under 90 seconds</li>
+        <li>Sketch-to-volume with site context preserved</li>
+        <li>Iterative re-prompting on any output</li>
+        <li>Direct Rhino + Grasshopper export</li>
+      </ul>
+      <div class="cap-meta">
+        <div class="m"><b>~90s</b><span>Per scheme</span></div>
+        <div class="m"><b>Rhino 8</b><span>Native target</span></div>
+      </div>
+    </div>
+    <div class="cap-img">
+      <div class="cap-img-bg" style="background-image:url('assets/img2.png')"></div>
+      <span class="cap-img-tag"><span class="d"></span>Co-pilot v3 · Concept</span>
+    </div>
+  </div>
+
+  <div class="cap reverse">
+    <div class="cap-img">
+      <div class="cap-img-bg" style="background-image:url('assets/img1.png')"></div>
+      <span class="cap-img-tag"><span class="d"></span>Site dossier · Đà Nẵng</span>
+    </div>
+    <div class="cap-text">
+      <span class="num">02</span>
+      <h4>Sites that <em>brief us back</em>.</h4>
+      <p>Before a single line is drawn, our intake engine compiles a contextual dossier: micro-climate, regulatory envelope, infrastructure proximity, neighborhood character, sea-level scenarios. Every scheme is tested against this layered context — not just the lot lines.</p>
+      <ul class="cap-bullets">
+        <li>40+ contextual layers stitched into a single site model</li>
+        <li>Live regulatory checks across Vietnamese &amp; ASEAN codes</li>
+        <li>Climate-resilience scoring against 2050 &amp; 2080 IPCC scenarios</li>
+        <li>Cultural &amp; vernacular reference library curated by our team</li>
+      </ul>
+      <div class="cap-meta">
+        <div class="m"><b>40+</b><span>Data layers</span></div>
+        <div class="m"><b>2050 / 2080</b><span>Scenarios</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-text">
+      <span class="num">03</span>
+      <h4>Studio-tuned, <em>studio-private</em>.</h4>
+      <p>The model learns from your studio's drawing library, your published projects, your reference dossiers, your detail catalogue — without any of that ever leaving your infrastructure. Hosted in your cloud or ours; your weights, your data, your audit trail.</p>
+      <ul class="cap-bullets">
+        <li>Fine-tuning on your existing studio archive (1,500+ projects supported)</li>
+        <li>Self-hosted or xR&amp;D-managed deployment</li>
+        <li>Per-project access control and audit logs</li>
+        <li>SOC 2 Type II infrastructure (xR&amp;D-managed tier)</li>
+      </ul>
+      <div class="cap-meta">
+        <div class="m"><b>Self-host</b><span>Optional</span></div>
+        <div class="m"><b>SOC 2</b><span>Type II</span></div>
+      </div>
+    </div>
+    <div class="cap-img">
+      <div class="cap-img-bg" style="background-image:url('assets/img3.png')"></div>
+      <span class="cap-img-tag"><span class="d"></span>Tuning · Private weights</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== INLINE FILM ============== -->
+<section class="film" aria-label="Watch the practice film">
+  <div class="film-img"></div>
+  <video class="film-video" src="assets/pv.mp4" controls playsinline preload="metadata"></video>
+  <div class="film-tag">Practice film · 2026</div>
+  <button class="film-play" type="button" aria-label="Play practice film">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+  <div class="film-cap"><b>The co-pilot in 90 seconds</b> &nbsp;·&nbsp; from prompt to scheme</div>
+</section>
+
+<!-- ============== PROCESS ============== -->
+<section class="proc" id="process">
+  <div class="proc-inner">
+    <div class="proc-head">
+      <div>
+        <div class="clabel">How it works</div>
+        <h3>Five <em>steps</em>, six weeks, one shared deliverable.</h3>
+      </div>
+      <p>An AI-Enhanced Design engagement runs as a fixed-scope sprint. We start with your brief and your site, end with a curated set of schemes ready for design development — and a tuned model your studio keeps.</p>
+    </div>
+    <div class="proc-grid">
+      <div class="pstep">
+        <div class="pn">Step 01</div>
+        <h5>Brief <em>workshop</em></h5>
+        <p>One-day on-site workshop with your design team. We co-write the prompts, the constraints, and the success criteria.</p>
+        <div class="pdur">Duration · <b>1 day</b></div>
+      </div>
+      <div class="pstep">
+        <div class="pn">Step 02</div>
+        <h5>Site <em>dossier</em></h5>
+        <p>Contextual compilation: climate, code, infrastructure, neighbourhood. Delivered as a Rhino-ready file.</p>
+        <div class="pdur">Duration · <b>1 week</b></div>
+      </div>
+      <div class="pstep">
+        <div class="pn">Step 03</div>
+        <h5>Generative <em>pass</em></h5>
+        <p>2,400+ schemes generated and ranked against your criteria. Top 30 carried to next stage.</p>
+        <div class="pdur">Duration · <b>3 days</b></div>
+      </div>
+      <div class="pstep">
+        <div class="pn">Step 04</div>
+        <h5>Studio <em>curation</em></h5>
+        <p>A partner-led review session reduces 30 to 6, with annotated rationale on each.</p>
+        <div class="pdur">Duration · <b>2 weeks</b></div>
+      </div>
+      <div class="pstep">
+        <div class="pn">Step 05</div>
+        <h5>Hand-off &amp; <em>BIM export</em></h5>
+        <p>Rhino + Revit export, prompts archived, model weights delivered. Your team takes it from there.</p>
+        <div class="pdur">Duration · <b>2 weeks</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SHOWCASE ============== -->
+<section class="show">
+  <div class="show-head">
+    <div>
+      <div class="clabel">In practice</div>
+      <h3>What it looks like in the <em>field</em>.</h3>
+    </div>
+    <a class="show-cta" href="projects.html">All case studies →</a>
+  </div>
+  <a class="show-card" href="project-mekong-delta.html">
+    <div class="show-img">
+      <span class="show-tag"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#9bb5ff"></span>P—042 · Mekong Delta</span>
+    </div>
+    <div class="show-body">
+      <div class="skicker">Case study · 2024 · Civic infrastructure</div>
+      <h4>Mekong Delta <em>Resilience</em> Loop</h4>
+      <p>The co-pilot generated 2,400 candidate massings for the 14.2 km elevated promenade in three days — schemes the studio would have taken three months to draw by hand. The chosen scheme was iteration #186 of 2,400.</p>
+      <div class="show-stats">
+        <div class="s"><b>2,400</b><span>Schemes generated</span></div>
+        <div class="s"><b>14<em>d</em></b><span>To shortlist</span></div>
+        <div class="s"><b>−34%</b><span>Embodied carbon</span></div>
+      </div>
+      <span class="show-cta">Read the project →</span>
+    </div>
+  </a>
+</section>
+
+<!-- ============== TIERS ============== -->
+<section class="tiers" id="tiers">
+  <div class="tiers-head">
+    <div class="clabel">Engagement models</div>
+    <h3>Three ways to <em>start</em>.</h3>
+  </div>
+  <div class="tiers-grid">
+    <div class="tier">
+      <div class="tlabel">Model 01 · Pilot</div>
+      <h4>Concept <em>sprint</em></h4>
+      <p>A single fixed-scope sprint on a real project — the fastest way to prove the co-pilot fits your studio.</p>
+      <div class="tprice"><b>$24k</b><span>fixed · 6 weeks</span></div>
+      <ul>
+        <li>One project · one site · one co-pilot tuning pass</li>
+        <li>Up to 2,400 schemes generated and ranked</li>
+        <li>Studio curation to top 6</li>
+        <li>Rhino + Revit export hand-off</li>
+        <li>Read-only model access for 90 days</li>
+      </ul>
+      <a class="tcta" href="contact.html">Start a pilot →</a>
+    </div>
+    <div class="tier featured">
+      <div class="tlabel">Model 02 · Partnership</div>
+      <h4>Studio <em>retainer</em></h4>
+      <p>A 12-month partnership: tuned model, on-call studio support, and unlimited project sprints. Most studios choose this after one pilot.</p>
+      <div class="tprice"><b>$11k</b><span>/month · 12 mo</span></div>
+      <ul>
+        <li>Custom-tuned co-pilot on your studio archive</li>
+        <li>Unlimited concept sprints (≤6 in flight)</li>
+        <li>Quarterly model retraining</li>
+        <li>Dedicated studio engineer</li>
+        <li>Rhino · Revit · Grasshopper integration</li>
+        <li>Studio-private hosting included</li>
+      </ul>
+      <a class="tcta" href="contact.html">Talk to a partner →</a>
+    </div>
+    <div class="tier">
+      <div class="tlabel">Model 03 · Enterprise</div>
+      <h4>Self-<em>hosted</em></h4>
+      <p>For practices with their own infrastructure or sovereignty requirements. We build, install, train your team, and step out.</p>
+      <div class="tprice"><b>POA</b><span>scoped · 4–6 mo</span></div>
+      <ul>
+        <li>Self-hosted on your cloud (AWS, GCP, on-prem)</li>
+        <li>Studio-tuned weights you fully own</li>
+        <li>Source-available implementation</li>
+        <li>Onboarding for up to 12 designers</li>
+        <li>SOC 2 Type II compliance package</li>
+        <li>12 months of model retraining included</li>
+      </ul>
+      <a class="tcta" href="contact.html">Request scope →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FAQ ============== -->
+<section class="faq" id="faq">
+  <div class="faq-grid">
+    <div class="faq-head">
+      <div class="clabel">FAQ</div>
+      <h3>Common <em>questions</em>.</h3>
+      <p>The questions principals ask in the first conversation. Don't see yours? <a href="contact.html" style="color:var(--accent);border-bottom:1px solid var(--accent)">Email a partner</a>.</p>
+    </div>
+    <ul class="faq-list">
+      <details class="faq-item" open>
+        <summary>Will the co-pilot replace our junior designers?</summary>
+        <div class="ans">
+          <p>No, and we wouldn't sell it as one. The co-pilot widens the design space; juniors and seniors curate it, draw the chosen scheme into design development, and detail it. Studios that have run the practice for a year report <b>more</b> hours spent on craft per project, not fewer — they just spend less time chasing dead ends.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What happens to our IP and our reference library?</summary>
+        <div class="ans">
+          <p>It stays yours. The fine-tuning happens on infrastructure you control (or xR&amp;D-managed with strict tenancy). Your weights, your data, your audit logs. The model never trains on a tenant other than yours, and it is never used to train base models elsewhere.</p>
+          <p>Enterprise tier ships with full source-available implementation, so your security team can audit every line.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What software do we need?</summary>
+        <div class="ans">
+          <p>Rhino 7 or 8 with Grasshopper is the minimum. Revit 2024+ for BIM export. Browser for the web co-pilot UI. We provide a Grasshopper plugin and a Revit add-in; both are signed and run inside your existing licences. No SaaS lock-in.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Can we start without committing to a retainer?</summary>
+        <div class="ans">
+          <p>Yes — that's the Pilot tier. A single 6-week sprint on a real project. Most practices use the pilot to evaluate fit; about <b>78%</b> convert to a Studio retainer afterward, but there's no obligation either way and you keep all output regardless.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>How does this fit alongside your other practices?</summary>
+        <div class="ans">
+          <p>AI-Enhanced Design (this practice) shapes early concept. <a href="#" style="color:var(--accent);border-bottom:1px solid var(--accent)">Data-Informed Architecture</a> compiles the site dossier that feeds the co-pilot. <a href="#" style="color:var(--accent);border-bottom:1px solid var(--accent)">Performance Optimization</a> takes a chosen scheme into deeper simulation. <a href="#" style="color:var(--accent);border-bottom:1px solid var(--accent)">Smart Delivery</a> manages BIM and construction. They share data layers but ship as separate engagements.</p>
+        </div>
+      </details>
+    </ul>
+  </div>
+</section>
+
+<!-- ============== CTA + FORM ============== -->
+<section class="cta">
+  <div class="cta-inner">
+    <div class="cta-left">
+      <div class="clabel">Start a pilot</div>
+      <h3>Try it on a real <em>project</em>.</h3>
+      <p>One 6-week sprint, one of your real briefs, on your real site. No long sales cycle — most pilots start within three weeks of first call.</p>
+      <p>Three slots open this quarter. Available from <b>June 2026</b>.</p>
+    </div>
+    <aside class="cta-form">
+      <div class="cflabel">Request a pilot</div>
+      <h4>Tell us about the <em>brief</em>.</h4>
+      <form onsubmit="event.preventDefault();this.querySelector('.cfbtn').textContent='Sent ✓ — talk soon'">
+        <div class="cf-field"><input type="text" placeholder="Your name" required></div>
+        <div class="cf-field"><input type="email" placeholder="Studio email" required></div>
+        <div class="cf-field"><input type="text" placeholder="Studio name"></div>
+        <div class="cf-field"><input type="text" placeholder="Project type · site city" required></div>
+        <button class="cfbtn" type="submit">Send brief
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </form>
+    </aside>
+  </div>
+</section>
+
+<!-- ============== RELATED ============== -->
+<section class="related">
+  <div class="related-head">
+    <h3>Other <em>Solutions</em>.</h3>
+    <a class="go" href="solutions.html">All four practices →</a>
+  </div>
+  <div class="rgrid">
+    <a class="rcard" href="solutions.html#data">
+      <div class="rimg"><div class="rimg-bg" style="background-image:url('assets/img1.png')"></div></div>
+      <div class="rbody">
+        <div class="rnum">02</div>
+        <h4>Data-Informed <em>Architecture</em>.</h4>
+        <p>Sites that brief us back. Climate, code, and context as inputs from minute one — the layer that makes the co-pilot intelligent.</p>
+        <span class="rcta">Read more →</span>
+      </div>
+    </a>
+    <a class="rcard" href="solutions.html#perf">
+      <div class="rimg"><div class="rimg-bg" style="background-image:url('assets/img3.png')"></div></div>
+      <div class="rbody">
+        <div class="rnum">03</div>
+        <h4>Performance <em>Optimization</em>.</h4>
+        <p>Simulation-in-the-loop for chosen schemes. Energy, daylight, embodied carbon, operational cost — tuned before DD.</p>
+        <span class="rcta">Read more →</span>
+      </div>
+    </a>
+    <a class="rcard" href="solutions.html#delivery">
+      <div class="rimg"><div class="rimg-bg" style="background-image:url('assets/img4.png')"></div></div>
+      <div class="rbody">
+        <div class="rnum">04</div>
+        <h4>Smart <em>Delivery</em>.</h4>
+        <p>BIM, construction logistics, post-occupancy feedback — the practice that closes the loop from design to operations.</p>
+        <span class="rcta">Read more →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ============== FOOTER (shared via js/footer.js) ============== -->
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  const heroImg = document.getElementById('heroImg');
+  function onScroll(){
+    const y = window.scrollY;
+    if (nav) nav.classList.toggle('scrolled', y > 80);
+    if (bar){
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+    }
+    if (heroImg && y < window.innerHeight){
+      heroImg.style.transform = `scale(${1.04 + y*0.0001}) translateY(${y*0.18}px)`;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.crumb',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.2});
+    gsap.from('.hero-kicker',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.35});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.45});
+    gsap.from('.hero-lede',{y:24,opacity:0,duration:.9,ease:'power3.out',delay:.65});
+    gsap.from('.hero-cta > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.85});
+    gsap.from('.hero-stats .s',{y:20,opacity:0,duration:.7,ease:'power3.out',stagger:.1,delay:.9});
+
+    gsap.from('.ov-lead .clabel',{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.overview',start:'top 80%'}});
+    gsap.from('.ov-lead h2',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.overview',start:'top 80%'}});
+    gsap.from('.ov-lead p',{y:18,opacity:0,duration:.7,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.overview',start:'top 75%'}});
+    gsap.fromTo('.ov-card',{y:50,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.overview',start:'top 78%'}});
+    gsap.fromTo('.ov-list li',{x:-12,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out',stagger:.06,delay:.2,scrollTrigger:{trigger:'.ov-card',start:'top 80%'}});
+
+    gsap.from('.caps-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.caps',start:'top 85%'}});
+    gsap.from('.caps-head p',{y:20,opacity:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:'.caps',start:'top 85%'}});
+    gsap.utils.toArray('.cap').forEach(c=>{
+      gsap.from(c.querySelector('.cap-text'),{y:40,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:c,start:'top 80%'}});
+      gsap.from(c.querySelector('.cap-img'),{y:60,opacity:0,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:c,start:'top 80%'}});
+      const bg = c.querySelector('.cap-img-bg');
+      if (bg){
+        gsap.fromTo(bg,{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:c,start:'top 85%'}});
+      }
+      gsap.from(c.querySelectorAll('.cap-bullets li'),{x:-12,opacity:0,duration:.5,ease:'power3.out',stagger:.07,scrollTrigger:{trigger:c,start:'top 75%'}});
+    });
+
+    gsap.fromTo('.film-img',{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:'.film',start:'top 90%'}});
+    gsap.to('.film-img',{yPercent:-8,ease:'none',scrollTrigger:{trigger:'.film',start:'top bottom',end:'bottom top',scrub:true}});
+    gsap.from('.film-play',{scale:.6,opacity:0,duration:.9,ease:'back.out(1.6)',scrollTrigger:{trigger:'.film',start:'top 80%'}});
+
+    gsap.from('.proc-head .clabel',{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.proc',start:'top 80%'}});
+    gsap.from('.proc-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.proc',start:'top 80%'}});
+    gsap.from('.proc-head p',{y:20,opacity:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:'.proc-head p',start:'top 85%'}});
+    gsap.fromTo('.pstep',{y:40,opacity:0},{y:0,opacity:1,duration:.8,ease:'power4.out',stagger:.1,scrollTrigger:{trigger:'.proc-grid',start:'top 85%'}});
+
+    gsap.from('.show-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.show',start:'top 80%'}});
+    gsap.fromTo('.show-card',{y:50,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.show-card',start:'top 85%'}});
+
+    gsap.from('.tiers-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.tiers',start:'top 80%'}});
+    gsap.fromTo('.tier',{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:'power4.out',stagger:.12,scrollTrigger:{trigger:'.tiers-grid',start:'top 85%'}});
+
+    gsap.from('.faq-head h3',{y:30,opacity:0,duration:.9,ease:'power4.out',scrollTrigger:{trigger:'.faq',start:'top 85%'}});
+    gsap.from('.faq-item',{y:14,opacity:0,duration:.5,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.faq-list',start:'top 88%'}});
+
+    gsap.fromTo('.cta-left h3',{y:36,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+    gsap.fromTo('.cta-left p',{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.08,scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+    gsap.fromTo('.cta-form',{y:40,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+
+    gsap.from('.related-head h3',{y:30,opacity:0,duration:.9,ease:'power4.out',scrollTrigger:{trigger:'.related',start:'top 85%'}});
+    gsap.fromTo('.rcard',{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:'power4.out',stagger:.12,scrollTrigger:{trigger:'.rgrid',start:'top 85%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+
+  // Film play (independent of GSAP)
+  document.querySelectorAll('.film .film-play').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.preventDefault();
+      const sec = btn.closest('.film');
+      if (!sec) return;
+      sec.classList.add('playing');
+      const video = sec.querySelector('.film-video');
+      if (video) video.play().catch(()=>{});
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
