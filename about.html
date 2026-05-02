@@ -204,6 +204,32 @@
   footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px;border-top:none}
   footer a{color:#cdd5e8;margin:0 14px}
 
+  @media (min-width:769px) and (max-width:1080px){
+    .wrap,.hero-content,.ch03-head,.scroll-track,.ch06-content,.ch07 .head,.recog-list{padding-left:32px;padding-right:32px}
+    .hero-content{padding:0 32px 90px}
+    .hero-foot,.ch06-foot{left:32px;right:32px}
+    .hero-eyebrow{position:absolute;top:96px;left:32px;right:32px;z-index:5;margin:0}
+    h1.hero-h{font-size:clamp(84px,12vw,140px);line-height:.94;letter-spacing:-.03em;max-width:none;width:100%}
+    .ch03-head,.ch07 .head{grid-template-columns:1fr 1.2fr;gap:36px}
+    .scroll-track{padding-left:40px;padding-right:40px}
+    .scroll-stick{padding-right:24px}
+    .scroll-list{padding-left:40px}
+    .sli h4{font-size:34px}
+    .nband{grid-template-columns:repeat(2,1fr)}
+    .ncell{padding:60px 32px}
+    .ncell:nth-child(3){border-left:none}
+    .ncell:nth-child(n+3){border-top:1px solid var(--line)}
+    .triptych{grid-template-columns:1fr}
+    .tcell{aspect-ratio:16/10}
+    .tcap h5{font-size:34px}
+    .mosaic{grid-auto-rows:13vh}
+    .rrow{grid-template-columns:80px 1fr 120px 32px;gap:20px}
+    .rrow h6{font-size:22px}
+    .chapter-rail{right:14px}
+    .hud{display:none}
+    .cta{padding:110px 0}
+    .cta h2{font-size:54px}
+  }
   @media (max-width:768px){
     .wrap,.hero-content,.hero-foot,.ch03-head,.scroll-track,.ch06-content,.ch06-foot,.ch07 .head,.recog-list{padding-left:24px;padding-right:24px}
     .chapter-rail,.hud{display:none}
@@ -222,7 +248,10 @@
     .sli[data-i="6"]::before{background-image:url('assets/img3.png')}
     .sli[data-i="7"]::before{background-image:url('assets/img4.png')}
     .sli[data-i="8"]::before{background-image:url('assets/hero-bg.png')}
-    .nband,.triptych{grid-template-columns:1fr 1fr}
+    .nband{grid-template-columns:1fr 1fr}
+    .triptych{grid-template-columns:1fr}
+    .tcell{aspect-ratio:16/10}
+    .tcap h5{font-size:30px}
     .ncell:nth-child(3){border-left:none}
     .nav-links{display:none}
     .mosaic{grid-auto-rows:11vh}

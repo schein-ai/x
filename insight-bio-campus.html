@@ -204,6 +204,13 @@
     .art-fig .ifimg{aspect-ratio:16/10}
     .art-fig.full .ifimg{aspect-ratio:16/10}
   }
+  @media (min-width:641px) and (max-width:1080px){
+    .article{grid-template-columns:1fr;gap:56px;padding:80px 32px 110px}
+    .sidebar{position:relative;top:auto}
+    .crumb,.hero-content,.more-head,.mgrid{padding-left:32px;padding-right:32px}
+    .mgrid{grid-template-columns:1fr;gap:24px;max-width:560px;margin:0 auto}
+    .more-head{flex-direction:column;align-items:flex-start;gap:18px}
+  }
   @media (max-width:560px){
     .article{padding:60px 18px 90px;gap:40px}
     .crumb,.hero-content,.more-head,.mgrid{padding-left:18px;padding-right:18px}

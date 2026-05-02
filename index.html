@@ -82,7 +82,7 @@
   .nav-burger.open span:nth-child(1){top:20px;transform:rotate(45deg)}
   .nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(.4)}
   .nav-burger.open span:nth-child(3){top:20px;transform:rotate(-45deg)}
-  .nav-overlay{position:fixed;inset:0;z-index:250;background:#0b1b3f;clip-path:circle(0% at calc(100% - 42px) 42px);transition:clip-path .55s cubic-bezier(.7,0,.2,1);overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:'Inter',system-ui,sans-serif;color:#fff;pointer-events:none}
+  .nav-overlay{position:fixed;inset:0;z-index:250;background:rgba(11,27,63,.78);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);clip-path:circle(0% at calc(100% - 42px) 42px);transition:clip-path .55s cubic-bezier(.7,0,.2,1);overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:'Inter',system-ui,sans-serif;color:#fff;pointer-events:none}
   .nav-overlay::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 600px at 80% 25%,rgba(99,140,255,.18),rgba(99,140,255,0) 60%);pointer-events:none}
   .nav-overlay.open{clip-path:circle(150% at calc(100% - 42px) 42px);pointer-events:auto}
   .nav-overlay .ov-logo{position:absolute;top:28px;left:50%;transform:translate(-50%,-12px);z-index:2;display:block;opacity:0;transition:opacity .4s ease,transform .4s ease}
@@ -103,6 +103,12 @@
   .nav-overlay .ov-foot .ov-cta:hover{background:#fff}
   .nav-overlay .ov-foot .ov-tools{display:flex;gap:10px;align-items:center}
   .nav-overlay .ov-foot .ov-tools .ov-lang{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.85);text-transform:uppercase;font-weight:600;padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:transparent;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+  .nav-overlay .ov-close{position:absolute;top:22px;right:22px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;cursor:pointer;z-index:5;padding:0;opacity:0;transform:scale(.8) rotate(-45deg);transition:opacity .35s ease,transform .35s cubic-bezier(.6,0,.2,1),background .2s,border-color .2s}
+  .nav-overlay .ov-close:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35)}
+  .nav-overlay .ov-close svg{width:18px;height:18px;display:block}
+  .nav-overlay.open .ov-close{opacity:1;transform:scale(1) rotate(0);transition-delay:.35s}
+  .nav-overlay.closing .ov-close{opacity:0;transform:scale(.8) rotate(45deg);transition-delay:0s}
+  .nav-burger.open{opacity:0;pointer-events:none}
   body.menu-open{overflow:hidden}
   .btn{
     display:inline-flex;align-items:center;gap:12px;
@@ -296,6 +302,36 @@
     .nav-burger{display:inline-flex;align-items:center;justify-content:center}
     .logos{grid-template-columns:repeat(3,1fr);gap:24px}
   }
+  /* tablet refinements */
+  @media (min-width:641px) and (max-width:1080px){
+    .wrap{padding:0 40px}
+    .hero{align-items:stretch}
+    .hero-grid{display:block;height:100vh;min-height:680px;padding:0;gap:0}
+    .hero-grid > div:first-child{display:grid;grid-template-rows:auto minmax(24px,1fr) auto auto minmax(24px,1fr) auto auto;row-gap:0;justify-items:center;align-items:start;height:100%;width:100%;max-width:860px;margin:0 auto;padding:128px 48px 64px;text-align:center;box-sizing:border-box}
+    .hero-grid > div:last-child{display:none}
+    .pill{grid-row:1;margin:0}
+    h1.headline{grid-row:3;font-size:clamp(48px,6vw,64px);line-height:1.06;margin:0;text-align:center;max-width:100%}
+    .lede{grid-row:4;font-size:16.5px;line-height:1.6;margin:20px auto 0;max-width:54ch;text-align:center}
+    .cta-row{grid-row:6;flex-direction:column;align-items:stretch;justify-content:center;gap:12px;margin:0;width:100%;max-width:300px}
+    .cta-row .btn{justify-content:center}
+    .loc{grid-row:7;justify-content:center;text-align:left;margin:28px 0 0}
+    .proj-row{grid-template-columns:repeat(2,1fr);gap:20px}
+    .proj{height:360px}
+    .proj:first-child{grid-column:1/-1;height:340px}
+    .sol-row{grid-template-columns:repeat(2,1fr);gap:18px;background:transparent}
+    .sol-card{border:1px solid var(--line);padding:30px 26px;min-height:260px}
+    .cap-row{grid-template-columns:repeat(2,1fr);gap:36px}
+    .stats-row{grid-template-columns:repeat(3,1fr);gap:16px}
+    .stat{padding:22px 22px 24px}
+    .stat-num{font-size:26px}
+    section.block{padding:90px 0}
+    .sec-title{font-size:42px}
+    .sec-head{gap:30px;margin-bottom:48px}
+    .quote-card{height:auto;min-height:340px;grid-template-columns:1fr 1.3fr}
+    .quote-card .qc-img:last-child{display:none}
+    .qc-text{padding:36px 32px;font-size:24px}
+    .logos{grid-template-columns:repeat(3,1fr);gap:30px 24px}
+  }
   @media (max-width:640px){
     .wrap{padding:0 20px}
     .hero{padding:0;align-items:stretch}
@@ -371,6 +407,9 @@
   </div>
 </nav>
 <div class="nav-overlay" id="navOverlay" role="dialog" aria-label="Site menu" aria-hidden="true">
+  <button class="ov-close" type="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
   <a class="ov-logo" href="index.html"><img src="assets/logo-white.png" alt="xR&D Technologies"></a>
   <div class="ov-inner">
     <div class="ov-eyebrow">Menu</div>
@@ -405,8 +444,10 @@
   const burger=document.querySelector('.nav-burger'),ov=document.getElementById('navOverlay');
   if(burger&&ov){
     const open=()=>{burger.classList.add('open');ov.classList.add('open');burger.setAttribute('aria-expanded','true');burger.setAttribute('aria-label','Close menu');ov.setAttribute('aria-hidden','false');document.body.classList.add('menu-open');};
-    const close=()=>{burger.classList.remove('open');ov.classList.remove('open');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-label','Open menu');ov.setAttribute('aria-hidden','true');document.body.classList.remove('menu-open');};
+    const close=()=>{ov.classList.add('closing');burger.classList.remove('open');ov.classList.remove('open');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-label','Open menu');ov.setAttribute('aria-hidden','true');document.body.classList.remove('menu-open');setTimeout(()=>ov.classList.remove('closing'),600);};
     burger.addEventListener('click',()=>burger.classList.contains('open')?close():open());
+    const ovClose=ov.querySelector('.ov-close');
+    if(ovClose)ovClose.addEventListener('click',close);
     ov.querySelectorAll('.ov-list a, .ov-cta').forEach(a=>a.addEventListener('click',()=>setTimeout(close,120)));
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ov.classList.contains('open'))close();});
   }
@@ -929,6 +970,20 @@
     .contact-grid,.footer-grid{grid-template-columns:1fr;gap:50px}
     .footer-cols{grid-template-columns:1fr 1fr}
     .contact-title{font-size:46px}
+  }
+  @media (min-width:641px) and (max-width:1080px){
+    .insights-row{grid-template-columns:1fr;gap:32px}
+    .insight-stack{flex-direction:row;gap:18px;flex-wrap:wrap}
+    .insight-sm{grid-template-columns:1fr;flex:1 1 calc(33.333% - 12px);min-width:240px}
+    .insight-sm .insight-img{min-height:160px;aspect-ratio:16/10}
+    .insight-lg .insight-img{height:320px}
+    .insight-lg h3{font-size:30px}
+    .contact-block{padding:110px 0}
+    .contact-grid{gap:40px}
+    .contact-title{font-size:50px}
+    .contact-card{padding:28px}
+    .footer-grid{gap:48px;padding-bottom:48px}
+    .footer-cols{grid-template-columns:repeat(4,1fr);gap:24px}
   }
   @media (max-width:640px){
     .insight-sm{grid-template-columns:1fr}

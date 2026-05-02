@@ -272,6 +272,31 @@
     .sec-title{font-size:42px}
     .nav-links{display:none}
   }
+  @media (min-width:641px) and (max-width:1080px){
+    .wrap{padding:0 40px}
+    .hero-meta-top{padding:18px 40px 0}
+    .hero-content{padding:0 40px 36px}
+    .hero-nav{padding:0 40px 28px}
+    .hero-slide{grid-template-columns:1fr;gap:28px;align-items:start}
+    .hero-stats-card{display:none}
+    h1.hero-title{font-size:clamp(56px,8vw,84px)}
+    .hero-lede{font-size:15.5px;max-width:none}
+    section.block{padding:100px 0}
+    .sec-head{gap:36px;margin-bottom:56px}
+    .sec-lede{font-size:16.5px}
+    .feature-content{grid-template-columns:1.4fr 1fr;padding:48px;gap:40px}
+    .feature-content h3{font-size:48px}
+    .map-grid{grid-template-columns:1fr;gap:48px}
+    .awards{grid-template-columns:1fr 1fr}
+    .award:nth-child(-n+2){border-top:none}
+    .award:nth-child(odd){border-left:none}
+    .award:nth-child(even){border-left:1px solid var(--line)}
+    .press{grid-template-columns:repeat(3,1fr)}
+    .press-item{padding:30px 18px;font-size:18px}
+    .press-item:nth-child(3n+1){border-left:none}
+    .cta{padding:110px 0}
+    .cta h2{font-size:54px}
+  }
   @media (max-width:640px){
     .wrap,.hero-meta-top,.hero-content,.hero-nav{padding-left:18px;padding-right:18px}
     .hero{padding-top:78px;min-height:640px}

@@ -163,6 +163,22 @@
     .nav-links{display:none}
     .l-a,.l-b,.l-c,.l-d,.l-e,.l-f{grid-column:span 12;grid-row:span 3}
   }
+  @media (min-width:641px) and (max-width:980px){
+    .wrap,.intro-grid,.princ-grid,.roles-head,.role-list,.role-tabs,.life-head,.ben-head,.ben-grid,.cta-content,.hero-content,.hero-foot{padding-left:32px;padding-right:32px}
+    .hero-content{padding:0 32px 90px}
+    .hero-foot{left:32px;right:32px}
+    .hero-eyebrow{position:absolute;top:96px;left:32px;right:32px;z-index:5;margin:0}
+    h1.hero-h{font-size:clamp(84px,12vw,140px);line-height:.94;letter-spacing:-.03em;max-width:none;width:100%}
+    .intro-grid{grid-template-columns:1fr 1.2fr;gap:36px}
+    .roles-head,.life-head,.ben-head{grid-template-columns:1fr 1fr;gap:32px;align-items:end}
+    .ben-grid{grid-template-columns:repeat(2,1fr);gap:24px}
+    .rrow{grid-template-columns:60px 1fr 140px 32px;gap:20px}
+    .rrow .rteam,.rrow .rloc,.rrow .arr{display:flex}
+    .rrow .rtype{display:none}
+    .l-a{grid-column:span 8;grid-row:span 3}
+    .l-b,.l-c{grid-column:span 4;grid-row:span 3}
+    .l-d,.l-e,.l-f{grid-column:span 6;grid-row:span 3}
+  }
   @media (max-width:560px){
     .wrap,.intro-grid,.princ-grid,.roles-head,.role-list,.role-tabs,.life-head,.ben-head,.ben-grid,.cta-content,.hero-content,.hero-foot{padding-left:18px;padding-right:18px}
     .princ-grid{grid-template-columns:1fr}

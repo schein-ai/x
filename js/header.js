@@ -60,7 +60,7 @@
 .site-nav .nav-burger.open span:nth-child(2){opacity:0;transform:scaleX(.4)}
 .site-nav .nav-burger.open span:nth-child(3){top:20px;transform:rotate(-45deg)}
 
-.nav-overlay{position:fixed;inset:0;z-index:250;background:#0b1b3f;clip-path:circle(0% at calc(100% - 42px) 42px);transition:clip-path .55s cubic-bezier(.7,0,.2,1);overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:'Inter',system-ui,sans-serif;color:#fff;pointer-events:none}
+.nav-overlay{position:fixed;inset:0;z-index:250;background:rgba(11,27,63,.78);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);clip-path:circle(0% at calc(100% - 42px) 42px);transition:clip-path .55s cubic-bezier(.7,0,.2,1);overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:'Inter',system-ui,sans-serif;color:#fff;pointer-events:none}
 .nav-overlay::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 600px at 80% 25%,rgba(99,140,255,.18),rgba(99,140,255,0) 60%);pointer-events:none}
 .nav-overlay.open{clip-path:circle(150% at calc(100% - 42px) 42px);pointer-events:auto}
 .nav-overlay .ov-logo{position:absolute;top:28px;left:50%;transform:translate(-50%,-12px);z-index:2;display:block;opacity:0;transition:opacity .4s ease,transform .4s ease}
@@ -84,6 +84,12 @@
 .nav-overlay .ov-foot .ov-tools{display:flex;gap:10px;align-items:center}
 .nav-overlay .ov-foot .ov-tools .ov-lang{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.85);text-transform:uppercase;font-weight:600;padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:transparent;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .nav-overlay .ov-foot .ov-tools .ov-lang:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.4)}
+.nav-overlay .ov-close{position:absolute;top:22px;right:22px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;cursor:pointer;z-index:5;padding:0;opacity:0;transform:scale(.8) rotate(-45deg);transition:opacity .35s ease,transform .35s cubic-bezier(.6,0,.2,1),background .2s,border-color .2s}
+.nav-overlay .ov-close:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35)}
+.nav-overlay .ov-close svg{width:18px;height:18px;display:block}
+.nav-overlay.open .ov-close{opacity:1;transform:scale(1) rotate(0);transition-delay:.35s}
+.nav-overlay.closing .ov-close{opacity:0;transform:scale(.8) rotate(45deg);transition-delay:0s}
+.site-nav .nav-burger.open{opacity:0;pointer-events:none}
 body.menu-open{overflow:hidden}
 
 @media (max-width:1080px){
@@ -139,6 +145,9 @@ body.menu-open{overflow:hidden}
   </div>
 </nav>
 <div class="nav-overlay" id="navOverlay" role="dialog" aria-label="Site menu" aria-hidden="true">
+  <button class="ov-close" type="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
   <a class="ov-logo" href="index.html"><img src="assets/logo-white.png" alt="xR&D Technologies"></a>
   <div class="ov-inner">
     <div class="ov-eyebrow">Menu</div>
@@ -256,17 +265,21 @@ body.menu-open{overflow:hidden}
         document.body.classList.add('menu-open');
       };
       const closeMenu = () => {
+        overlay.classList.add('closing');
         burger.classList.remove('open');
         overlay.classList.remove('open');
         burger.setAttribute('aria-expanded','false');
         burger.setAttribute('aria-label','Open menu');
         overlay.setAttribute('aria-hidden','true');
         document.body.classList.remove('menu-open');
+        setTimeout(() => overlay.classList.remove('closing'), 600);
       };
       burger.addEventListener('click', () => {
         if (burger.classList.contains('open')) closeMenu();
         else openMenu();
       });
+      const ovClose = overlay.querySelector('.ov-close');
+      if (ovClose) ovClose.addEventListener('click', closeMenu);
       overlay.querySelectorAll('.ov-list a').forEach(a => {
         a.addEventListener('click', () => setTimeout(closeMenu, 120));
       });

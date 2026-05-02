@@ -31,6 +31,13 @@
   .site-footer .wrap{padding:0 24px}
   .site-footer .footer-bottom{flex-direction:column;gap:14px;text-align:center}
 }
+@media (min-width:641px) and (max-width:1080px){
+  .site-footer{padding:70px 0 36px}
+  .site-footer .wrap{padding:0 40px}
+  .site-footer .footer-grid{grid-template-columns:1fr;gap:44px;padding-bottom:48px}
+  .site-footer .footer-cols{grid-template-columns:repeat(2,1fr);gap:32px 40px}
+  .site-footer .footer-bottom{flex-direction:row;text-align:left;gap:20px}
+}
 @media (max-width:560px){
   .site-footer{padding:60px 0 30px}
   .site-footer::before{background-size:auto 100%;background-position:right center;opacity:.15}

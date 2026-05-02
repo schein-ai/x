@@ -220,6 +220,21 @@
     .pubrow{grid-template-columns:60px 1fr;gap:14px}
     .pubrow .pjournal,.pubrow .pcite,.pubrow .parr{display:none}
   }
+  @media (min-width:641px) and (max-width:1080px){
+    .wrap,.crumb,.hero-content,.hero-foot,.indexstrip-inner,.tracks-head,.tgrid,.feat-head,.feat-card,.method-inner,.team-head,.tgrid2,.pubs-head,.pubs-list,.pubs-foot,.cta-content{padding-left:32px;padding-right:32px}
+    .hero-foot{left:32px;right:32px}
+    .feat-card{margin:0 32px}
+    .crumb{padding:108px 32px 0}
+    .hero-content{grid-template-columns:1fr;align-items:stretch;gap:24px;padding:0 32px 90px}
+    .hero-stats{display:none}
+    .hero-h{font-size:clamp(72px,11vw,128px);line-height:.94;letter-spacing:-.03em;max-width:none;width:100%;margin-bottom:18px}
+    .hero-lede{max-width:none}
+    .tracks-head,.method-head,.team-head{grid-template-columns:1fr 1fr;gap:32px;align-items:end}
+    .feat-card{grid-template-columns:1fr;gap:0}
+    .pubrow{grid-template-columns:60px 1fr 140px 32px;gap:20px}
+    .pubrow .pjournal,.pubrow .parr{display:flex}
+    .pubrow .pcite{display:none}
+  }
   @media (max-width:560px){
     .wrap,.crumb,.hero-content,.hero-foot,.indexstrip-inner,.tracks-head,.tgrid,.feat-head,.feat-card,.method-inner,.team-head,.tgrid2,.pubs-head,.pubs-list,.pubs-foot,.cta-content{padding-left:18px;padding-right:18px}
     .feat-card{margin:0 18px}
