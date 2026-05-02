@@ -283,6 +283,16 @@
   footer{padding:40px 0 60px;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--line-2)}
 
   /* responsive */
+  /* ===== LAPTOP RANGE (MacBook 1280-1500px) — give the hero breathing room ===== */
+  @media (min-width:1081px) and (max-width:1500px){
+    .wrap{padding:0 56px}
+    .hero-grid{grid-template-columns:1fr 1.3fr;gap:44px;padding-top:60px}
+    .hero-visual{height:560px}
+    h1.headline{font-size:clamp(52px,4.6vw,64px);margin:24px 0 22px}
+    .lede{font-size:16.5px;line-height:1.6;max-width:460px;margin-bottom:34px}
+    .cta-row{margin-bottom:46px;gap:20px}
+  }
+
   @media (max-width: 1080px){
     .hero{align-items:flex-end}
     .hero-grid{grid-template-columns:1fr;padding-top:120px;padding-bottom:60px;gap:36px}
