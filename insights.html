@@ -233,6 +233,15 @@
     .hero-eyebrow{margin-bottom:22px}
     .hero-h{font-size:clamp(72px,8.6vw,128px);max-width:11ch}
     .hero-foot{left:48px;right:48px;bottom:28px}
+    /* FEATURED: keep image clamped to its half */
+    .feat{padding:64px 0 96px}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:40px;padding:0 48px;align-items:start}
+    .feat-grid > *{min-width:0}
+    .feat-img{aspect-ratio:4/3}
+    .feat-text{padding:0;justify-content:flex-start}
+    .feat-text h2{font-size:clamp(36px,3.8vw,52px);margin-bottom:22px}
+    .feat-text p{font-size:16px;line-height:1.6;max-width:44ch;margin-bottom:26px}
+    .feat-byline{margin-bottom:24px;padding:16px 0}
   }
 
   @media (max-width:980px){
