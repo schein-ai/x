@@ -59,7 +59,7 @@
   .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 100px}
   .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:30px;display:flex;align-items:center;gap:12px}
   .hero-eyebrow::before{content:"";width:36px;height:1px;background:#9bb5ff}
-  h1.hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(80px,12vw,200px);line-height:.92;letter-spacing:-.03em;margin:0;max-width:14ch}
+  h1.hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(72px,8.6vw,148px);line-height:.92;letter-spacing:-.03em;margin:0;max-width:14ch}
   h1.hero-h em{font-style:italic;color:#9bb5ff}
   .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
   .hero-foot .meta{display:flex;gap:38px}
@@ -131,8 +131,9 @@
   .sli.active{opacity:1}
   .sli.passed{opacity:.4}
   .sli .syear{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--accent);font-weight:400;letter-spacing:.02em}
-  .sli h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:42px;line-height:1.1;margin:0;letter-spacing:-.015em;color:var(--ink);max-width:14ch}
+  .sli h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(54px,5.4vw,76px);line-height:1.02;margin:0;letter-spacing:-.022em;color:var(--ink);max-width:14ch}
   .sli h4 em{font-style:italic;color:var(--accent)}
+  .sli .sdesc{font-size:16px;line-height:1.55;color:var(--ink-soft);margin:10px 0 0;max-width:42ch}
   .sli .stags{display:flex;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:6px}
   .sli .stags b{color:var(--ink);font-weight:500}
 
@@ -214,7 +215,8 @@
     .scroll-track{padding-left:40px;padding-right:40px}
     .scroll-stick{padding-right:24px}
     .scroll-list{padding-left:40px}
-    .sli h4{font-size:34px}
+    .sli h4{font-size:clamp(40px,5vw,56px)}
+    .sli .sdesc{font-size:15px}
     .nband{grid-template-columns:repeat(2,1fr)}
     .ncell{padding:60px 32px}
     .ncell:nth-child(3){border-left:none}
@@ -392,15 +394,15 @@
       </div>
     </div>
     <div class="scroll-list" id="scrollList">
-      <div class="sli active" data-i="0"><div class="syear">2018</div><h4>The <em>boatyard</em> opens.</h4><div class="stags"><span><b>05</b> people</span><span>HCMC · VN</span></div></div>
-      <div class="sli" data-i="1"><div class="syear">2019</div><h4>Penang <em>shop-house</em> stack.</h4><div class="stags"><span>P—021</span><span><b>14,600</b> m²</span></div></div>
-      <div class="sli" data-i="2"><div class="syear">2020</div><h4>The <em>computational</em> turn.</h4><div class="stags"><span>R&amp;D</span><span><b>14</b> people</span></div></div>
-      <div class="sli" data-i="3"><div class="syear">2021</div><h4>Chao Phraya <em>school</em>.</h4><div class="stags"><span>P—029</span><span><b>27,400</b> m²</span></div></div>
-      <div class="sli" data-i="4"><div class="syear">2022</div><h4>District 4 Civic <em>Spine</em>.</h4><div class="stags"><span>P—036</span><span>ARCASIA Gold</span></div></div>
-      <div class="sli" data-i="5"><div class="syear">2023</div><h4>Sentosa <em>Lantern</em>.</h4><div class="stags"><span>P—039</span><span><b>22,800</b> m²</span></div></div>
-      <div class="sli" data-i="6"><div class="syear">2024</div><h4>Mekong <em>Resilience</em> Loop.</h4><div class="stags"><span>P—042</span><span><b>76,500</b> m²</span></div></div>
-      <div class="sli" data-i="7"><div class="syear">2025</div><h4>Floating <em>pavilion</em>.</h4><div class="stags"><span>P—047</span><span><b>1,200</b>/day</span></div></div>
-      <div class="sli" data-i="8"><div class="syear">2026</div><h4>Biophilic <em>campus</em> begins.</h4><div class="stags"><span>P—061</span><span><b>412,000</b> m²</span></div></div>
+      <div class="sli active" data-i="0"><div class="syear">2018</div><h4>The <em>boatyard</em> opens.</h4><p class="sdesc">A leased shed on the Saigon River becomes the first studio. Five people, four chairs, one drafting table — and the conviction that working close to the water would shape every project that followed.</p><div class="stags"><span><b>05</b> people</span><span>HCMC · VN</span></div></div>
+      <div class="sli" data-i="1"><div class="syear">2019</div><h4>Penang <em>shop-house</em> stack.</h4><p class="sdesc">Our first build outside Vietnam: a vertical reinterpretation of the Straits shop-house, threading three trades and twenty-eight households around a shared monsoon court.</p><div class="stags"><span>P—021</span><span><b>14,600</b> m²</span></div></div>
+      <div class="sli" data-i="2"><div class="syear">2020</div><h4>The <em>computational</em> turn.</h4><p class="sdesc">Lockdown gives us a year to rebuild the practice around code. We open an in-house R&amp;D group and start treating shading, airflow and structure as parameters to be tuned, not assumptions to be inherited.</p><div class="stags"><span>R&amp;D</span><span><b>14</b> people</span></div></div>
+      <div class="sli" data-i="3"><div class="syear">2021</div><h4>Chao Phraya <em>school</em>.</h4><p class="sdesc">A flood-resilient primary school for 1,200 children on the river's edge in Bangkok. Raised classrooms, a porous ground plane, and a roof that harvests its own monsoon water.</p><div class="stags"><span>P—029</span><span><b>27,400</b> m²</span></div></div>
+      <div class="sli" data-i="4"><div class="syear">2022</div><h4>District 4 Civic <em>Spine</em>.</h4><p class="sdesc">A 600-metre public corridor stitching a fragmented neighbourhood back to the river. ARCASIA Gold and the project that taught the studio to design at the scale of a street.</p><div class="stags"><span>P—036</span><span>ARCASIA Gold</span></div></div>
+      <div class="sli" data-i="5"><div class="syear">2023</div><h4>Sentosa <em>Lantern</em>.</h4><p class="sdesc">A 280-room hospitality project wrapped in a rattan-and-aluminium screen — a study in how a single envelope detail can carry the cooling load of an entire building.</p><div class="stags"><span>P—039</span><span><b>22,800</b> m²</span></div></div>
+      <div class="sli" data-i="6"><div class="syear">2024</div><h4>Mekong <em>Resilience</em> Loop.</h4><p class="sdesc">A regional masterplan for seven delta communes, co-authored with hydrologists and rice farmers. Architecture as one instrument among many in a landscape that is learning to live with rising water.</p><div class="stags"><span>P—042</span><span><b>76,500</b> m²</span></div></div>
+      <div class="sli" data-i="7"><div class="syear">2025</div><h4>Floating <em>pavilion</em>.</h4><p class="sdesc">A demountable timber pavilion that travels the delta on pontoons — clinic by morning, classroom by afternoon, cinema by night. 1,200 visitors a day at peak season.</p><div class="stags"><span>P—047</span><span><b>1,200</b>/day</span></div></div>
+      <div class="sli" data-i="8"><div class="syear">2026</div><h4>Biophilic <em>campus</em> begins.</h4><p class="sdesc">Ground-breaking on a 60-hectare research campus outside Da Nang — the studio's largest commission to date, and the first chance to test eight years of thinking at the scale of a small town.</p><div class="stags"><span>P—061</span><span><b>412,000</b> m²</span></div></div>
     </div>
   </div>
 </section>
