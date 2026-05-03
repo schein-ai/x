@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>お問い合わせ — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter','Noto Sans JP',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--ink);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear;mix-blend-mode:difference}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;height:100vh;min-height:720px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .hero-img{position:absolute;inset:0;background:url('assets/img4.png') center/cover no-repeat;transform:scale(1.05);will-change:transform}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.35) 0%,rgba(11,27,63,.2) 35%,rgba(11,27,63,.7) 100%)}
+  .hero-content{position:relative;z-index:2;height:100%;display:grid;grid-template-columns:1.5fr 1fr;align-items:end;gap:60px;padding:0 56px 110px}
+  .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:12px}
+  .hero-eyebrow::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  .hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(80px,12vw,180px);line-height:.92;letter-spacing:-.03em;margin:0;max-width:11ch}
+  .hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.65);text-transform:uppercase;line-height:1.9;border-left:1px solid rgba(155,181,255,.3);padding-left:28px}
+  .hero-meta b{color:#fff;font-weight:500}
+  .hero-meta .row{display:flex;justify-content:space-between;gap:20px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.12)}
+  .hero-meta .row:last-child{border-bottom:none}
+  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .hero-foot .meta{display:flex;gap:38px}
+
+  .head{padding:80px 0 60px;background:var(--bg);border-bottom:1px solid var(--line)}
+  .head-inner{padding:0 56px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:60px;align-items:start}
+  .head-card{display:flex;flex-direction:column;gap:14px}
+  .head-card .hk{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600}
+  .head-card .hk b{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:14px;font-weight:400}
+  .head-card h3{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:24px;line-height:1.4;margin:0;letter-spacing:-.012em}
+  .head-card h3 em{font-style:italic;color:var(--accent)}
+  .head-card p{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:0}
+  .head-card a.go{margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;font-weight:500;display:inline-flex;align-items:center;gap:8px;padding-top:8px}
+  .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:24px}
+  .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+
+  .intake{padding:120px 0;background:var(--bg)}
+  .intake-grid{padding:0 56px;display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:start}
+  #contactForm{background:#fff;border:1px solid var(--line);border-radius:14px;padding:48px;box-shadow:0 1px 2px rgba(11,27,63,.04),0 14px 40px -12px rgba(11,27,63,.12)}
+
+  .form-head{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:36px;flex-wrap:wrap;gap:8px}
+  .form-head b{color:var(--ink);font-weight:500}
+  .fgroup{padding:24px 0;border-bottom:1px dashed var(--line)}
+  .fgroup:last-of-type{border-bottom:none}
+  .fgroup-h{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+  .fgroup-h .step{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600}
+  .fgroup-h h5{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:22px;line-height:1.3;letter-spacing:-.01em;margin:0;color:var(--ink)}
+  .fgroup-h .step-fine{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-left:auto;font-style:italic}
+  .req{margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+  .hint{margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .field{margin-bottom:22px;position:relative}
+  .field:last-child{margin-bottom:0}
+  .counter{position:absolute;right:0;bottom:-22px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em}
+  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--ink);text-transform:uppercase;font-weight:500;margin-bottom:10px}
+  .field input,.field textarea,.field select{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:10px 0;font-size:16px;font-family:'Inter','Noto Sans JP',sans-serif;color:var(--ink);outline:none;transition:border-color .2s;font-weight:400}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+  .field input::placeholder,.field textarea::placeholder{color:var(--muted);font-weight:400}
+  .field textarea{resize:vertical;min-height:100px;line-height:1.7}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{padding:9px 16px;border-radius:999px;font-family:'Inter','Noto Sans JP',sans-serif;font-size:13px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);cursor:pointer;transition:.2s;font-weight:500}
+  .chip:hover{color:var(--ink);border-color:var(--ink-soft)}
+  .chip.on{background:#eef2fb;color:var(--ink);border-color:var(--accent-soft)}
+  .form-foot{display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:24px;border-top:1px solid var(--line);margin-top:8px}
+  .submit{display:inline-flex;align-items:center;gap:12px;padding:16px 28px;border-radius:999px;background:var(--ink);color:#fff;border:none;font-family:'Inter','Noto Sans JP',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+  .submit:hover{background:var(--accent)}
+  .form-foot .fine{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.7}
+  .form-foot .fine b{color:var(--ink);font-weight:500}
+
+  .side{display:flex;flex-direction:column;gap:36px;position:sticky;top:120px}
+  .side-card{padding:32px;background:var(--bg-warm);border:1px solid var(--line);border-radius:10px}
+  .side-card .sn{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;font-weight:600}
+  .side-card h4{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:24px;line-height:1.4;margin:0 0 16px;color:var(--ink);letter-spacing:-.012em}
+  .side-card h4 em{font-style:italic;color:var(--accent)}
+  .side-card p{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:0 0 18px}
+  .side-card a.email{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--accent);font-weight:400;letter-spacing:-.005em;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--accent);padding-bottom:2px;word-break:break-all}
+  .side-card .meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;line-height:1.9;margin-top:14px}
+  .side-card .meta b{color:var(--ink);font-weight:500}
+
+  .offices{padding:140px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .offices-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:60px}
+  .offices-head h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1.15;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .offices-head h2 em{font-style:italic;color:var(--accent)}
+  .offices-head p{font-size:16px;line-height:1.7;color:var(--ink-soft);margin:0;max-width:520px}
+  .ogrid{padding:0 56px;display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ocell{padding:48px 36px 48px;border-left:1px solid var(--line);position:relative}
+  .ocell:first-child{border-left:none;padding-left:0}
+  .ocell .ocity{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+  .ocell .ocity b{color:var(--accent);font-weight:500}
+  .ocell h4{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:30px;line-height:1.2;margin:0 0 16px;color:var(--ink);letter-spacing:-.012em}
+  .ocell h4 em{font-style:italic;color:var(--accent)}
+  .ocell .addr{font-size:14px;line-height:1.7;color:var(--ink-soft);margin:0 0 18px;font-style:normal}
+  .ocell .ocoords{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:18px;padding-bottom:18px;border-bottom:1px dashed var(--line)}
+  .ocell .ocoords b{color:var(--ink);font-weight:500}
+  .ocell .olink{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;font-weight:500}
+  .ocell .olink:hover{text-decoration:underline}
+
+  .times{padding:140px 0;background:#0b1b3f;color:#fff;position:relative;overflow:hidden}
+  .times::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 30%, rgba(99,140,255,.18), rgba(99,140,255,0) 60%)}
+  .times-inner{position:relative;z-index:1;padding:0 56px}
+  .times-head{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:50px}
+  .times-head .clabel{color:#9bb5ff}
+  .times-head .clabel::before{background:#9bb5ff}
+  .times-head h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(36px,4.4vw,60px);line-height:1.2;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .times-head h2 em{font-style:italic;color:#9bb5ff}
+  .times-head p{font-size:16px;line-height:1.7;color:#b8c3df;margin:0;max-width:480px}
+  .clocks{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid rgba(155,181,255,.18);border-bottom:1px solid rgba(155,181,255,.18)}
+  .clock{padding:36px 30px;border-left:1px solid rgba(155,181,255,.18)}
+  .clock:first-child{border-left:none;padding-left:0}
+  .clock .cname{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:rgba(184,195,223,.7);text-transform:uppercase;margin-bottom:14px}
+  .clock .ctime{font-family:'Instrument Serif',serif;font-style:italic;font-size:64px;color:#9bb5ff;font-weight:400;letter-spacing:-.02em;line-height:1;margin-bottom:6px}
+  .clock .czone{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(255,255,255,.5);text-transform:uppercase}
+  .clock .czone .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:8px;vertical-align:middle;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+  .clock.closed .czone .dot{background:#6b7591;box-shadow:0 0 0 3px rgba(107,117,145,.2)}
+
+  .else{padding:120px 0 140px;background:#0b1b3f;color:#fff;border-top:1px solid var(--line)}
+  .else-head{padding:0 56px;max-width:760px;margin-bottom:60px}
+  .else-head .clabel{margin-bottom:24px;color:#9bb5ff}
+  .else-head .clabel::before{background:#9bb5ff}
+  .else-head h3{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1.15;margin:0 0 22px;letter-spacing:-.022em;color:#fff}
+  .else-head h3 em{font-style:italic;color:#9bb5ff}
+  .else-lede{font-size:16px;line-height:1.7;color:#b8c3df;margin:0;max-width:48ch}
+  .sgrid{margin:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(155,181,255,.18);border:1px solid rgba(155,181,255,.18)}
+  .scard{position:relative;background:#0b1b3f;padding:30px 28px 26px;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:18px;row-gap:14px;text-decoration:none;color:#fff;transition:background .25s}
+  .scard:hover{background:rgba(155,181,255,.06)}
+  .sicon{grid-row:1/3;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;align-self:start;background:var(--accent)}
+  .smeta{display:flex;flex-direction:column;gap:4px;align-self:center}
+  .smeta .shead{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(184,195,223,.7);text-transform:uppercase;font-weight:500}
+  .smeta b{font-family:'Instrument Serif',serif;font-weight:400;font-size:20px;line-height:1.2;letter-spacing:-.01em;color:#fff}
+  .sstat{grid-column:2/3;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:#fff;font-weight:500;align-self:end}
+  .sstat span{color:rgba(184,195,223,.7);font-weight:400;text-transform:lowercase;letter-spacing:.04em}
+  .sarr{grid-row:1/3;align-self:center;font-family:'JetBrains Mono',monospace;font-size:18px;color:rgba(255,255,255,.45);transition:.25s}
+  .scard:hover .sarr{color:#9bb5ff;transform:translateX(4px)}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  @media (max-width:980px){
+    .wrap,.head-inner,.intake-grid,.offices-head,.ogrid,.times-inner,.else-head{padding-left:24px;padding-right:24px}
+    .sgrid{margin:0 24px;grid-template-columns:1fr}
+    .head-inner,.intake-grid,.offices-head,.times-head{grid-template-columns:1fr;gap:30px}
+    .hero-content{grid-template-columns:1fr;align-items:stretch;padding:0 24px 90px;gap:36px}
+    .hero-h{font-size:clamp(56px,10vw,96px)}
+    .hero-meta{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:20px}
+    .hero-foot{left:24px;right:24px}
+    .field-row{grid-template-columns:1fr}
+    .ogrid,.clocks{grid-template-columns:1fr}
+    .ocell,.clock{border-left:none;padding-left:0}
+    .nav-links{display:none}
+    .side{position:relative;top:auto}
+    #contactForm{padding:28px}
+  }
+  @media (min-width:641px) and (max-width:980px){
+    .wrap,.head-inner,.intake-grid,.offices-head,.ogrid,.times-inner,.else-head{padding-left:32px;padding-right:32px}
+    .sgrid{margin:0 32px;grid-template-columns:1fr 1fr}
+    .head-inner,.times-head{grid-template-columns:1fr;gap:24px;align-items:start}
+    .offices-head{grid-template-columns:1fr;gap:24px;align-items:start}
+    .intake-grid{grid-template-columns:1fr;gap:40px;align-items:start}
+    .side{position:relative;top:auto}
+    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:24px;padding:0 32px 90px}
+    .hero-meta{display:none}
+    .hero-eyebrow{position:absolute;top:96px;left:32px;right:32px;z-index:5;margin:0}
+    .hero-h{font-size:clamp(72px,11vw,128px);line-height:.94;letter-spacing:-.03em;max-width:none;width:100%}
+    .hero-foot{left:32px;right:32px}
+    .field-row{grid-template-columns:1fr;gap:14px}
+    .ogrid{grid-template-columns:1fr 1fr}
+    .clocks{grid-template-columns:1fr 1fr}
+    .ocell:nth-child(odd),.clock:nth-child(odd){border-left:none;padding-left:0}
+    #contactForm{padding:28px}
+  }
+  @media (max-width:560px){
+    .wrap,.head-inner,.intake-grid,.offices-head,.ogrid,.times-inner,.else-head{padding-left:18px;padding-right:18px}
+    .sgrid{margin:0 18px;grid-template-columns:1fr}
+    .ogrid,.clocks{grid-template-columns:1fr}
+    .ocell,.clock{border-left:none;padding:24px 0}
+    .form-foot{flex-direction:column;align-items:stretch;gap:18px}
+    .form-foot .fine{text-align:left}
+    .submit{justify-content:center}
+    #contactForm{padding:22px}
+    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:100%;padding:0 18px 60px;gap:24px}
+    .hero-h{font-size:clamp(56px,14vw,88px);line-height:1;max-width:100%}
+    .hero-eyebrow{position:absolute;top:64px;left:18px;right:18px;z-index:5;margin:0;font-size:10px;letter-spacing:.18em;gap:8px}
+    .hero-meta{font-size:9.5px;line-height:1.85;letter-spacing:.12em;border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:14px}
+    .hero-foot{flex-direction:column;align-items:flex-start;gap:10px;bottom:18px;font-size:9.5px;letter-spacing:.14em}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- HERO — English -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow">Get in touch · 2026</div>
+      <h1 class="hero-h">Start a <em>conversation</em>.</h1>
+    </div>
+    <div class="hero-meta">
+      <div class="row"><span>Reply within</span><span><b>2 working days</b></span></div>
+      <div class="row"><span>Direct line</span><span><b>studio@xrd.technologies</b></span></div>
+      <div class="row"><span>HQ</span><span><b>Da Nang · GMT+7</b></span></div>
+      <div class="row"><span>Open studio</span><span><b>1st Fri / month</b></span></div>
+    </div>
+  </div>
+  <div class="hero-foot">
+    <div class="meta">
+      <span>02 OFFICES</span>
+      <span>DA NANG · HANOI</span>
+      <span>Always reading</span>
+    </div>
+    <span>SCROLL TO START</span>
+  </div>
+</section>
+
+<!-- HEAD — 3 paths -->
+<section class="head">
+  <div class="head-inner">
+    <div class="head-card">
+      <span class="hk"><b>i</b>プロジェクト</span>
+      <h3>課題や<em>アイデア</em>がありますか？</h3>
+      <p>下のフォームから、お気軽にどうぞ。7 つの項目、3 分ほどで完了します。原則 2 営業日以内に返信します。</p>
+      <a class="go" href="#form">フォームへ ↓</a>
+    </div>
+    <div class="head-card">
+      <span class="hk"><b>ii</b>報道</span>
+      <h3>取材 ・ <em>インタビュー</em>。</h3>
+      <p>ロゴ・写真・会社情報、取材依頼などはこちら。原則 1 営業日以内に対応します。</p>
+      <a class="go" href="mailto:press@xrd.technologies">press@xrd.technologies →</a>
+    </div>
+    <div class="head-card">
+      <span class="hk"><b>iii</b>訪問</span>
+      <h3>スタジオに<em>立ち寄る</em>。</h3>
+      <p>毎月第 1 金曜日、ダナン本拠地のオープンスタジオを開催。事前予約は不要です。</p>
+      <a class="go" href="#offices">拠点を見る ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- INTAKE -->
+<section class="intake" id="form">
+  <div class="intake-grid">
+    <form id="contactForm" onsubmit="event.preventDefault();this.querySelector('.submit').innerHTML='送信完了 &nbsp;✓&nbsp; ご連絡をお待ちください'">
+      <div class="form-head">
+        <span>プロジェクト相談フォーム</span>
+        <span><b>~3 分</b> · 7 項目 · 担当パートナーが直接対応</span>
+      </div>
+
+      <div class="fgroup">
+        <div class="fgroup-h"><span class="step">Step 01</span><h5>お問い合わせ者</h5></div>
+        <div class="field">
+          <label>お名前 <span class="req">必須</span></label>
+          <input type="text" placeholder="例: 山田 太郎" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>メールアドレス <span class="req">必須</span></label>
+            <input type="email" placeholder="you@company.com" required>
+          </div>
+          <div class="field">
+            <label>会社・組織名 <span class="hint">任意</span></label>
+            <input type="text" placeholder="会社名・所属組織名">
+          </div>
+        </div>
+      </div>
+
+      <div class="fgroup">
+        <div class="fgroup-h"><span class="step">Step 02</span><h5>ご相談の内容</h5></div>
+        <div class="field">
+          <label>カテゴリ</label>
+          <div class="chips" id="kindChips">
+            <button type="button" class="chip on" data-v="project">📐 新規プロジェクト</button>
+            <button type="button" class="chip" data-v="consult">🧭 AI 導入相談</button>
+            <button type="button" class="chip" data-v="visual">🎨 ビジュアル制作</button>
+            <button type="button" class="chip" data-v="talent">👥 人材派遣</button>
+            <button type="button" class="chip" data-v="press">📰 取材</button>
+            <button type="button" class="chip" data-v="other">✦ その他</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fgroup" id="projGroup">
+        <div class="fgroup-h"><span class="step">Step 03</span><h5>プロジェクト概要</h5><span class="step-fine">該当する場合</span></div>
+        <div class="field-row">
+          <div class="field">
+            <label>業種・領域</label>
+            <input type="text" placeholder="例: 製造業 / DX 部門">
+          </div>
+          <div class="field">
+            <label>想定予算</label>
+            <select>
+              <option>未定</option>
+              <option>〜 500 万円</option>
+              <option>500 万 〜 2,000 万円</option>
+              <option>2,000 万 〜 1 億円</option>
+              <option>1 億円 〜</option>
+              <option>政府・公共予算</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="fgroup">
+        <div class="fgroup-h"><span class="step">Step 04</span><h5>詳しく教えてください</h5></div>
+        <div class="field">
+          <label>ご相談内容 <span class="req">必須</span></label>
+          <textarea placeholder="数行でも大丈夫です。何を作りたいか、いつまでに、どんな制約があるか。具体案がなくても、まず話してみたいということでも歓迎です。" required></textarea>
+          <span class="counter"><span id="cnum">0</span> / 1500</span>
+        </div>
+      </div>
+
+      <div class="form-foot">
+        <button type="submit" class="submit">送信する
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="fine">送信により <b>プライバシーポリシー</b> に同意したものとみなされます。<br>マーケティング利用・第三者提供は行いません。</div>
+      </div>
+    </form>
+
+    <aside class="side">
+      <div class="side-card">
+        <div class="sn">メールでも OK</div>
+        <h4>フォームを<em>使わずに</em>。</h4>
+        <p>メールは創業パートナーに直接届きます。原則 2 営業日以内に返信します。</p>
+        <a class="email" href="mailto:studio@xrd.technologies">studio@xrd.technologies →</a>
+        <div class="meta">PGP 公開鍵 · <b>0xA42B 8C19</b><br>必要に応じて発行します</div>
+      </div>
+      <div class="side-card">
+        <div class="sn">プレスキット</div>
+        <h4>ロゴ ・ 会社情報 ・ <em>取材資料</em>。</h4>
+        <p>会社情報、Tomoki / Nghia のプロフィール、ロゴ各種。日本語 / 英語 / ベトナム語の 3 言語対応。</p>
+        <a class="email" href="#">ダウンロード →</a>
+      </div>
+      <div class="side-card">
+        <div class="sn">採用</div>
+        <h4>仕事を<em>探している</em>方へ。</h4>
+        <p>AI エンジニア、クリエイター、コンサル、BIM オペレーターを通年募集中。</p>
+        <a class="email" href="careers-jp.html">募集中の職種を見る →</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- OFFICES -->
+<section class="offices" id="offices">
+  <div class="offices-head">
+    <div>
+      <div class="clabel">2 拠点</div>
+      <h2>私たちは、<em>ここに</em>います。</h2>
+    </div>
+    <p>本拠地ダナンと、サブ拠点ハノイの 2 つ。事前予約でいつでもご訪問いただけます。毎月第 1 金曜日のオープンスタジオは予約不要です。</p>
+  </div>
+  <div class="ogrid">
+    <div class="ocell">
+      <div class="ocity">本拠地 · <b>HQ</b></div>
+      <h4>ベトナム ・ <em>ダナン</em></h4>
+      <address class="addr">スタジオ ・ ラボ ・ 育成フロア<br>Da Nang, Vietnam</address>
+      <div class="ocoords">16.0544°N <b>·</b> 108.2022°E</div>
+      <a class="olink" href="#">地図を見る →</a>
+    </div>
+    <div class="ocell">
+      <div class="ocity">サブ拠点 · <b>2025</b></div>
+      <h4>ベトナム ・ <em>ハノイ</em></h4>
+      <address class="addr">Hanoi, Vietnam</address>
+      <div class="ocoords">21.0285°N <b>·</b> 105.8542°E</div>
+      <a class="olink" href="#">地図を見る →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TIMES -->
+<section class="times">
+  <div class="times-inner">
+    <div class="times-head">
+      <div>
+        <div class="clabel">スタジオの時間 · リアルタイム</div>
+        <h2>いま、何時か<em>。</em></h2>
+      </div>
+      <p>営業時間は現地 9:00〜18:00。それ以外の時間にいただいたお問い合わせは、翌営業日の朝に返信します。</p>
+    </div>
+    <div class="clocks" id="clocks">
+      <div class="clock" data-tz="Asia/Ho_Chi_Minh"><div class="cname">ダナン · HQ</div><div class="ctime">--:--</div><div class="czone"><span class="dot"></span>GMT+7</div></div>
+      <div class="clock" data-tz="Asia/Ho_Chi_Minh"><div class="cname">ハノイ</div><div class="ctime">--:--</div><div class="czone"><span class="dot"></span>GMT+7</div></div>
+      <div class="clock" data-tz="Asia/Tokyo"><div class="cname">東京 · 窓口</div><div class="ctime">--:--</div><div class="czone"><span class="dot"></span>GMT+9</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ELSEWHERE -->
+<section class="else">
+  <div class="else-head">
+    <div class="clabel">フォローする</div>
+    <h3>他にも、<em>いろいろな場所</em>に。</h3>
+    <p class="else-lede">それぞれ違う話題、違う温度で発信しています。お好きなチャンネルでつながってください。</p>
+  </div>
+  <div class="sgrid">
+    <a class="scard" href="#">
+      <div class="sicon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg></div>
+      <div class="smeta"><span class="shead">Instagram</span><b>@xrd.technologies</b></div>
+      <div class="sstat">スタジオの日常</div>
+      <span class="sarr">→</span>
+    </a>
+    <a class="scard" href="#">
+      <div class="sicon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zM8.34 8h4.37v1.91h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v8.45h-4.56v-7.5c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V22H8.34V8z"/></svg></div>
+      <div class="smeta"><span class="shead">LinkedIn</span><b>xR&amp;D Technologies</b></div>
+      <div class="sstat">事業 ・ 採用</div>
+      <span class="sarr">→</span>
+    </a>
+    <a class="scard" href="#">
+      <div class="sicon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2H21l-6.5 7.43L22 22h-6.91l-4.81-6.3L4.5 22H1.74l6.96-7.96L1.5 2h7.06l4.36 5.76L18.24 2zm-2.42 18h1.86L7.34 4H5.4l10.42 16z"/></svg></div>
+      <div class="smeta"><span class="shead">X / Twitter</span><b>@xrd_technologies</b></div>
+      <div class="sstat">日々の<span> 試行錯誤</span></div>
+      <span class="sarr">→</span>
+    </a>
+    <a class="scard" href="#">
+      <div class="sicon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></div>
+      <div class="smeta"><span class="shead">ニュースレター</span><b>The Friday Letter</b></div>
+      <div class="sstat">毎週金曜<span> 配信</span></div>
+      <span class="sarr">→</span>
+    </a>
+    <a class="scard" href="#">
+      <div class="sicon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3"/></svg></div>
+      <div class="smeta"><span class="shead">GitHub</span><b>xrd-technologies</b></div>
+      <div class="sstat">OSS<span> 公開</span></div>
+      <span class="sarr">→</span>
+    </a>
+    <a class="scard" href="#">
+      <div class="sicon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M23 12s0-3.6-.5-5.3a2.8 2.8 0 00-2-2C18.8 4.2 12 4.2 12 4.2s-6.8 0-8.5.5a2.8 2.8 0 00-2 2C1 8.4 1 12 1 12s0 3.6.5 5.3c.3 1 1 1.7 2 2 1.7.5 8.5.5 8.5.5s6.8 0 8.5-.5a2.8 2.8 0 002-2c.5-1.7.5-5.3.5-5.3zM9.7 15.3V8.7l5.7 3.3-5.7 3.3z"/></svg></div>
+      <div class="smeta"><span class="shead">YouTube</span><b>事例 ・ ウェビナー</b></div>
+      <div class="sstat">月 1〜2 本<span> 配信</span></div>
+      <span class="sarr">→</span>
+    </a>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  function onScroll(){
+    const y = window.scrollY;
+    if (nav) nav.classList.toggle('scrolled', y > 80);
+    if (bar){
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  document.querySelectorAll('#kindChips .chip').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      document.querySelectorAll('#kindChips .chip').forEach(x=>x.classList.remove('on'));
+      c.classList.add('on');
+    });
+  });
+
+  const ta = document.querySelector('#contactForm textarea');
+  const cn = document.getElementById('cnum');
+  if (ta && cn){
+    ta.addEventListener('input', ()=>{ cn.textContent = ta.value.length; });
+  }
+
+  const clocks = document.querySelectorAll('#clocks .clock');
+  function tick(){
+    clocks.forEach(c=>{
+      const tz = c.dataset.tz;
+      try {
+        const now = new Date();
+        const t = new Intl.DateTimeFormat('en-GB', {hour:'2-digit', minute:'2-digit', hour12:false, timeZone:tz}).format(now);
+        c.querySelector('.ctime').textContent = t;
+        const h = parseInt(new Intl.DateTimeFormat('en-GB', {hour:'2-digit', hour12:false, timeZone:tz}).format(now), 10);
+        const open = h >= 9 && h < 18;
+        c.classList.toggle('closed', !open);
+      } catch(e){}
+    });
+  }
+  tick();
+  setInterval(tick, 30000);
+
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.hero-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.25});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.4});
+    gsap.from('.hero-meta',{y:24,opacity:0,duration:.9,ease:'power3.out',delay:.65});
+    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.85});
+
+    gsap.to('.hero-img',{yPercent:30,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+
+    gsap.utils.toArray('.head-card').forEach((card,i)=>{
+      gsap.fromTo(card,{y:30,opacity:0},{y:0,opacity:1,duration:.8,ease:'power3.out',delay:i*0.08,scrollTrigger:{trigger:card,start:'top 88%'}});
+    });
+
+    gsap.fromTo('#contactForm',{y:40,opacity:0},{y:0,opacity:1,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.intake',start:'top 82%'}});
+    gsap.fromTo('.side-card',{y:30,opacity:0},{y:0,opacity:1,duration:.8,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.intake',start:'top 82%'}});
+    gsap.from('.fgroup',{y:20,opacity:0,duration:.6,ease:'power3.out',stagger:.08,scrollTrigger:{trigger:'#contactForm',start:'top 80%'}});
+
+    gsap.from('.offices-head h2',{y:30,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.offices',start:'top 82%'}});
+    gsap.from('.offices-head p',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.1,scrollTrigger:{trigger:'.offices',start:'top 80%'}});
+    gsap.fromTo('.ocell',{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.08,scrollTrigger:{trigger:'.ogrid',start:'top 85%'}});
+
+    gsap.from('.times-head h2',{y:30,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.times',start:'top 82%'}});
+    gsap.from('.times-head p',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.1,scrollTrigger:{trigger:'.times',start:'top 80%'}});
+    gsap.fromTo('.clock',{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.08,scrollTrigger:{trigger:'.clocks',start:'top 85%'}});
+
+    gsap.from('.else-head h3',{y:30,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.else',start:'top 82%'}});
+    gsap.from('.else-lede',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.1,scrollTrigger:{trigger:'.else',start:'top 80%'}});
+    gsap.fromTo('.scard',{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.sgrid',start:'top 88%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+})();
+</script>
+
+</body>
+</html>

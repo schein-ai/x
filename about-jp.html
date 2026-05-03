@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>私たちについて — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter','Noto Sans JP',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .wrap{width:100%;margin:0;padding:0 56px}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .logo .x{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:1}
+  .logo .rd{font-family:'Instrument Serif',serif;font-size:30px;line-height:1}
+  .logo-text{display:flex;flex-direction:column;line-height:1;margin-left:6px}
+  .logo-text span{font-size:13px;opacity:.7;font-weight:500}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+
+  /* ===== SCROLL PROGRESS ===== */
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--ink);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear;mix-blend-mode:difference}
+
+  /* ===== CHAPTER RAIL ===== */
+  .chapter-rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:150;display:flex;flex-direction:column;gap:12px;mix-blend-mode:difference;color:#fff}
+  .chapter-rail .ch{display:flex;flex-direction:row-reverse;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;opacity:.4;cursor:pointer;transition:opacity .25s,color .25s;text-transform:uppercase}
+  .chapter-rail .ch::before{content:"";width:18px;height:1px;background:currentColor;transition:width .3s}
+  .chapter-rail .ch.active{opacity:1;color:#9bb5ff}
+  .chapter-rail .ch.active::before{width:36px}
+
+  /* ===== HUD ===== */
+  .hud{position:fixed;right:20px;bottom:20px;z-index:150;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-align:right;line-height:1.7;text-transform:uppercase;mix-blend-mode:difference;color:#fff;opacity:.65}
+  .hud b{color:#9bb5ff;font-weight:500}
+
+  /* ===== HERO — full-bleed image ===== */
+  .hero{position:relative;height:100vh;min-height:720px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .hero-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.15);will-change:transform}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.25) 0%,rgba(11,27,63,.1) 35%,rgba(11,27,63,.55) 100%)}
+  .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 100px}
+  .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:30px;display:flex;align-items:center;gap:12px}
+  .hero-eyebrow::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  h1.hero-h{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(64px,9vw,140px);line-height:1.1;letter-spacing:-.02em;margin:0;max-width:16ch}
+  h1.hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .hero-foot .meta{display:flex;gap:38px}
+  .hero-foot .scroll{display:flex;align-items:center;gap:10px}
+  .hero-foot .scroll .ar{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  /* ===== CHAPTER LABEL ===== */
+  .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+
+  /* ===== CH 01 — STATEMENT ===== */
+  .ch01{padding:160px 0;background:var(--bg);text-align:center;border-bottom:1px solid var(--line)}
+  .ch01 .clabel{justify-content:center}
+  .ch01 .clabel::before{display:none}
+  .ch01 h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(48px,7vw,110px);line-height:1.1;letter-spacing:-.02em;margin:0 auto;max-width:14ch}
+  .ch01 h2 em{font-style:italic;color:var(--accent)}
+  .ch01 .stamp{margin-top:50px;display:inline-flex;gap:32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;flex-wrap:wrap;justify-content:center}
+  .ch01 .stamp b{color:var(--ink);font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;letter-spacing:0;font-weight:400;margin-right:8px}
+
+  /* ===== CH 02 — IMAGE GALLERY (mosaic) ===== */
+  .ch02{padding:0;background:var(--bg)}
+  .mosaic{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:14vh;gap:8px;padding:8px}
+  .mtile{position:relative;overflow:hidden;border-radius:6px;background:#0b1b3f;cursor:pointer}
+  .mtile .mimg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .mtile:hover .mimg{transform:scale(1.06)}
+  .mtile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 50%,rgba(11,27,63,.7) 100%);opacity:0;transition:opacity .3s}
+  .mtile:hover::after{opacity:1}
+  .mtile .mlbl{position:absolute;left:14px;bottom:12px;right:14px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#fff;text-transform:uppercase;display:flex;justify-content:space-between;opacity:0;transform:translateY(8px);transition:.3s}
+  .mtile:hover .mlbl{opacity:1;transform:translateY(0)}
+  .mtile .mlbl b{color:#9bb5ff;font-weight:500}
+  .mtile .mtag{position:absolute;top:14px;left:14px;z-index:2;background:rgba(255,255,255,.92);color:var(--ink);padding:5px 10px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(6px)}
+  /* layout: rich asymmetric mosaic */
+  .t-a{grid-column:span 7;grid-row:span 4}
+  .t-b{grid-column:span 5;grid-row:span 2}
+  .t-c{grid-column:span 5;grid-row:span 2}
+  .t-d{grid-column:span 4;grid-row:span 3}
+  .t-e{grid-column:span 4;grid-row:span 3}
+  .t-f{grid-column:span 4;grid-row:span 3}
+  .t-g{grid-column:span 6;grid-row:span 3}
+  .t-h{grid-column:span 6;grid-row:span 3}
+
+  /* ===== CH 03 — SCROLL TIMELINE (sticky image, scrolling list) ===== */
+  .ch03{position:relative;background:var(--bg-warm);padding:140px 0 0;border-top:1px solid var(--line)}
+  .ch03-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.3fr;gap:60px;align-items:end;margin-bottom:80px}
+  .ch03-head h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(48px,6vw,84px);line-height:1.15;letter-spacing:-.02em;margin:0;max-width:11ch}
+  .ch03-head h2 em{font-style:italic;color:var(--accent)}
+  .ch03-head p{font-size:17px;line-height:1.7;color:var(--ink-soft);margin:0;max-width:520px}
+
+  .scroll-track{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0 56px 0 56px}
+  .scroll-track > .scroll-col{min-height:100%}
+  .scroll-stick{position:sticky;top:0;height:100vh;display:flex;align-items:center;padding-right:40px}
+  .scroll-stage{position:relative;width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#1a2a55;box-shadow:0 40px 80px -30px rgba(11,27,63,.3)}
+  .stage-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.04);transition:opacity 1s cubic-bezier(.4,0,.2,1), transform 1.6s cubic-bezier(.2,.7,.2,1)}
+  .stage-img.in{opacity:1;transform:scale(1)}
+  .stage-progress{position:absolute;left:24px;right:24px;top:24px;z-index:3;display:flex;gap:6px}
+  .stage-progress span{flex:1;height:2px;background:rgba(255,255,255,.2);border-radius:1px;overflow:hidden;position:relative}
+  .stage-progress span::after{content:"";position:absolute;inset:0;background:#9bb5ff;transform:scaleX(0);transform-origin:left;transition:transform .5s}
+  .stage-progress span.done::after{transform:scaleX(1)}
+  .stage-progress span.active::after{transform:scaleX(.5)}
+  .stage-overlay{position:absolute;left:24px;right:24px;bottom:24px;z-index:3;color:#fff}
+  .stage-overlay .y{font-family:'Instrument Serif',serif;font-style:italic;font-size:84px;line-height:1;color:#9bb5ff;font-weight:400;letter-spacing:-.02em}
+  .stage-overlay .meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:rgba(255,255,255,.7);text-transform:uppercase;margin-top:8px}
+  .stage-stamp{position:absolute;top:24px;right:24px;z-index:3;background:rgba(11,27,63,.7);color:#fff;padding:7px 14px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(8px)}
+  .stage-stamp b{color:#9bb5ff;font-weight:500;margin-left:8px}
+
+  .scroll-list{display:flex;flex-direction:column;gap:0;padding-left:60px;border-left:1px solid var(--line)}
+  .sli{min-height:80vh;padding:8vh 0;display:flex;flex-direction:column;justify-content:center;gap:12px;opacity:.2;transition:opacity .6s ease}
+  .sli.active{opacity:1}
+  .sli.passed{opacity:.4}
+  .sli .syear{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--accent);font-weight:400;letter-spacing:.02em}
+  .sli h4{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(40px,4.4vw,62px);line-height:1.2;margin:0;letter-spacing:-.018em;color:var(--ink);max-width:16ch}
+  .sli h4 em{font-style:italic;color:var(--accent)}
+  .sli .sdesc{font-size:16px;line-height:1.7;color:var(--ink-soft);margin:10px 0 0;max-width:48ch}
+  .sli .stags{display:flex;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:6px}
+  .sli .stags b{color:var(--ink);font-weight:500}
+
+  /* ===== CH 04 — NUMBERS BAND ===== */
+  .ch04{padding:0;background:var(--bg-warm);border-top:1px solid var(--line);margin-top:120px}
+  .nband{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ncell{padding:80px 40px;border-left:1px solid var(--line);position:relative;overflow:hidden}
+  .ncell:first-child{border-left:none}
+  .ncell .nb{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(80px,8vw,140px);line-height:.95;letter-spacing:-.03em;color:var(--ink);display:flex;align-items:baseline;gap:6px;margin-bottom:14px}
+  .ncell .nb em{font-style:italic;color:var(--accent);font-size:36px;font-weight:400}
+  .ncell .nl{font-size:14px;color:var(--ink);font-weight:500}
+  .ncell .ns{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+
+  /* ===== CH 05 — FULL-BLEED PORTRAIT TRIPTYCH ===== */
+  .ch05{padding:0;background:var(--bg)}
+  .triptych{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  .tcell{position:relative;aspect-ratio:3/4;overflow:hidden;background:#1a2a55;cursor:pointer}
+  .tcell .timg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1);filter:grayscale(.15)}
+  .tcell:hover .timg{transform:scale(1.05);filter:grayscale(0)}
+  .tcell::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 40%,rgba(11,27,63,.85) 100%)}
+  .tcap{position:absolute;left:30px;right:30px;bottom:28px;z-index:3;color:#fff}
+  .tcap .num{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;margin-bottom:8px}
+  .tcap h5{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:32px;line-height:1.2;margin:0 0 4px;letter-spacing:-.01em}
+  .tcap .role{font-size:13px;color:#9bb5ff;font-weight:500;letter-spacing:.02em}
+
+  /* ===== CH 06 — STUDIO PARALLAX BAND ===== */
+  .ch06{position:relative;height:90vh;min-height:640px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .ch06-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.1);will-change:transform}
+  .ch06-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.3),rgba(11,27,63,.85))}
+  .ch06-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 90px}
+  .ch06 h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(48px,7vw,108px);line-height:1.1;letter-spacing:-.02em;margin:0;max-width:14ch}
+  .ch06 h2 em{font-style:italic;color:#9bb5ff}
+  .ch06 .clabel{color:#9bb5ff;margin-bottom:24px}
+  .ch06 .clabel::before{background:#9bb5ff}
+  .ch06-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .ch06-foot .a{display:flex;gap:38px}
+
+  /* ===== CH 07 — 私たちのこだわり (minimal list) ===== */
+  .ch07{padding:140px 0 160px;background:var(--bg);border-top:1px solid var(--line)}
+  .ch07 .head{padding:0 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:60px}
+  .ch07 h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(44px,6vw,84px);line-height:1.15;letter-spacing:-.02em;margin:0;max-width:14ch}
+  .ch07 h2 em{font-style:italic;color:var(--accent)}
+  .ch07 .head p{font-size:17px;line-height:1.7;color:var(--ink-soft);margin:0;max-width:480px}
+  .recog-list{padding:0 56px}
+  .rrow{display:grid;grid-template-columns:60px 1fr 1fr 40px;gap:32px;align-items:center;padding:36px 0;border-top:1px solid var(--line);transition:.3s;cursor:pointer}
+  .rrow:last-child{border-bottom:1px solid var(--line)}
+  .rrow:hover{padding-left:14px;padding-right:14px}
+  .rrow .ry{font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;color:var(--accent);font-weight:400;line-height:1;letter-spacing:-.01em}
+  .rrow h6{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:24px;line-height:1.4;margin:0;color:var(--ink);letter-spacing:-.01em}
+  .rrow .rcat{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .rrow .arr{opacity:.4;transition:.2s;font-size:20px;color:var(--accent);text-align:right}
+  .rrow:hover .arr{opacity:1;transform:translateX(6px)}
+
+  /* ===== CTA (shared with projects/solutions) ===== */
+  .eyebrow{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:24px}
+  .btn-light{background:#fff;color:var(--ink);border:1px solid #fff}
+  .btn-light:hover{background:#eef3fb}
+  .btn-outline-light{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25)}
+  .btn-outline-light:hover{background:rgba(255,255,255,.06)}
+  .cta{padding:140px 0;background:#0b1b3f;color:#fff;text-align:center;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 50%, rgba(99,140,255,.18), rgba(99,140,255,0) 60%)}
+  .cta-content{position:relative;z-index:1;max-width:880px;margin:0 auto}
+  .cta h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(44px,5vw,68px);line-height:1.2;letter-spacing:-.02em;margin:24px 0 22px}
+  .cta h2 em{font-style:italic;color:#9bb5ff}
+  .cta p{font-size:17px;line-height:1.7;color:#b8c3df;margin:0 auto 38px;max-width:560px}
+  .cta-cta{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+  .cta .btn{padding:14px 24px;border-radius:10px;font-size:16px}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px;border-top:none}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  /* ===== LAPTOP RANGE (MacBook 1280-1500px) ===== */
+  @media (min-width:1081px) and (max-width:1500px){
+    .hero-content{padding:0 48px 64px}
+    .hero-eyebrow{margin-bottom:22px}
+    h1.hero-h{font-size:clamp(60px,7vw,108px);max-width:15ch}
+    .hero-foot{left:48px;right:48px;bottom:28px}
+  }
+
+  @media (min-width:769px) and (max-width:1080px){
+    .wrap,.hero-content,.ch03-head,.scroll-track,.ch06-content,.ch07 .head,.recog-list{padding-left:32px;padding-right:32px}
+    .hero-content{padding:0 32px 90px}
+    .hero-foot,.ch06-foot{left:32px;right:32px}
+    .hero-eyebrow{position:absolute;top:96px;left:32px;right:32px;z-index:5;margin:0}
+    h1.hero-h{font-size:clamp(60px,9vw,108px);line-height:1.1;letter-spacing:-.02em;max-width:none;width:100%}
+    .ch03-head,.ch07 .head{grid-template-columns:1fr 1.2fr;gap:36px}
+    .scroll-track{padding-left:40px;padding-right:40px}
+    .scroll-stick{padding-right:24px}
+    .scroll-list{padding-left:40px}
+    .sli h4{font-size:clamp(34px,4vw,48px)}
+    .sli .sdesc{font-size:15px}
+    .nband{grid-template-columns:repeat(2,1fr)}
+    .ncell{padding:60px 32px}
+    .ncell:nth-child(3){border-left:none}
+    .ncell:nth-child(n+3){border-top:1px solid var(--line)}
+    .triptych{grid-template-columns:1fr}
+    .tcell{aspect-ratio:16/10}
+    .tcap h5{font-size:30px}
+    .mosaic{grid-auto-rows:13vh}
+    .rrow{grid-template-columns:60px 1fr 140px 32px;gap:20px}
+    .rrow h6{font-size:20px}
+    .chapter-rail{right:14px}
+    .hud{display:none}
+    .cta{padding:110px 0}
+    .cta h2{font-size:44px}
+  }
+  @media (max-width:768px){
+    .wrap,.hero-content,.hero-foot,.ch03-head,.scroll-track,.ch06-content,.ch06-foot,.ch07 .head,.recog-list{padding-left:24px;padding-right:24px}
+    .chapter-rail,.hud{display:none}
+    .ch03-head,.ch07 .head,.scroll-track{grid-template-columns:1fr}
+    .scroll-stick{display:none}
+    .scroll-list{padding-left:0;border-left:none}
+    .sli{min-height:auto;padding:24px 0;opacity:1;transition:none;display:block}
+    .sli.active,.sli.passed{opacity:1}
+    .sli::before{content:"";display:block;width:100%;aspect-ratio:4/3;background-size:cover;background-position:center;margin-bottom:20px;border-radius:8px;background-color:#1a2a55}
+    .sli[data-i="0"]::before{background-image:url('assets/img1.png')}
+    .sli[data-i="1"]::before{background-image:url('assets/img2.png')}
+    .sli[data-i="2"]::before{background-image:url('assets/img3.png')}
+    .sli[data-i="3"]::before{background-image:url('assets/img4.png')}
+    .sli[data-i="4"]::before{background-image:url('assets/img1.png')}
+    .sli[data-i="5"]::before{background-image:url('assets/img2.png')}
+    .sli[data-i="6"]::before{background-image:url('assets/hero-bg.png')}
+    .nband{grid-template-columns:1fr 1fr}
+    .triptych{grid-template-columns:1fr}
+    .tcell{aspect-ratio:16/10}
+    .tcap h5{font-size:26px}
+    .ncell:nth-child(3){border-left:none}
+    .nav-links{display:none}
+    .mosaic{grid-auto-rows:11vh}
+    .t-a,.t-b,.t-c,.t-d,.t-e,.t-f,.t-g,.t-h{grid-column:span 12;grid-row:span 3}
+  }
+  @media (max-width:560px){
+    .wrap,.hero-content,.hero-foot,.ch03-head,.scroll-track,.ch06-content,.ch06-foot,.ch07 .head,.recog-list{padding-left:18px;padding-right:18px}
+    .nband,.triptych{grid-template-columns:1fr}
+    .ncell{border-left:none;padding:24px 0}
+    .hero-foot{flex-direction:column;align-items:flex-start;gap:8px;left:18px;right:18px;bottom:18px;font-size:9.5px;letter-spacing:.14em}
+    .hero-foot .meta{flex-wrap:wrap;gap:14px}
+    .hero-content{padding:0 18px 110px}
+    h1.hero-h{font-size:clamp(46px,11vw,80px)}
+    .hero-eyebrow{position:absolute;top:64px;left:18px;right:18px;z-index:5;margin:0;font-size:10px;letter-spacing:.18em;gap:8px}
+    .btn{padding:10px 16px;font-size:13.5px}
+    .rrow{grid-template-columns:50px 1fr;gap:14px;padding:24px 0}
+    .rrow .rcat,.rrow .arr{display:none}
+    .rrow h6{font-size:18px}
+    .rrow .ry{font-size:32px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<aside class="chapter-rail" id="chapterRail">
+  <a class="ch active" data-go="hero">00</a>
+  <a class="ch" data-go="ch01">01</a>
+  <a class="ch" data-go="ch02">02</a>
+  <a class="ch" data-go="ch03">03</a>
+  <a class="ch" data-go="ch04">04</a>
+  <a class="ch" data-go="ch05">05</a>
+  <a class="ch" data-go="ch06">06</a>
+  <a class="ch" data-go="ch07">07</a>
+</aside>
+
+<aside class="hud">
+  <div>XRD/ABOUT.000</div>
+  <div>DA NANG <b>16.05°N</b></div>
+  <div>EST <b>2025</b></div>
+</aside>
+
+<!-- ===== HERO ===== -->
+<section class="hero" data-chapter="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">About · xR&amp;D Technologies</div>
+    <h1 class="hero-h">An <em>AI-native</em> company,<br>from Vietnam.</h1>
+  </div>
+  <div class="hero-foot">
+    <div class="meta">
+      <span>EST · 2025</span>
+      <span>DA NANG · VN</span>
+      <span>04 BUSINESSES</span>
+      <span>23 PEOPLE</span>
+    </div>
+    <div class="scroll">SCROLL <div class="ar"><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 1v4m0 0L1.5 3.5M3 5l1.5-1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg></div></div>
+  </div>
+</section>
+
+<!-- ===== CH 01 — STATEMENT ===== -->
+<section class="ch01" data-chapter="ch01">
+  <div class="wrap">
+    <div class="clabel">Chapter 01 · 私たちの信念</div>
+    <h2>AI を<em>語る</em>前に、<br>AI で<em>つくる</em>。</h2>
+    <div class="stamp">
+      <span><b>i.</b>自分たちで、実装する</span>
+      <span><b>ii.</b>自分たちで、育てる</span>
+      <span><b>iii.</b>自分たちで、伴走する</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 02 — MOSAIC ===== -->
+<section class="ch02" data-chapter="ch02">
+  <div class="mosaic">
+    <div class="mtile t-a"><div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <span class="mtag">領域 ① · DX</span>
+      <div class="mlbl"><span>業務システム × AI エージェント</span><b>2025 →</b></div>
+    </div>
+    <div class="mtile t-b"><div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <span class="mtag">領域 ② · マーケ</span>
+      <div class="mlbl"><span>SNS 広告ビジュアル量産</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-c"><div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <span class="mtag">領域 ③ · 経営企画</span>
+      <div class="mlbl"><span>AI 活用診断</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-d"><div class="mimg" style="background-image:url('assets/img1.png')"></div>
+      <span class="mtag">領域 ① · 情シス</span>
+      <div class="mlbl"><span>AI ナレッジ検索</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-e"><div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <span class="mtag">領域 ④ · 開発</span>
+      <div class="mlbl"><span>AI ネイティブ派遣</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-f"><div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <span class="mtag">領域 ② · 新規事業</span>
+      <div class="mlbl"><span>プロダクトビジュアル</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-g"><div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <span class="mtag">領域 ③ · 法務</span>
+      <div class="mlbl"><span>AI ガバナンス策定</span><b>2025</b></div>
+    </div>
+    <div class="mtile t-h"><div class="mimg" style="background-image:url('assets/img1.png')"></div>
+      <span class="mtag">領域 ④ · 人事</span>
+      <div class="mlbl"><span>育成プログラム委託</span><b>2025</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 03 — SCROLL TIMELINE ===== -->
+<section class="ch03" data-chapter="ch03">
+  <div class="ch03-head">
+    <div>
+      <div class="clabel">Chapter 03 · 創業ストーリー</div>
+      <h2><em>ダナン</em>から、<br>はじまる。</h2>
+    </div>
+    <p>生成 AI と人材育成スキームが交わったところから、xR&amp;D が動きだしました。2025 年、ベトナム・ダナンを本拠地に。</p>
+  </div>
+
+  <div class="scroll-track" id="scrollTrack">
+    <div class="scroll-col">
+      <div class="scroll-stick">
+        <div class="scroll-stage">
+          <div class="stage-img in" data-img="0" style="background-image:url('assets/img1.png')"></div>
+          <div class="stage-img" data-img="1" style="background-image:url('assets/img2.png')"></div>
+          <div class="stage-img" data-img="2" style="background-image:url('assets/img3.png')"></div>
+          <div class="stage-img" data-img="3" style="background-image:url('assets/img4.png')"></div>
+          <div class="stage-img" data-img="4" style="background-image:url('assets/img1.png')"></div>
+          <div class="stage-img" data-img="5" style="background-image:url('assets/img2.png')"></div>
+          <div class="stage-img" data-img="6" style="background-image:url('assets/hero-bg.png')"></div>
+          <div class="stage-progress" id="stageProgress"></div>
+          <div class="stage-stamp" id="stageStamp">YEAR <b>—</b></div>
+          <div class="stage-overlay"><div class="y" id="stageY">—</div><div class="meta" id="stageMeta">育成スキーム · DA NANG</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-list" id="scrollList">
+      <div class="sli active" data-i="0"><div class="syear">創業前</div><h4><em>育成スキーム</em>、はじまる。</h4><p class="sdesc">Nghia がベトナムで AI ネイティブ人材育成のスキームを設計・運営。提携大学での日本語教育からインターンシップ、卒業時の即戦力採用までをひとつの仕組みに。</p><div class="stags"><span>TALENT</span><span>DA NANG</span></div></div>
+      <div class="sli" data-i="1"><div class="syear">創業前</div><h4><em>生成 AI</em>の探究。</h4><p class="sdesc">Tomoki が生成 AI の可能性に着目し、研究と試作を重ねる。AI を使うのではなく、AI で実装する側に立ちたいと考えるように。</p><div class="stags"><span>R&amp;D</span><span>TOKYO</span></div></div>
+      <div class="sli" data-i="2"><div class="syear">2025 春</div><h4><em>出会い</em>と構想。</h4><p class="sdesc">Tomoki と Nghia が出会う。生成 AI の探究と人材育成スキームを掛け合わせれば、AI ネイティブな会社が成立する。4 事業の構想がここでまとまる。</p><div class="stags"><span>FOUNDING</span><span><b>2025</b></span></div></div>
+      <div class="sli" data-i="3"><div class="syear">2025</div><h4>xR&amp;D Technologies、<em>創業</em>。</h4><p class="sdesc">ベトナム・ダナンに本拠地を構えて創業。生成 AI の探究と人材育成スキームの組み合わせから生まれた AI ネイティブカンパニー。</p><div class="stags"><span>EST</span><span>DA NANG</span></div></div>
+      <div class="sli" data-i="4"><div class="syear">2025</div><h4>4 事業 + <em>2 拠点</em>。</h4><p class="sdesc">AI 駆動開発・AI ビジュアル制作・AI 導入支援・AI ネイティブ人材育成の 4 事業を並列で立ち上げ。サブ拠点としてハノイを開設。</p><div class="stags"><span>OPS</span><span>DA NANG · HANOI</span></div></div>
+      <div class="sli" data-i="5"><div class="syear">2025</div><h4>23 名<em>体制</em>へ。</h4><p class="sdesc">日本人 2 名、ベトナム人パートナー 1 名、Nghia の育成スキーム出身のベトナム人スタッフ 約 20 名。AI ネイティブな組織が稼働を始める。</p><div class="stags"><span>TEAM</span><span><b>23</b> people</span></div></div>
+      <div class="sli" data-i="6"><div class="syear">2026 →</div><h4><em>これから</em>。</h4><p class="sdesc">日本企業の AI ネイティブ化を、ベトナムから加速していく。中堅〜大手の事業会社、ASEAN 進出済日本企業の AI 化を、4 事業で伴走する。</p><div class="stags"><span>NEXT</span><span>JP × ASEAN</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 04 — NUMBERS ===== -->
+<section class="ch04" data-chapter="ch04">
+  <div class="nband">
+    <div class="ncell">
+      <div class="nb" data-n="4">0</div>
+      <div class="nl">事業領域</div>
+      <div class="ns">2025 →</div>
+    </div>
+    <div class="ncell">
+      <div class="nb" data-n="23">0</div>
+      <div class="nl">メンバー</div>
+      <div class="ns">日本 + ベトナム</div>
+    </div>
+    <div class="ncell">
+      <div class="nb" data-n="2">0</div>
+      <div class="nl">拠点</div>
+      <div class="ns">ダナン · ハノイ</div>
+    </div>
+    <div class="ncell">
+      <div class="nb"><span data-n="100">0</span><em>%</em></div>
+      <div class="nl">自前育成スタッフ</div>
+      <div class="ns">Nghia のスキーム出身</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 05 — TRIPTYCH ===== -->
+<section class="ch05" data-chapter="ch05">
+  <div class="triptych">
+    <div class="tcell"><div class="timg" style="background:linear-gradient(135deg,#3a4a72,#1a2a55)"></div>
+      <div class="tcap"><div class="num">P—01 · 創業者</div><h5>Tomoki</h5><div class="role">Founder · CEO</div></div>
+    </div>
+    <div class="tcell"><div class="timg" style="background:linear-gradient(135deg,#445470,#243460)"></div>
+      <div class="tcap"><div class="num">P—02 · 共同パートナー</div><h5>Nghia</h5><div class="role">Founding Partner · 人材育成</div></div>
+    </div>
+    <div class="tcell"><div class="timg" style="background:linear-gradient(135deg,#4a5a82,#2a3a65)"></div>
+      <div class="tcap"><div class="num">P—03 · スタジオ</div><h5>Vietnam Studio</h5><div class="role">23 People · Da Nang &amp; Hanoi</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH 06 — STUDIO PARALLAX ===== -->
+<section class="ch06" data-chapter="ch06">
+  <div class="ch06-img" id="ch06Img"></div>
+  <div class="ch06-content">
+    <div class="clabel">Chapter 06 · スタジオ</div>
+    <h2>ダナン、<br><em>つくる現場</em>。</h2>
+  </div>
+  <div class="ch06-foot">
+    <div class="a">
+      <span>DA NANG · VN</span>
+      <span>HANOI · VN</span>
+      <span>2025 → 現在</span>
+      <span>STUDIO · LAB · TRAINING</span>
+    </div>
+    <span>OPEN STUDIO · 第 1 金曜</span>
+  </div>
+</section>
+
+<!-- ===== CH 07 — 私たちのこだわり ===== -->
+<section class="ch07" data-chapter="ch07">
+  <div class="head">
+    <div>
+      <div class="clabel">Chapter 07 · 私たちのこだわり</div>
+      <h2>3 つの、<em>こだわり</em>。</h2>
+    </div>
+    <p>私たちが、xR&amp;D としてこだわっていること。4 事業のすべてに通底する 3 本の柱です。</p>
+  </div>
+  <div class="recog-list">
+    <div class="rrow"><span class="ry">01</span><h6>AI ネイティブな技術基盤 × 現場の実装力</h6><span class="rcat">4 事業を支える共通土台</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">02</span><h6>AI ネイティブ人材を、自前で育てる</h6><span class="rcat">大学 × インターン × 採用</span><span class="arr">→</span></div>
+    <div class="rrow"><span class="ry">03</span><h6>自分たちが先に実践している</h6><span class="rcat">コンサル屋でも派遣屋でもない</span><span class="arr">→</span></div>
+  </div>
+</section>
+
+<!-- ============== CTA (shared) ============== -->
+<section class="cta">
+  <div class="wrap cta-content">
+    <div class="eyebrow" style="color:#9bb5ff">ともに、つくる</div>
+    <h2>答えがなくても、<br><em>相談から</em>。</h2>
+    <p>最初の相談は無料です。具体案がなくても OK。AI で何ができるか、一緒に話しましょう。</p>
+    <div class="cta-cta">
+      <a class="btn btn-light" href="#">プロジェクトを始める
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <a class="btn btn-outline-light" href="solutions.html">事業を見る</a>
+    </div>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  const rail = document.querySelectorAll('#chapterRail .ch');
+  const chapters = document.querySelectorAll('[data-chapter]');
+  const heroImg = document.getElementById('heroImg');
+  const ch06Img = document.getElementById('ch06Img');
+
+  // ===== GSAP entrance + scroll reveals =====
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.hero-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.3});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.45});
+    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.7});
+
+    gsap.utils.toArray('section[data-chapter]:not(.hero)').forEach(sec=>{
+      const headings = sec.querySelectorAll('h2,h3,.eyebrow,.kicker,.section-num');
+      const paragraphs = sec.querySelectorAll('p,li');
+      if (headings.length){
+        gsap.from(headings,{y:30,opacity:0,duration:.9,ease:'power4.out',stagger:.08,scrollTrigger:{trigger:sec,start:'top 82%'}});
+      }
+      if (paragraphs.length){
+        gsap.from(paragraphs,{y:18,opacity:0,duration:.6,ease:'power3.out',stagger:.04,scrollTrigger:{trigger:sec,start:'top 78%'}});
+      }
+    });
+
+    // mosaic / triptych / nband / recog list cards
+    gsap.utils.toArray('.mtile, .tcell, .ncell, .rrow').forEach(el=>{
+      gsap.fromTo(el,{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});
+    });
+
+    // mosaic image scale-ins
+    gsap.utils.toArray('.mimg, .timg, .stage-img').forEach(img=>{
+      gsap.fromTo(img,{scale:1.15},{scale:1,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:img,start:'top 92%'}});
+    });
+
+    // CTA
+    gsap.fromTo('.cta h2',{y:36,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+    gsap.fromTo('.cta p',{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+    gsap.fromTo('.cta-cta > *',{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.1,delay:.2,scrollTrigger:{trigger:'.cta',start:'top 90%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+
+  function onScroll(){
+    const y = window.scrollY;
+    if (nav) nav.classList.toggle('scrolled', y > 80);
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+
+    let active = chapters[0];
+    chapters.forEach(c=>{
+      const r = c.getBoundingClientRect();
+      if (r.top < window.innerHeight*0.45) active = c;
+    });
+    const id = active.dataset.chapter;
+    rail.forEach(r=>r.classList.toggle('active', r.dataset.go === id));
+
+    // hero parallax (translate only, static scale for buffer)
+    if (y < window.innerHeight){
+      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
+    }
+    // ch06 parallax
+    const r6 = ch06Img.parentElement.getBoundingClientRect();
+    if (r6.top < window.innerHeight && r6.bottom > 0){
+      const off = (window.innerHeight - r6.top) * 0.15;
+      ch06Img.style.transform = `scale(1.1) translateY(${-off}px)`;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  rail.forEach(r=>{
+    r.addEventListener('click', e=>{
+      e.preventDefault();
+      const t = document.querySelector(`[data-chapter="${r.dataset.go}"]`);
+      if (t) window.scrollTo({top: t.offsetTop, behavior:'smooth'});
+    });
+  });
+
+  // ===== scroll-driven timeline (sticky image swap) =====
+  const slis = document.querySelectorAll('.sli');
+  const stageImgs = document.querySelectorAll('.stage-img');
+  const stageY = document.getElementById('stageY');
+  const stageStamp = document.getElementById('stageStamp');
+  const stageMeta = document.getElementById('stageMeta');
+  const META = ['育成スキーム · DA NANG','AI 探究 · TOKYO','出会い · 構想','創業 · DA NANG','4 事業始動 · 2 拠点','23 名体制','これから →'];
+  const YEARS = ['—','—','2025','2025','2025','2025','2026'];
+
+  // build progress ticks
+  const stageProgress = document.getElementById('stageProgress');
+  if (stageProgress){
+    stageProgress.innerHTML = Array.from(slis).map(()=>'<span></span>').join('');
+  }
+  const ticks = stageProgress ? stageProgress.querySelectorAll('span') : [];
+  let curIdx = -1;
+
+  function setActive(i){
+    if (i === curIdx) return;
+    curIdx = i;
+    slis.forEach((s,idx)=>{
+      s.classList.toggle('active', idx===i);
+      s.classList.toggle('passed', idx<i);
+    });
+    stageImgs.forEach((img,idx)=>img.classList.toggle('in', idx===i));
+    ticks.forEach((t,idx)=>{
+      t.classList.toggle('done', idx<i);
+      t.classList.toggle('active', idx===i);
+    });
+    stageY.textContent = YEARS[i];
+    stageStamp.innerHTML = `YEAR <b>${YEARS[i]}</b>`;
+    stageMeta.textContent = META[i];
+  }
+
+  // scroll-driven sync via section progress (smooth, deterministic)
+  const track = document.getElementById('scrollTrack');
+  function syncTimeline(){
+    if (!track) return;
+    const r = track.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // active when stick is pinned: section top <= 0 and bottom > vh
+    const total = r.height - vh;
+    if (total <= 0) return;
+    const scrolled = Math.max(0, Math.min(total, -r.top));
+    const p = scrolled / total; // 0..1
+    const i = Math.min(slis.length - 1, Math.floor(p * slis.length));
+    setActive(i);
+  }
+  window.addEventListener('scroll', syncTimeline, {passive:true});
+  window.addEventListener('resize', syncTimeline);
+  syncTimeline();
+
+  // ===== counters =====
+  function animateCount(el){
+    const target = parseFloat(el.dataset.n);
+    const isFloat = String(target).includes('.');
+    const dur = 1500;
+    const start = performance.now();
+    function tick(now){
+      const t = Math.min(1, (now - start)/dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = target * eased;
+      el.textContent = isFloat ? val.toFixed(1) : Math.round(val);
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  const countIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if (e.isIntersecting){
+        const el = e.target;
+        if (!el.dataset.run){ el.dataset.run = '1'; animateCount(el); }
+      }
+    });
+  }, {threshold: 0.6});
+  document.querySelectorAll('[data-n]').forEach(el=>countIO.observe(el));
+})();
+</script>
+
+</body>
+</html>

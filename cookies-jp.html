@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cookie ポリシー — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter','Noto Sans JP',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff;background:rgba(11,27,63,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+
+  .legal-head{padding:160px 56px 70px;background:var(--bg-warm);border-bottom:1px solid var(--line)}
+  .legal-head .crumb{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+  .legal-head .crumb a{color:var(--accent)}
+  .legal-head .crumb .sep{opacity:.4}
+  .legal-head h1{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(40px,5vw,68px);line-height:1.2;letter-spacing:-.02em;margin:0 0 22px;max-width:18ch}
+  .legal-head h1 em{font-style:italic;color:var(--accent)}
+  .legal-head .meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;display:flex;gap:28px;flex-wrap:wrap}
+  .legal-head .meta b{color:var(--ink);font-weight:500}
+
+  .legal{padding:80px 56px 130px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:80px;align-items:start;background:var(--bg)}
+  .legal-toc{position:sticky;top:110px}
+  .legal-toc h6{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 18px;display:flex;align-items:center;gap:12px}
+  .legal-toc h6::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .legal-toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+  .legal-toc li{counter-increment:t;border-top:1px solid var(--line-2)}
+  .legal-toc li:first-child{border-top:none}
+  .legal-toc a{display:flex;align-items:flex-start;gap:14px;padding:9px 0;font-size:13.5px;color:var(--ink-soft);font-weight:500;line-height:1.5;transition:color .15s}
+  .legal-toc a::before{content:counter(t,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.06em;flex-shrink:0;padding-top:2px}
+  .legal-toc a:hover{color:var(--ink)}
+
+  .legal-body{font-size:16px;line-height:1.85;color:var(--ink-soft);max-width:780px}
+  .legal-body p{margin:0 0 18px}
+  .legal-body p b{color:var(--ink);font-weight:600}
+  .legal-body h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(24px,2.4vw,32px);line-height:1.3;letter-spacing:-.015em;color:var(--ink);margin:54px 0 18px;scroll-margin-top:100px}
+  .legal-body h2 em{font-style:italic;color:var(--accent)}
+  .legal-body h2:first-child{margin-top:0}
+  .legal-body .section-mark{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:8px;display:block}
+  .legal-body ul{margin:0 0 22px;padding-left:0;list-style:none}
+  .legal-body ul li{position:relative;padding-left:24px;margin-bottom:8px}
+  .legal-body ul li::before{content:"→";position:absolute;left:0;top:0;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:500}
+  .legal-body a{color:var(--accent);border-bottom:1px solid rgba(37,99,235,.25);transition:border-color .15s}
+  .legal-body a:hover{border-bottom-color:var(--accent)}
+
+  .ck-table{width:100%;border-collapse:collapse;margin:18px 0 28px;font-size:14px}
+  .ck-table th,.ck-table td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  .ck-table th{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;background:var(--line-2)}
+  .ck-table td b{color:var(--ink);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:13px}
+
+  @media (max-width:1080px){
+    .wrap,.legal-head,.legal{padding-left:24px;padding-right:24px}
+    .legal{grid-template-columns:1fr;gap:40px;padding-top:60px}
+    .legal-toc{position:relative;top:auto}
+    .nav-links{display:none}
+    .ck-table{font-size:13px}
+    .ck-table th,.ck-table td{padding:10px 8px}
+  }
+  @media (min-width:641px) and (max-width:1080px){
+    .wrap,.legal-head,.legal{padding-left:40px;padding-right:40px}
+    .legal{grid-template-columns:200px minmax(0,1fr);gap:48px;padding-top:70px}
+    .legal-toc{position:sticky;top:104px}
+    .legal-head{padding-top:140px;padding-bottom:60px}
+    .ck-table{font-size:14px}
+    .ck-table th,.ck-table td{padding:12px 12px}
+  }
+  @media (max-width:560px){
+    .wrap,.legal-head,.legal{padding-left:18px;padding-right:18px}
+    .legal-head{padding-top:130px;padding-bottom:50px}
+    .legal-head h1{font-size:32px}
+    .legal-head .meta{flex-direction:column;gap:8px}
+    .legal-body{font-size:15px}
+    .legal-body h2{font-size:22px;margin:42px 0 14px}
+    .ck-table{display:block;overflow-x:auto;white-space:nowrap}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<header class="legal-head">
+  <div class="crumb"><a href="index-jp.html">xR&amp;D</a><span class="sep">/</span><span>Legal</span><span class="sep">/</span><span>Cookies</span></div>
+  <h1>Cookie <em>ポリシー</em>。</h1>
+  <div class="meta">
+    <span>最終更新 · <b>2026 年 4 月 15 日</b></span>
+    <span>トラッキング <b>なし</b></span>
+    <span>Cookie <b>必要最小限のみ</b></span>
+  </div>
+</header>
+
+<section class="legal">
+  <aside class="legal-toc">
+    <h6>目次</h6>
+    <ol>
+      <li><a href="#what">Cookie とは</a></li>
+      <li><a href="#use">使用しているもの</a></li>
+      <li><a href="#table">Cookie 一覧</a></li>
+      <li><a href="#third">第三者サービス</a></li>
+      <li><a href="#choices">利用者の選択肢</a></li>
+      <li><a href="#contact">お問い合わせ</a></li>
+    </ol>
+  </aside>
+  <div class="legal-body">
+    <p style="font-size:17px;color:var(--ink);font-weight:500">要点: <b>マーケティング Cookie・広告トラッカー・行動プロファイリングは一切使用していません。</b> 本サイトが設定する Cookie は、サイトの動作に必要不可欠なもののみです。オプトアウトする項目はありませんが、透明性のために以下に一覧します。</p>
+
+    <h2 id="what"><span class="section-mark">01</span>Cookie <em>とは</em>。</h2>
+    <p>Cookie は、訪問先の Web サイトがブラウザに保存する小さなデータです。ページ間の状態（セッション・設定・バナー閉じた等）を記憶するために使われます。Cookie は <b>必要不可欠</b>・<b>機能的</b>・<b>分析用</b>・<b>マーケティング用</b> の 4 種類に分類されますが、当社は最初の 1 種類のみ使用しています。</p>
+
+    <h2 id="use"><span class="section-mark">02</span>使用<em>しているもの</em>。</h2>
+    <p>本サイトは意図的に最小構成です。使用するのは:</p>
+    <ul>
+      <li><b>セッション Cookie 1 つ</b> — フォーム送信時の二重送信防止と基本的な CSRF 対策のため</li>
+      <li><b>設定 Cookie 1 つ</b> — ニュースレター登録時のみ設定。登録済みの状態を記憶するため</li>
+      <li><b>分析 Cookie なし</b> — ページビューは Cookie を使わない自社運営の Plausible で集計</li>
+      <li><b>広告 Cookie なし</b> — 広告配信・広告ネットワークの利用なし</li>
+    </ul>
+
+    <h2 id="table"><span class="section-mark">03</span>Cookie <em>一覧</em>。</h2>
+    <p>このドメインが設定するすべての Cookie を、明示的に記載します:</p>
+    <table class="ck-table">
+      <thead><tr><th>名前</th><th>用途</th><th>有効期間</th><th>種類</th></tr></thead>
+      <tbody>
+        <tr><td><b>xrd_session</b></td><td>フォームの二重送信防止トークン</td><td>セッション</td><td>必要不可欠</td></tr>
+        <tr><td><b>xrd_subscribed</b></td><td>ニュースレター登録の確認</td><td>365 日</td><td>機能的</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="third"><span class="section-mark">04</span>第三者<em>サービス</em>。</h2>
+    <p>本サイトは 2 つの第三者リソースを参照しています — フォント用の <a href="https://fonts.google.com" target="_blank">Google Fonts</a> と、GSAP アニメーションライブラリ用の <a href="https://www.jsdelivr.com" target="_blank">jsDelivr</a> です。これらのサービスはリクエストメタデータ（IP アドレス・ユーザーエージェント）を記録する場合がありますが、本ドメイン上で Cookie を設定することはありません。</p>
+    <p>第三者リソースの利用が制約されるクライアント企業向けには、両方とも自社ホスティングへの切替えが可能です。<a href="mailto:privacy@xrd.technologies">privacy@xrd.technologies</a> までご相談ください。</p>
+
+    <h2 id="choices"><span class="section-mark">05</span>利用者の<em>選択肢</em>。</h2>
+    <p>本サイトの Cookie はブラウザ設定からいつでも削除できます。削除してもサイト機能には影響しませんが、ニュースレターの「登録済み」状態は忘れられます。ブラウザの「Do Not Track」シグナルにも対応しています。</p>
+
+    <h2 id="contact"><span class="section-mark">06</span><em>お問い合わせ</em>。</h2>
+    <p>Cookie・トラッキング・第三者リソースに関するご質問は <a href="mailto:privacy@xrd.technologies">privacy@xrd.technologies</a> までご連絡ください。原則 5 営業日以内に返信します。</p>
+
+    <p style="margin-top:54px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;border-top:1px solid var(--line);padding-top:24px">監査済 2026 年 4 月 15 日 · 関連: <a href="privacy-jp.html" style="color:var(--accent);border-bottom:1px solid var(--accent)">プライバシーポリシー</a> · <a href="terms-jp.html" style="color:var(--accent);border-bottom:1px solid var(--accent)">利用規約</a></p>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Insights — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .wrap{width:100%;margin:0;padding:0 56px}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
+  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .logo{display:flex;align-items:baseline;gap:6px}
+  .logo .x{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:1}
+  .logo .rd{font-family:'Instrument Serif',serif;font-size:30px;line-height:1}
+  .logo-text{display:flex;flex-direction:column;line-height:1;margin-left:6px}
+  .logo-text span{font-size:13px;opacity:.7;font-weight:500}
+  .nav-links{display:flex;align-items:center;gap:38px}
+  .nav-links a{font-size:15px;opacity:.85;font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a.active{opacity:1;color:#9bb5ff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
+
+  /* ===== SCROLL PROGRESS ===== */
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--ink);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear;mix-blend-mode:difference}
+
+  /* ===== HUD ===== */
+  .hud{position:fixed;right:20px;bottom:20px;z-index:150;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-align:right;line-height:1.7;text-transform:uppercase;mix-blend-mode:difference;color:#fff;opacity:.65}
+  .hud b{color:#9bb5ff;font-weight:500}
+
+  /* ===== HERO — full-bleed image ===== */
+  .hero{position:relative;height:100vh;min-height:760px;overflow:hidden;background:#0b1b3f;color:#fff}
+  .hero-img{position:absolute;inset:0;background:url('assets/hero-bg.png') center/cover no-repeat;transform:scale(1.15);will-change:transform}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.3) 0%,rgba(11,27,63,.15) 35%,rgba(11,27,63,.65) 100%)}
+  .hero-content{position:relative;z-index:2;height:100%;display:grid;grid-template-columns:1.5fr 1fr;align-items:end;gap:60px;padding:0 56px 110px}
+  .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:12px}
+  .hero-eyebrow::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  .hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(80px,12vw,180px);line-height:.92;letter-spacing:-.03em;margin:0;max-width:11ch}
+  .hero-h em{font-style:italic;color:#9bb5ff}
+  .hero-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.65);text-transform:uppercase;line-height:1.9;border-left:1px solid rgba(155,181,255,.3);padding-left:28px}
+  .hero-meta b{color:#fff;font-weight:500}
+  .hero-meta .row{display:flex;justify-content:space-between;gap:20px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.12)}
+  .hero-meta .row:last-child{border-bottom:none}
+  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase}
+  .hero-foot .meta{display:flex;gap:38px}
+  .hero-foot .scroll{display:flex;align-items:center;gap:10px}
+  .hero-foot .scroll .ar{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  /* index strip */
+  .indexstrip{padding:32px 56px;border-top:1px solid var(--line);background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:40px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .indexstrip .ix{display:flex;gap:36px;flex-wrap:wrap}
+  .indexstrip .ix span b{color:var(--ink);font-weight:500;margin-left:6px}
+  .indexstrip .live{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .indexstrip .live .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+  /* ===== FEATURED — split editorial ===== */
+  .feat{padding:80px 0 120px;background:var(--bg)}
+  .feat-grid{padding:0 56px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:stretch}
+  .feat-img{position:relative;aspect-ratio:5/4;border-radius:10px;overflow:hidden;background:#1a2a55;cursor:pointer}
+  .feat-img .fimg{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .feat-img:hover .fimg{transform:scale(1.05)}
+  .feat-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 50%,rgba(11,27,63,.55) 100%)}
+  .feat-img .ftag{position:absolute;top:22px;left:22px;z-index:2;background:rgba(255,255,255,.95);color:var(--ink);padding:7px 14px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+  .feat-img .fbadge{position:absolute;top:22px;right:22px;z-index:2;background:var(--accent);color:#fff;padding:7px 14px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+  .feat-img .fcap{position:absolute;left:22px;right:22px;bottom:18px;z-index:2;color:#fff;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between;opacity:.85}
+  .feat-text{display:flex;flex-direction:column;justify-content:center;padding:0 12px}
+  .feat-text .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+  .feat-text .kicker::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .feat-text h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,68px);line-height:1.05;letter-spacing:-.02em;margin:0 0 26px;color:var(--ink)}
+  .feat-text h2 em{font-style:italic;color:var(--accent)}
+  .feat-text p{font-size:17px;line-height:1.6;color:var(--ink-soft);margin:0 0 32px;max-width:48ch}
+  .feat-byline{display:flex;align-items:center;gap:18px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:32px}
+  .feat-byline .av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#3a4a72,#1a2a55);flex-shrink:0;border:1px solid var(--line)}
+  .feat-byline .who{font-size:14.5px}
+  .feat-byline .who b{display:block;font-weight:500;color:var(--ink)}
+  .feat-byline .who span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-top:3px;display:block}
+  .feat-byline .read{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;text-align:right}
+  .feat-byline .read b{color:var(--ink);font-weight:500}
+  .feat-cta{display:inline-flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:500;align-self:flex-start;padding:14px 24px;border:1px solid var(--accent);border-radius:999px;transition:.2s}
+  .feat-cta:hover{background:var(--accent);color:#fff}
+
+  /* ===== FILTER BAR ===== */
+  .filter{padding:28px 56px;background:var(--bg-warm);border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:120;display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
+  .filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .ftab{padding:9px 18px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid transparent;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+  .ftab:hover{color:var(--ink)}
+  .ftab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .ftab .ct{opacity:.55;font-size:10px}
+  .ftab.active .ct{color:#9bb5ff;opacity:1}
+  .filter-right{display:flex;align-items:center;gap:24px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .filter-right .sort{display:flex;gap:8px;align-items:center}
+  .filter-right .sort b{color:var(--ink);font-weight:500}
+  .filter-right .count b{color:var(--ink);font-weight:500;font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;letter-spacing:0;margin-right:4px}
+
+  /* ===== ARTICLE GRID ===== */
+  .grid-sec{padding:80px 0 100px;background:var(--bg)}
+  .agrid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:56px 40px}
+  .acard{display:flex;flex-direction:column;cursor:pointer;transition:transform .3s}
+  .acard:hover{transform:translateY(-4px)}
+  .acard .athumb{position:relative;aspect-ratio:4/3;border-radius:6px;overflow:hidden;background:#1a2a55;margin-bottom:22px}
+  .acard .athumb .img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .acard:hover .athumb .img{transform:scale(1.06)}
+  .acard .athumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,0) 60%,rgba(11,27,63,.4) 100%);opacity:0;transition:.3s}
+  .acard:hover .athumb::after{opacity:1}
+  .acard .athumb .acat{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.95);color:var(--ink);padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .acard .athumb .anum{position:absolute;top:14px;right:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#fff;opacity:.75}
+  .acard .ameta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;display:flex;gap:12px;margin-bottom:12px}
+  .acard .ameta b{color:var(--ink);font-weight:500}
+  .acard h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;line-height:1.12;letter-spacing:-.012em;margin:0 0 12px;color:var(--ink);text-wrap:pretty}
+  .acard h3 em{font-style:italic;color:var(--accent)}
+  .acard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 18px}
+  .acard .afoot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .acard .afoot .arr{color:var(--accent);font-size:14px;transition:.2s}
+  .acard:hover .afoot .arr{transform:translateX(4px)}
+
+  /* "load more" */
+  .loadmore{padding:0 56px;display:flex;justify-content:center;margin-top:30px}
+  .loadmore button{padding:14px 32px;border-radius:999px;background:transparent;border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:12px}
+  .loadmore button:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .loadmore button .c{opacity:.55;font-size:10px}
+
+  /* ===== NEWS REEL — stream ===== */
+  .reel{padding:120px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .reel-head{padding:0 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end;margin-bottom:60px}
+  .reel-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .reel-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .reel-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,84px);line-height:1;letter-spacing:-.025em;margin:0;max-width:13ch}
+  .reel-head h2 em{font-style:italic;color:var(--accent)}
+  .reel-head p{font-size:16px;line-height:1.6;color:var(--ink-soft);margin:0;max-width:520px}
+
+  .reel-list{padding:0 56px}
+  .rrow{display:grid;grid-template-columns:140px 110px 1fr 1.4fr 130px 40px;gap:36px;align-items:center;padding:30px 0;border-top:1px solid var(--line);transition:.25s;cursor:pointer}
+  .rrow:last-child{border-bottom:1px solid var(--line)}
+  .rrow:hover{padding-left:14px;padding-right:14px;background:rgba(255,255,255,.4)}
+  .rrow .rdate{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .rrow .rdate b{display:block;color:var(--ink);font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;letter-spacing:-.01em;font-weight:400;line-height:1;margin-bottom:6px}
+  .rrow .rkind{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--ink);text-transform:uppercase;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;display:inline-block;justify-self:start}
+  .rrow .rkind.k-press{color:#7c5cff;border-color:#d8d0ff}
+  .rrow .rkind.k-research{color:#0e9f6e;border-color:#bce5d4}
+  .rrow .rkind.k-talk{color:#d97757;border-color:#f0c8b3}
+  .rrow .rkind.k-build{color:var(--accent);border-color:#c8d8ff}
+  .rrow h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.18;margin:0;color:var(--ink);letter-spacing:-.008em}
+  .rrow h4 em{font-style:italic;color:var(--accent)}
+  .rrow .rdesc{font-size:14px;line-height:1.5;color:var(--ink-soft);margin:0}
+  .rrow .rauth{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;text-align:right}
+  .rrow .rauth b{color:var(--ink);font-weight:500;display:block;margin-bottom:4px;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:0;text-transform:none}
+  .rrow .arr{opacity:.4;transition:.2s;font-size:18px;color:var(--accent);text-align:right}
+  .rrow:hover .arr{opacity:1;transform:translateX(6px)}
+
+  /* ===== EDITORIAL DOSSIER — full bleed ===== */
+  .dossier{position:relative;min-height:90vh;overflow:hidden;background:#0b1b3f;color:#fff;display:grid;grid-template-columns:1fr 1fr}
+  .dossier-img{position:relative;overflow:hidden;background:#1a2a55}
+  .dossier-img .img{position:absolute;inset:0;background:url('assets/img3.png') center/cover no-repeat;transform:scale(1.05);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+  .dossier:hover .dossier-img .img{transform:scale(1.1)}
+  .dossier-img::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,27,63,0) 60%,rgba(11,27,63,.4) 100%)}
+  .dossier-img .stamp{position:absolute;top:30px;left:30px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#fff;text-transform:uppercase;background:rgba(11,27,63,.55);padding:7px 14px;border-radius:999px;backdrop-filter:blur(8px)}
+  .dossier-img .corner{position:absolute;bottom:30px;left:30px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;line-height:1.8}
+  .dossier-img .corner b{color:#9bb5ff;font-weight:500}
+  .dossier-content{padding:90px 70px 60px;display:flex;flex-direction:column;justify-content:center;position:relative}
+  .dossier-content .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:24px}
+  .dossier-content .clabel::before{content:"";width:30px;height:1px;background:#9bb5ff}
+  .dossier-content h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1.05;letter-spacing:-.022em;margin:0 0 28px;max-width:14ch}
+  .dossier-content h2 em{font-style:italic;color:#9bb5ff}
+  .dossier-content .pull{font-family:'Instrument Serif',serif;font-style:italic;font-size:24px;line-height:1.4;color:#cdd5e8;margin:0 0 36px;padding-left:20px;border-left:2px solid #9bb5ff}
+  .dossier-content p{font-size:15.5px;line-height:1.65;color:#b8c3df;margin:0 0 28px;max-width:50ch}
+  .dossier-content .doss-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:28px 0;border-top:1px solid rgba(155,181,255,.18);border-bottom:1px solid rgba(155,181,255,.18);margin-bottom:32px}
+  .dossier-content .doss-meta .m b{display:block;font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;color:#9bb5ff;font-weight:400;letter-spacing:-.01em;line-height:1;margin-bottom:8px}
+  .dossier-content .doss-meta .m span{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:rgba(255,255,255,.6);text-transform:uppercase}
+  .dossier-content .dcta{display:inline-flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:#9bb5ff;text-transform:uppercase;font-weight:500;align-self:flex-start;padding:14px 24px;border:1px solid rgba(155,181,255,.4);border-radius:999px;transition:.2s}
+  .dossier-content .dcta:hover{background:#9bb5ff;color:var(--ink);border-color:#9bb5ff}
+
+  /* ===== TOPICS BAND ===== */
+  .topics{padding:120px 0;background:var(--bg)}
+  .topics-head{padding:0 56px;margin-bottom:50px;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:end}
+  .topics-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .topics-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .topics-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,68px);line-height:1;letter-spacing:-.022em;margin:0;max-width:12ch}
+  .topics-head h2 em{font-style:italic;color:var(--accent)}
+  .topics-head p{font-size:16px;line-height:1.6;color:var(--ink-soft);margin:0;max-width:480px}
+  .tband{padding:0 56px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tcard{position:relative;aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#1a2a55;color:#fff;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:24px}
+  .tcard .timg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5;transition:opacity .4s, transform 1.4s cubic-bezier(.2,.7,.2,1);z-index:0}
+  .tcard:hover .timg{opacity:.7;transform:scale(1.05)}
+  .tcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.5),rgba(11,27,63,.85));z-index:1}
+  .tcard > *{position:relative;z-index:2}
+  .tcard .tnum{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;opacity:.7;text-transform:uppercase}
+  .tcard h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:32px;line-height:1.1;margin:0 0 8px;letter-spacing:-.012em}
+  .tcard h4 em{font-style:italic;color:#9bb5ff}
+  .tcard .tcount{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+  .tcard .tcount b{color:#9bb5ff;font-weight:500}
+
+  /* ===== NEWSLETTER ===== */
+  .news{padding:140px 0;background:#0b1b3f;color:#fff;position:relative;overflow:hidden;border-top:1px solid rgba(155,181,255,.1)}
+  .news::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 50% 30%, rgba(99,140,255,.18), rgba(99,140,255,0) 60%)}
+  .news-inner{position:relative;z-index:1;max-width:840px;margin:0 auto;padding:0 56px;text-align:center}
+  .news .clabel{display:inline-flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:24px}
+  .news h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,82px);line-height:1.05;letter-spacing:-.022em;margin:0 0 22px}
+  .news h2 em{font-style:italic;color:#9bb5ff}
+  .news p{font-size:17px;line-height:1.6;color:#b8c3df;margin:0 auto 40px;max-width:540px}
+  .news-form{display:flex;gap:8px;max-width:520px;margin:0 auto 24px;background:rgba(255,255,255,.06);border:1px solid rgba(155,181,255,.25);border-radius:999px;padding:6px;backdrop-filter:blur(8px)}
+  .news-form input{flex:1;background:transparent;border:none;outline:none;color:#fff;padding:14px 22px;font-size:15px;font-family:'Inter',sans-serif}
+  .news-form input::placeholder{color:rgba(255,255,255,.5)}
+  .news-form button{padding:14px 26px;border-radius:999px;background:#9bb5ff;color:var(--ink);border:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:.2s}
+  .news-form button:hover{background:#fff}
+  .news-fine{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:rgba(184,195,223,.7);text-transform:uppercase;display:inline-flex;gap:24px}
+  .news-fine b{color:#9bb5ff;font-weight:500}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  /* ===== LAPTOP RANGE (MacBook 1280-1500px) ===== */
+  @media (min-width:1081px) and (max-width:1500px){
+    .hero-content{padding:0 48px 80px;gap:44px}
+    .hero-eyebrow{margin-bottom:22px}
+    .hero-h{font-size:clamp(72px,8.6vw,128px);max-width:11ch}
+    .hero-foot{left:48px;right:48px;bottom:28px}
+    /* FEATURED: keep image clamped to its half */
+    .feat{padding:64px 0 96px}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:40px;padding:0 48px;align-items:start}
+    .feat-grid > *{min-width:0}
+    .feat-img{aspect-ratio:4/3}
+    .feat-text{padding:0;justify-content:flex-start}
+    .feat-text h2{font-size:clamp(36px,3.8vw,52px);margin-bottom:22px}
+    .feat-text p{font-size:16px;line-height:1.6;max-width:44ch;margin-bottom:26px}
+    .feat-byline{margin-bottom:24px;padding:16px 0}
+  }
+
+  @media (max-width:980px){
+    .wrap,.mast-head,.indexstrip,.feat-grid,.filter,.agrid,.reel-head,.reel-list,.topics-head,.tband,.news-inner,.dossier-content{padding-left:24px;padding-right:24px}
+    .mast-head,.feat-grid,.reel-head,.topics-head{grid-template-columns:1fr;gap:40px}
+    .agrid{grid-template-columns:1fr 1fr;gap:40px 24px}
+    .tband{grid-template-columns:1fr 1fr}
+    .dossier{grid-template-columns:1fr}
+    .dossier-img{aspect-ratio:5/4}
+    .dossier-content{padding:60px 28px}
+    .rrow{grid-template-columns:90px 1fr;gap:14px;padding:22px 0}
+    .rrow .rkind,.rrow .rdesc,.rrow .rauth,.rrow .arr{display:none}
+    .nav-links,.hud{display:none}
+    .filter{position:relative;top:auto}
+    .hero-content{grid-template-columns:1fr;align-items:stretch;gap:36px;padding:0 24px 90px}
+    .hero-h{font-size:clamp(56px,9vw,96px)}
+    .hero-meta{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:20px}
+    .hero-foot{left:24px;right:24px;flex-direction:column;align-items:flex-start;gap:14px;bottom:24px}
+    .hero-foot .meta{flex-wrap:wrap;gap:18px}
+  }
+  @media (min-width:641px) and (max-width:980px){
+    .wrap,.mast-head,.indexstrip,.feat-grid,.filter,.agrid,.reel-head,.reel-list,.topics-head,.tband,.news-inner,.dossier-content{padding-left:40px;padding-right:40px}
+    .feat-grid{grid-template-columns:1fr;gap:32px}
+    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:24px;padding:0 32px 90px}
+    .hero-meta{display:none}
+    .hero-eyebrow{position:absolute;top:96px;left:32px;right:32px;z-index:5;margin:0}
+    .hero-h{font-size:clamp(84px,12vw,140px);line-height:.94;letter-spacing:-.03em;max-width:none;width:100%}
+    .hero-foot{left:40px;right:40px;flex-direction:row;align-items:center;gap:24px}
+    .mast-head{grid-template-columns:1fr 1fr;gap:36px;align-items:end}
+    .reel-head,.topics-head{grid-template-columns:1fr 1fr;gap:32px;align-items:end}
+    .tband{grid-template-columns:repeat(3,1fr);gap:18px}
+    .agrid{grid-template-columns:repeat(2,1fr);gap:30px}
+    .dossier{grid-template-columns:1fr;min-height:0}
+    .dossier-img{aspect-ratio:5/4}
+    .dossier-content{padding:60px 32px}
+    .rrow{grid-template-columns:1fr;gap:12px;padding:24px 0;align-items:start;justify-items:start}
+    .rrow .rdate{display:flex;align-items:baseline;gap:14px}
+    .rrow .rdate b{display:inline-block;margin:0;font-size:24px}
+    .rrow .rkind{display:inline-block;width:auto}
+    .rrow .rauth,.rrow .arr{display:inline-flex;width:auto}
+    .rrow .rauth{text-align:left}
+    .rrow .rdesc{display:block;max-width:none}
+    .rrow h4{font-size:22px}
+  }
+  @media (max-width:560px){
+    .wrap,.mast-head,.indexstrip,.feat-grid,.filter,.agrid,.reel-head,.reel-list,.topics-head,.tband,.news-inner,.dossier-content{padding-left:18px;padding-right:18px}
+    .agrid,.tband{grid-template-columns:1fr}
+    .news-form{flex-direction:column;border-radius:18px;padding:8px}
+    .news-form input,.news-form button{width:100%;text-align:center}
+    .indexstrip{flex-direction:column;align-items:flex-start;gap:14px}
+    .ix{flex-wrap:wrap;gap:14px}
+    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:100%;padding:0 18px 110px;gap:24px}
+    .hero-h{font-size:clamp(56px,12vw,84px);line-height:.96;max-width:100%}
+    .hero-eyebrow{position:absolute;top:64px;left:18px;right:18px;z-index:5;margin:0;font-size:10px;letter-spacing:.18em;gap:8px}
+    .hero-meta{display:none}
+    .hero-foot{font-size:9.5px;letter-spacing:.14em}
+    .feat-text h2{font-size:32px}
+    .feat-byline{flex-wrap:wrap;gap:14px}
+    .rrow{grid-template-columns:1fr;gap:8px;padding:20px 0}
+    .rrow .rdate{display:flex;align-items:baseline;gap:12px}
+    .rrow .rdate b{display:inline-block;font-size:22px;margin-bottom:0}
+    .rrow h4{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<aside class="hud">
+  <div>XRD/INSIGHTS.000</div>
+  <div>UPDATED <b>2H AGO</b></div>
+  <div>VOL. <b>08 / 2026</b></div>
+</aside>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow">Vol. 08 · May 2026 · Issue 41</div>
+      <h1 class="hero-h">Field <em>notes</em><br>from the<br><em>practice</em>.</h1>
+    </div>
+    <div class="hero-meta">
+      <div class="row"><span>Editor</span><span><b>Mai Trần</b></span></div>
+      <div class="row"><span>Publishing</span><span><b>Weekly · Friday</b></span></div>
+      <div class="row"><span>This issue</span><span><b>14 entries</b></span></div>
+      <div class="row"><span>Archive</span><span><b>412 articles · 2018→</b></span></div>
+      <div class="row"><span>Subscribers</span><span><b>9,840 · 47 countries</b></span></div>
+    </div>
+  </div>
+  <div class="hero-foot">
+    <div class="meta">
+      <span>XRD · INSIGHTS</span>
+      <span>HCMC · VN</span>
+      <span>UPDATED 2H AGO</span>
+    </div>
+    <div class="scroll">SCROLL <div class="ar"><svg width="6" height="6" viewBox="0 0 6 6"><path d="M3 1v4m0 0L1.5 3.5M3 5l1.5-1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg></div></div>
+  </div>
+</section>
+
+<div class="indexstrip">
+    <div class="ix">
+      <span>IN THIS ISSUE<b>14</b></span>
+      <span>RESEARCH<b>04</b></span>
+      <span>BUILD LOG<b>03</b></span>
+      <span>PRESS<b>05</b></span>
+      <span>TALKS<b>02</b></span>
+    </div>
+    <div class="live"><span class="dot"></span>LIVE FEED · NEXT DROP FRI 10:00 ICT</div>
+</div>
+
+<!-- ===== FEATURED ===== -->
+<section class="feat">
+  <div class="feat-grid">
+    <div class="feat-img">
+      <span class="ftag">P—061 · ĐÀ Nẵng</span>
+      <span class="fbadge">FEATURED</span>
+      <div class="fimg"></div>
+      <div class="fcap"><span>Photo · Hiroshi Okuda</span><span>04 / 2026</span></div>
+    </div>
+    <div class="feat-text">
+      <div class="kicker">Long read · Build log</div>
+      <h2>Eighteen <em>months</em> on a <em>biophilic</em> campus, in 4,200 words.</h2>
+      <p>The Đà Nẵng research campus broke ground in October 2024. We've published every two weeks since — site sections, structural decisions, the failed prototypes, the contractor arguments. This is the first long-form retrospective: what we got right, what we'd redraw, and the eight detail studies that made the climate work.</p>
+      <div class="feat-byline">
+        <div class="av"></div>
+        <div class="who">
+          <b>Lê Nguyễn &amp; Mai Trần</b>
+          <span>Principal · Design Director</span>
+        </div>
+        <div class="read"><b>17 min</b><br>read</div>
+      </div>
+      <a class="feat-cta" href="insight-bio-campus.html">Read the dossier
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FILTER ===== -->
+<div class="filter" id="filter">
+  <div class="filter-tabs">
+    <button class="ftab active" data-cat="all">All <span class="ct">14</span></button>
+    <button class="ftab" data-cat="research">Research <span class="ct">04</span></button>
+    <button class="ftab" data-cat="build">Build log <span class="ct">03</span></button>
+    <button class="ftab" data-cat="press">Press <span class="ct">05</span></button>
+    <button class="ftab" data-cat="talk">Talks &amp; Events <span class="ct">02</span></button>
+  </div>
+  <div class="filter-right">
+    <div class="sort">SORT <b>NEWEST FIRST</b></div>
+    <div class="count"><b>14</b>OF 412 SHOWN</div>
+  </div>
+</div>
+
+<!-- ===== ARTICLE GRID ===== -->
+<section class="grid-sec">
+  <div class="agrid" id="agrid">
+    <article class="acard" data-cat="research">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img2.png')"></div><span class="acat">Research</span><span class="anum">No. 412</span></div>
+      <div class="ameta"><span><b>28 Apr 2026</b></span><span>·</span><span>06 min</span></div>
+      <h3>The <em>shaded ratio</em>: a new metric for tropical facades.</h3>
+      <p>Why "WWR" fails in 32°C climates, and the four-variable replacement we've been testing across nine projects since 2022.</p>
+      <div class="afoot"><span>Yuki Watanabe</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="build">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img1.png')"></div><span class="acat">Build log</span><span class="anum">No. 411</span></div>
+      <div class="ameta"><span><b>25 Apr 2026</b></span><span>·</span><span>09 min</span></div>
+      <h3>Pouring the <em>limestone shell</em> at Luang Prabang.</h3>
+      <p>Three failed mock-ups, one contractor crisis, and the moment a 28m vault came out of the formwork at 04:00.</p>
+      <div class="afoot"><span>Site team · LP</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="press">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img3.png')"></div><span class="acat">Press</span><span class="anum">No. 410</span></div>
+      <div class="ameta"><span><b>22 Apr 2026</b></span><span>·</span><span>03 min</span></div>
+      <h3>Aga Khan Award <em>shortlist</em>: Limestone Music Hall.</h3>
+      <p>The 2026 cycle shortlist names 19 projects from 14 countries. Our Luang Prabang hall is among them — full citation inside.</p>
+      <div class="afoot"><span>Studio</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="research">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img4.png')"></div><span class="acat">Research</span><span class="anum">No. 409</span></div>
+      <div class="ameta"><span><b>18 Apr 2026</b></span><span>·</span><span>11 min</span></div>
+      <h3>What the <em>boatyards</em> taught us about lap joints.</h3>
+      <p>A field study of 41 Mekong-delta boat builders — and how their joinery rewrote our timber-frame detail library.</p>
+      <div class="afoot"><span>Mai Trần</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="talk">
+      <div class="athumb"><div class="img" style="background-image:url('assets/hero-bg.png')"></div><span class="acat">Talks</span><span class="anum">No. 408</span></div>
+      <div class="ameta"><span><b>15 Apr 2026</b></span><span>·</span><span>EVENT</span></div>
+      <h3>Lê Nguyễn at the <em>Venice Biennale</em>, 24 May.</h3>
+      <p>"Climate is the brief" — a 40-minute talk on practice in the tropics, followed by Q&amp;A with Hashim Sarkis. Free, RSVP required.</p>
+      <div class="afoot"><span>Venice · IT</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="press">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img2.png')"></div><span class="acat">Press</span><span class="anum">No. 407</span></div>
+      <div class="ameta"><span><b>11 Apr 2026</b></span><span>·</span><span>04 min</span></div>
+      <h3>Dezeen profile: <em>"the studio</em> on the river."</h3>
+      <p>Amy Frearson visits the boatyard for a 2,800-word feature on eight years, four offices, and one stubborn way of working.</p>
+      <div class="afoot"><span>Dezeen</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="build">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img1.png')"></div><span class="acat">Build log</span><span class="anum">No. 406</span></div>
+      <div class="ameta"><span><b>08 Apr 2026</b></span><span>·</span><span>07 min</span></div>
+      <h3>Floating <em>pavilion</em>: the first wet-season cycle.</h3>
+      <p>Six months of Cần Thơ flood data. The pontoons rose 2.4m, the building stayed dry, and three details we'd revise next time.</p>
+      <div class="afoot"><span>Site team · CT</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="research">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img3.png')"></div><span class="acat">Research</span><span class="anum">No. 405</span></div>
+      <div class="ameta"><span><b>04 Apr 2026</b></span><span>·</span><span>05 min</span></div>
+      <h3>Open-sourcing our <em>shading</em> ladder.</h3>
+      <p>We're releasing the 240-page detail library that powers every facade we've built since 2021. CC-BY 4.0, on GitHub today.</p>
+      <div class="afoot"><span>R&amp;D Team</span><span class="arr">→</span></div>
+    </article>
+
+    <article class="acard" data-cat="press">
+      <div class="athumb"><div class="img" style="background-image:url('assets/img4.png')"></div><span class="acat">Press</span><span class="anum">No. 404</span></div>
+      <div class="ameta"><span><b>01 Apr 2026</b></span><span>·</span><span>02 min</span></div>
+      <h3>WAF announces <em>civic of the year</em>.</h3>
+      <p>The Mekong Resilience Loop wins the 2026 World Architecture Festival civic prize. Jury citation translated inline.</p>
+      <div class="afoot"><span>Studio</span><span class="arr">→</span></div>
+    </article>
+  </div>
+  <div class="loadmore"><button>Load older entries <span class="c">+ 5 of 412</span></button></div>
+</section>
+
+<!-- ===== EDITORIAL DOSSIER ===== -->
+<section class="dossier">
+  <div class="dossier-img">
+    <div class="img"></div>
+    <span class="stamp">Dossier · 04 / 2026</span>
+    <div class="corner">FIELD STUDY · 41 SITES<br>MEKONG <b>10.04°N</b></div>
+  </div>
+  <div class="dossier-content">
+    <div class="clabel">Editorial dossier · Quarterly</div>
+    <h2>Notes from the <em>boatyards</em> of the Mekong.</h2>
+    <div class="pull">"Every joint we draw owes something to a boat builder we will never meet."</div>
+    <p>For seven months in 2025, three of us travelled the lower Mekong with cameras, calipers, and a lot of bad coffee. We measured 41 boatyards, photographed 612 lap joints, and brought home a notebook that has quietly reshaped the timber-frame catalogue we use in every project.</p>
+    <p>This dossier collects the photographs, the joinery drawings, and the eight rules of thumb we've adopted. It's available as a 64-page PDF and a hardcover at-cost from the studio.</p>
+    <div class="doss-meta">
+      <div class="m"><b>41</b><span>Boatyards</span></div>
+      <div class="m"><b>612</b><span>Joints surveyed</span></div>
+      <div class="m"><b>64pp</b><span>Dossier</span></div>
+    </div>
+    <a class="dcta" href="#">Download the PDF · 18 MB
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v8m0 0L4 7m3 3l3-3M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ===== NEWS REEL ===== -->
+<section class="reel">
+  <div class="reel-head">
+    <div>
+      <div class="clabel">News reel · Live feed</div>
+      <h2>Smaller <em>signals</em>.</h2>
+    </div>
+    <p>Press mentions, conference talks, hires, partnerships, and the small items that don't warrant a full essay. Updated as they happen.</p>
+  </div>
+  <div class="reel-list">
+    <div class="rrow">
+      <div class="rdate"><b>30</b>APR 2026</div>
+      <div><span class="rkind k-press">Press</span></div>
+      <h4>The Architectural Review · <em>cover story</em>, May issue.</h4>
+      <p class="rdesc">A 14-page feature on the Đà Nẵng campus, with new photography by Hiroshi Okuda and an essay by Edwin Heathcote.</p>
+      <div class="rauth"><b>The AR</b><span>UK · Print + digital</span></div>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow">
+      <div class="rdate"><b>27</b>APR 2026</div>
+      <div><span class="rkind k-talk">Talk</span></div>
+      <h4>Mai Trần keynote at <em>UIA Copenhagen</em>.</h4>
+      <p class="rdesc">"Drawing the climate" — opens the World Sustainable Built Environment session, 06 June, 09:00 CET.</p>
+      <div class="rauth"><b>UIA 2026</b><span>Copenhagen · DK</span></div>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow">
+      <div class="rdate"><b>22</b>APR 2026</div>
+      <div><span class="rkind k-build">Build</span></div>
+      <h4>Limestone Hall <em>roof tile</em> production begins.</h4>
+      <p class="rdesc">All 41,200 tiles fired locally in Vientiane, by a single family kiln. First shipment leaves the works on 02 May.</p>
+      <div class="rauth"><b>Site · LP</b><span>Luang Prabang · LA</span></div>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow">
+      <div class="rdate"><b>18</b>APR 2026</div>
+      <div><span class="rkind k-research">Research</span></div>
+      <h4>Partnership with <em>NUS</em> on coastal resilience.</h4>
+      <p class="rdesc">A three-year research grant with the National University of Singapore on adaptive shorelines for SE-Asian cities.</p>
+      <div class="rauth"><b>NUS · Studio</b><span>Singapore</span></div>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow">
+      <div class="rdate"><b>14</b>APR 2026</div>
+      <div><span class="rkind k-press">Press</span></div>
+      <h4>Domus interviews Lê Nguyễn on the <em>tropical brief</em>.</h4>
+      <p class="rdesc">A long conversation with editor Walter Mariotti on practice in equatorial climates. Italian and English.</p>
+      <div class="rauth"><b>Domus 1083</b><span>Milan · IT</span></div>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow">
+      <div class="rdate"><b>10</b>APR 2026</div>
+      <div><span class="rkind k-build">Build</span></div>
+      <h4>District 4 Civic Spine <em>opens</em> to the public.</h4>
+      <p class="rdesc">Three years after groundbreaking, the 1.8 km civic spine handed over to HCMC last Friday. 14,000 visitors over the weekend.</p>
+      <div class="rauth"><b>Site · HCMC</b><span>Ho Chi Minh City · VN</span></div>
+      <span class="arr">→</span>
+    </div>
+    <div class="rrow">
+      <div class="rdate"><b>05</b>APR 2026</div>
+      <div><span class="rkind k-talk">Event</span></div>
+      <h4>Open studio · <em>first Friday</em>, May.</h4>
+      <p class="rdesc">The boatyard opens to the public 18:00–21:00. Drawings on the walls, models on the tables, beer in the courtyard.</p>
+      <div class="rauth"><b>Studio · HCMC</b><span>1st Fri · Monthly</span></div>
+      <span class="arr">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TOPICS ===== -->
+<section class="topics">
+  <div class="topics-head">
+    <div>
+      <div class="clabel">Browse by topic</div>
+      <h2>Eight years, <em>nine</em> threads.</h2>
+    </div>
+    <p>The archive is organised around the questions we keep returning to. Pick a thread; the index is below.</p>
+  </div>
+  <div class="tband">
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img1.png')"></div>
+      <div class="tnum">Thread · 01</div>
+      <div><h4>Climate as <em>brief</em></h4><div class="tcount"><b>62</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img2.png')"></div>
+      <div class="tnum">Thread · 02</div>
+      <div><h4>Vernacular <em>tools</em></h4><div class="tcount"><b>48</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img3.png')"></div>
+      <div class="tnum">Thread · 03</div>
+      <div><h4>Computational <em>R&amp;D</em></h4><div class="tcount"><b>71</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img4.png')"></div>
+      <div class="tnum">Thread · 04</div>
+      <div><h4>Civic <em>infrastructure</em></h4><div class="tcount"><b>34</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img2.png')"></div>
+      <div class="tnum">Thread · 05</div>
+      <div><h4>Coastal <em>resilience</em></h4><div class="tcount"><b>29</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img1.png')"></div>
+      <div class="tnum">Thread · 06</div>
+      <div><h4>Material <em>economies</em></h4><div class="tcount"><b>53</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img4.png')"></div>
+      <div class="tnum">Thread · 07</div>
+      <div><h4>Practice <em>notes</em></h4><div class="tcount"><b>78</b> articles</div></div>
+    </a>
+    <a class="tcard" href="#"><div class="timg" style="background-image:url('assets/img3.png')"></div>
+      <div class="tnum">Thread · 08</div>
+      <div><h4>Press &amp; <em>recognition</em></h4><div class="tcount"><b>37</b> articles</div></div>
+    </a>
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="news">
+  <div class="news-inner">
+    <div class="clabel">Subscribe · Friday letter</div>
+    <h2>One <em>letter</em>.<br>Every <em>Friday</em>. Long form.</h2>
+    <p>A weekly note from the studio — the new article, two things from the archive, and one drawing we're still arguing about. No tracking, no ads, easy unsubscribe.</p>
+    <form class="news-form" onsubmit="event.preventDefault();this.querySelector('button').textContent='Subscribed ✓'">
+      <input type="email" placeholder="your.email@studio.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <div class="news-fine">
+      <span>9,840 <b>READERS</b></span>
+      <span>47 <b>COUNTRIES</b></span>
+      <span>SENT <b>FRI 10:00 ICT</b></span>
+    </div>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('scrollBar');
+  const heroImg = document.getElementById('heroImg');
+
+  function onScroll(){
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 80);
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+    if (heroImg && y < window.innerHeight){
+      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // ===== filter =====
+  const tabs = document.querySelectorAll('.ftab');
+  const cards = document.querySelectorAll('#agrid .acard');
+  tabs.forEach(t=>{
+    t.addEventListener('click', ()=>{
+      tabs.forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const cat = t.dataset.cat;
+      let shown = 0;
+      cards.forEach(c=>{
+        const match = (cat === 'all' || c.dataset.cat === cat);
+        c.style.display = match ? '' : 'none';
+        if (match) shown++;
+      });
+      const countEl = document.querySelector('.filter-right .count');
+      if (countEl) countEl.innerHTML = `<b>${String(shown).padStart(2,'0')}</b>OF 412 SHOWN`;
+    });
+  });
+
+  // ===== GSAP entrance + scroll reveals =====
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
+    gsap.from('.hero-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.25});
+    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.4});
+    gsap.from('.hero-meta .row',{y:14,opacity:0,duration:.5,ease:'power3.out',stagger:.08,delay:.6});
+    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.85});
+
+    // index strip
+    gsap.from('.indexstrip .ix span',{y:14,opacity:0,duration:.5,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.indexstrip',start:'top 92%'}});
+
+    // featured
+    gsap.fromTo('.feat-text .kicker',{y:14,opacity:0},{y:0,opacity:1,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+    gsap.fromTo('.feat-text h2',{y:36,opacity:0},{y:0,opacity:1,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+    gsap.fromTo('.feat-text p',{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+    gsap.fromTo('.feat-byline',{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+    gsap.fromTo('.feat-cta',{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+    gsap.fromTo('.feat-img',{y:50,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+    gsap.fromTo('.feat-img .fimg',{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:'.feat',start:'top 85%'}});
+
+    // article grid (filter-aware)
+    gsap.fromTo('.acard',{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.05,scrollTrigger:{trigger:'#agrid',start:'top 88%'}});
+    gsap.utils.toArray('.athumb .img').forEach(img=>{
+      gsap.fromTo(img,{scale:1.15},{scale:1,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:img,start:'top 92%'}});
+    });
+
+    // dossier
+    gsap.from('.dossier-content h3',{y:30,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.dossier',start:'top 80%'}});
+    gsap.from('.dossier-content p, .dossier-content .clabel, .dossier-content .dossier-cta',{y:18,opacity:0,duration:.7,ease:'power3.out',stagger:.08,scrollTrigger:{trigger:'.dossier',start:'top 75%'}});
+    gsap.fromTo('.dossier-img .img',{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:'.dossier',start:'top 85%'}});
+
+    // reel
+    gsap.from('.reel-head h2',{y:30,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.reel',start:'top 80%'}});
+    gsap.from('.reel-head p',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.1,scrollTrigger:{trigger:'.reel',start:'top 78%'}});
+    gsap.fromTo('.rrow',{x:-14,opacity:0},{x:0,opacity:1,duration:.6,ease:'power3.out',stagger:.05,scrollTrigger:{trigger:'.reel-list',start:'top 88%'}});
+
+    // topics
+    gsap.from('.topics-head h2, .topics-head p',{y:24,opacity:0,duration:.8,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.topics',start:'top 82%'}});
+    gsap.fromTo('.tcard',{y:30,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.tband',start:'top 88%'}});
+    gsap.utils.toArray('.tcard .timg').forEach(img=>{
+      gsap.fromTo(img,{scale:1.15},{scale:1,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:img,start:'top 92%'}});
+    });
+
+    // newsletter
+    gsap.fromTo('.news h2',{y:24,opacity:0},{y:0,opacity:1,duration:.9,ease:'power3.out',scrollTrigger:{trigger:'.news',start:'top 90%'}});
+    gsap.fromTo('.news p',{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',delay:.1,scrollTrigger:{trigger:'.news',start:'top 90%'}});
+    gsap.fromTo('.news-form',{y:24,opacity:0},{y:0,opacity:1,duration:.8,ease:'power3.out',delay:.2,scrollTrigger:{trigger:'.news',start:'top 90%'}});
+    gsap.fromTo('.news-fine',{y:14,opacity:0},{y:0,opacity:1,duration:.6,ease:'power3.out',delay:.3,scrollTrigger:{trigger:'.news',start:'top 90%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>利用規約 — xR&amp;D Technologies</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter','Noto Sans JP',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:100%;margin:0;padding:0 56px}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff;background:rgba(11,27,63,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
+
+  .legal-head{padding:160px 56px 70px;background:var(--bg-warm);border-bottom:1px solid var(--line)}
+  .legal-head .crumb{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+  .legal-head .crumb a{color:var(--accent)}
+  .legal-head .crumb .sep{opacity:.4}
+  .legal-head h1{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(40px,5vw,68px);line-height:1.2;letter-spacing:-.02em;margin:0 0 22px;max-width:18ch}
+  .legal-head h1 em{font-style:italic;color:var(--accent)}
+  .legal-head .meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;display:flex;gap:28px;flex-wrap:wrap}
+  .legal-head .meta b{color:var(--ink);font-weight:500}
+
+  .legal{padding:80px 56px 130px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:80px;align-items:start;background:var(--bg)}
+  .legal-toc{position:sticky;top:110px}
+  .legal-toc h6{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 18px;display:flex;align-items:center;gap:12px}
+  .legal-toc h6::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .legal-toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+  .legal-toc li{counter-increment:t;border-top:1px solid var(--line-2)}
+  .legal-toc li:first-child{border-top:none}
+  .legal-toc a{display:flex;align-items:flex-start;gap:14px;padding:9px 0;font-size:13.5px;color:var(--ink-soft);font-weight:500;line-height:1.5;transition:color .15s}
+  .legal-toc a::before{content:counter(t,decimal-leading-zero);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.06em;flex-shrink:0;padding-top:2px}
+  .legal-toc a:hover{color:var(--ink)}
+
+  .legal-body{font-size:16px;line-height:1.85;color:var(--ink-soft);max-width:780px}
+  .legal-body p{margin:0 0 18px}
+  .legal-body p b{color:var(--ink);font-weight:600}
+  .legal-body h2{font-family:'Instrument Serif','Noto Serif JP',serif;font-weight:400;font-size:clamp(24px,2.4vw,32px);line-height:1.3;letter-spacing:-.015em;color:var(--ink);margin:54px 0 18px;scroll-margin-top:100px}
+  .legal-body h2 em{font-style:italic;color:var(--accent)}
+  .legal-body h2:first-child{margin-top:0}
+  .legal-body .section-mark{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:8px;display:block}
+  .legal-body ul{margin:0 0 22px;padding-left:0;list-style:none}
+  .legal-body ul li{position:relative;padding-left:24px;margin-bottom:8px}
+  .legal-body ul li::before{content:"→";position:absolute;left:0;top:0;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:500}
+  .legal-body a{color:var(--accent);border-bottom:1px solid rgba(37,99,235,.25);transition:border-color .15s}
+  .legal-body a:hover{border-bottom-color:var(--accent)}
+
+  @media (max-width:1080px){
+    .wrap,.legal-head,.legal{padding-left:24px;padding-right:24px}
+    .legal{grid-template-columns:1fr;gap:40px;padding-top:60px}
+    .legal-toc{position:relative;top:auto}
+    .nav-links{display:none}
+  }
+  @media (min-width:641px) and (max-width:1080px){
+    .wrap,.legal-head,.legal{padding-left:40px;padding-right:40px}
+    .legal{grid-template-columns:200px minmax(0,1fr);gap:48px;padding-top:70px}
+    .legal-toc{position:sticky;top:104px}
+    .legal-head{padding-top:140px;padding-bottom:60px}
+  }
+  @media (max-width:560px){
+    .wrap,.legal-head,.legal{padding-left:18px;padding-right:18px}
+    .legal-head{padding-top:130px;padding-bottom:50px}
+    .legal-head h1{font-size:32px}
+    .legal-head .meta{flex-direction:column;gap:8px}
+    .legal-body{font-size:15px}
+    .legal-body h2{font-size:22px;margin:42px 0 14px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<header class="legal-head">
+  <div class="crumb"><a href="index-jp.html">xR&amp;D</a><span class="sep">/</span><span>Legal</span><span class="sep">/</span><span>Terms</span></div>
+  <h1><em>利用</em>規約。</h1>
+  <div class="meta">
+    <span>最終更新 · <b>2026 年 4 月 15 日</b></span>
+    <span>バージョン <b>3.0</b></span>
+    <span>準拠法 <b>ベトナム</b></span>
+  </div>
+</header>
+
+<section class="legal">
+  <aside class="legal-toc">
+    <h6>目次</h6>
+    <ol>
+      <li><a href="#scope">適用範囲</a></li>
+      <li><a href="#engagement">業務委託</a></li>
+      <li><a href="#ip">知的財産・所有権</a></li>
+      <li><a href="#fees">料金・支払い</a></li>
+      <li><a href="#warranty">保証・責任</a></li>
+      <li><a href="#term">契約期間・解除</a></li>
+      <li><a href="#disputes">紛争解決</a></li>
+    </ol>
+  </aside>
+  <div class="legal-body">
+    <p style="font-size:17px;color:var(--ink);font-weight:500">本規約は xR&amp;D の Web サイトの利用、および別途の業務委託契約に基づき提供されるサービスに適用されます。署名済みの業務委託契約と本規約に矛盾がある場合は、業務委託契約が優先されます。</p>
+
+    <h2 id="scope"><span class="section-mark">01</span><em>適用</em>範囲。</h2>
+    <p>本サイトにアクセスすることで、本規約に同意したものとみなされます。本サイトは情報提供のみを目的としており、サービス提供契約を構成するものではありません。サービス契約は、別途の書面（<b>業務委託書</b> または <b>マスター契約書</b>）への署名により成立します。</p>
+
+    <h2 id="engagement"><span class="section-mark">02</span><em>業務委託</em>。</h2>
+    <p>すべてのクライアント業務は、業務範囲・成果物・料金・スケジュール・特記事項を定めた業務委託書に基づいて実施されます。標準的な契約モデル（プロジェクト型・コンサル + 実装・人材派遣）には標準条件があり、契約時に個別調整します。</p>
+    <ul>
+      <li><b>検収条件</b> は業務委託書において成果物ごとに定義します</li>
+      <li><b>変更要請</b> が合意済み範囲を超える場合、当社の標準レートで別途請求します</li>
+      <li><b>守秘義務</b> はすべての業務関連資料に標準で適用されます。相互 NDA はご要望に応じて締結可能です</li>
+    </ul>
+
+    <h2 id="ip"><span class="section-mark">03</span>知的財産・<em>所有権</em>。</h2>
+    <p>料金完済を条件として、クライアントは合意済みプロジェクトの成果物について非独占・永続のライセンスを取得します。xR&amp;D は基盤となる方法論・ライブラリ・モデルウェイト・既存ツールの所有権を保持し、機密性のないデザイン知見を後続業務で再利用する権利を有します。</p>
+    <p>エンタープライズ契約モデルの場合、<b>調整済みのモデルウェイトはモデル利用ライセンスに従って完全譲渡</b> されます。</p>
+
+    <h2 id="fees"><span class="section-mark">04</span>料金・<em>支払い</em>。</h2>
+    <p>料金は税抜きの円建て、または USD 建てで提示します。標準支払条件は契約締結時 50%・マイルストーン納品時 50%、請求書発行から 14 日以内のお支払いとなります。支払遅延には月利 1.5% または法定上限の低い方の遅延損害金が発生します。</p>
+
+    <h2 id="warranty"><span class="section-mark">05</span>保証・<em>責任</em>。</h2>
+    <p>サービスはプロフェッショナルとして期待される技能と注意をもって提供されることを保証します。ただし結果（規制承認・第三者のパフォーマンス等）は保証しません。法令で許容される最大の範囲において、当社の責任の総額は当該クレームの原因となった業務に対して支払われた料金を上限とします。</p>
+    <p>生成 AI による出力は、レビュー・調整のための <b>候補案</b> であり、最終承認された設計ではありません。すべての成果物には専門家のレビューが必要です。</p>
+
+    <h2 id="term"><span class="section-mark">06</span>契約期間・<em>解除</em>。</h2>
+    <p>いずれの当事者も、重大な契約違反があった場合、書面による 30 日前の通知と是正の機会の提供をもって契約を解除できます。解除時、解除日までに納品された業務に対する料金は按分計算で発生し、納品済み成果物のライセンスは料金支払を条件として存続します。</p>
+
+    <h2 id="disputes"><span class="section-mark">07</span><em>紛争</em>解決。</h2>
+    <p>本規約はベトナムの法令に準拠します。紛争はまず誠実な交渉、次に調停、最終的にダナンにおける VIAC 規則に基づく拘束力のある仲裁により解決します。勝訴当事者は合理的な弁護士費用を回収できる場合があります。</p>
+
+    <p style="margin-top:54px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;border-top:1px solid var(--line);padding-top:24px">バージョン 3.0 · 2026 年 4 月 15 日施行 · ご質問: <a href="mailto:legal@xrd.technologies" style="color:var(--accent);border-bottom:1px solid var(--accent)">legal@xrd.technologies</a></p>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+
+</body>
+</html>
