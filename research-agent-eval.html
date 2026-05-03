@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>How we ship AI agents that hold up in production — xR&amp;D Research</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
+    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
+    --accent:#2563eb; --accent-soft:#9bb5ff; --paper:#fdfcf7;
+    --serif:'Source Serif 4',Georgia,serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html{overflow-x:clip;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--mono);letter-spacing:.16em;text-transform:uppercase;font-size:11px}
+  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+  /* ===== HERO (image-backed, like insight detail) ===== */
+  .hero{position:relative;height:82vh;min-height:640px;overflow:hidden;background:#0b1b3f;color:#fff;display:flex;flex-direction:column}
+  .hero-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.15);will-change:transform;filter:grayscale(.15) contrast(1.05)}
+  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.4) 0%,rgba(11,27,63,.3) 35%,rgba(11,27,63,.92) 100%)}
+  /* technical grid overlay for research aesthetic */
+  .grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(155,181,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(155,181,255,.06) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:1}
+
+  .hero-meta{position:relative;z-index:2;padding:140px 56px 0;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.65);text-transform:uppercase;flex-wrap:wrap;gap:14px}
+  .hero-meta .left,.hero-meta .right{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+  .hero-meta b{color:#fff;font-weight:400;font-family:'Instrument Serif',serif;font-size:16px;font-style:italic;letter-spacing:0;text-transform:none;margin-left:6px}
+  .hero-meta a{color:#9bb5ff;font-weight:600;border-bottom:1px solid rgba(155,181,255,.3);padding-bottom:1px}
+
+  .crumb{position:relative;z-index:2;padding:18px 56px 0;font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .crumb a{color:#9bb5ff;border-bottom:1px solid rgba(155,181,255,.25);padding-bottom:1px}
+  .crumb a:hover{border-color:#9bb5ff}
+  .crumb .sep{opacity:.4}
+
+  .hero-content{position:relative;z-index:2;margin-top:auto;padding:0 56px 90px;max-width:1100px}
+  .track-tag{display:inline-flex;align-items:center;gap:14px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:28px}
+  .track-tag::before{content:"";width:36px;height:1px;background:#9bb5ff}
+  .paper-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(48px,6vw,96px);line-height:1;letter-spacing:-.025em;margin:0 0 28px;max-width:24ch;color:#fff}
+  .paper-h em{font-style:italic;color:#9bb5ff}
+  .paper-sub{font-family:var(--serif);font-size:21px;line-height:1.55;color:rgba(255,255,255,.85);margin:0 0 38px;max-width:62ch;font-weight:400;font-style:italic}
+  .hero-byline{display:flex;align-items:center;gap:18px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.7);text-transform:uppercase;flex-wrap:wrap}
+  .hero-byline .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#0b1b3f);border:2px solid rgba(255,255,255,.2)}
+  .hero-byline .who b{color:#fff;font-weight:600;font-family:'Inter',sans-serif;text-transform:none;letter-spacing:0;font-size:14.5px;display:block;margin-bottom:2px}
+  .hero-byline .meta-sep{display:inline-block;width:1px;height:32px;background:rgba(255,255,255,.18);margin:0 6px}
+  .hero-byline .read b{color:#fff;font-weight:600;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+
+  /* ===== PAPER META (post-hero affiliations + ID grid) ===== */
+  .paper-meta{padding:56px 56px 64px;background:var(--bg);border-bottom:1px solid var(--line)}
+  .paper-meta-inner{max-width:none;width:100%;margin:0}
+  .authors-block{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px 48px;width:100%;padding-bottom:32px;border-bottom:1px solid var(--line);margin-bottom:32px;align-items:start}
+  .author{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .author b{font-size:15px;color:var(--ink);font-weight:600;font-family:'Inter',sans-serif}
+  .author span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500}
+  .author .aff{font-size:13px;color:var(--ink-soft);font-style:italic;font-family:var(--serif);font-weight:400;letter-spacing:0;text-transform:none;margin-top:2px}
+  .id-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:28px 36px;width:100%;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;align-items:start}
+  .id-row .v{display:flex;flex-direction:column;gap:4px}
+  .id-row .v b{font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;color:var(--ink);font-weight:400;letter-spacing:0;text-transform:none}
+
+  /* ===== ABSTRACT BLOCK ===== */
+  .abstract{padding:64px 56px;background:var(--paper);border-bottom:1px solid var(--line);position:relative}
+  .abstract::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent);opacity:.55}
+  .abstract-inner{max-width:none;width:100%;margin:0}
+  .abstract h2{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 18px;display:flex;align-items:center;gap:14px}
+  .abstract h2::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .abstract p{font-family:var(--serif);font-size:18px;line-height:1.7;color:var(--ink);margin:0 0 18px}
+  .abstract p:last-child{margin-bottom:0}
+  .abstract p b{color:var(--ink);font-weight:600}
+  .abstract .keywords{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px;padding-top:24px;border-top:1px dashed var(--line)}
+  .abstract .keywords span{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;padding:6px 12px;border:1px solid var(--line);border-radius:0;background:#fff}
+  .abstract .keywords span b{color:var(--ink);font-weight:600;margin-right:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+
+  /* ===== CITATION BAR ===== */
+  .citebar{background:#0b1b3f;color:#fff;padding:30px 56px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .citebar .left{display:flex;gap:32px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .citebar .left b{color:#9bb5ff;font-family:'Instrument Serif',serif;font-style:italic;font-size:20px;font-weight:400;letter-spacing:0;text-transform:none;margin-left:6px}
+  .citebar .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .citebar .pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;padding:8px 16px;border:1px solid rgba(155,181,255,.3);border-radius:999px;color:#9bb5ff;font-weight:500;transition:.2s}
+  .citebar .pill:hover{background:#9bb5ff;color:#0b1b3f;border-color:#9bb5ff}
+  .citebar .pill.fill{background:#9bb5ff;color:#0b1b3f;border-color:#9bb5ff;font-weight:600}
+  .citebar .pill.fill:hover{background:#fff;border-color:#fff}
+
+  /* ===== ARTICLE LAYOUT ===== */
+  .article{padding:90px 56px 130px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:80px;align-items:start;background:var(--bg)}
+  .article-body{font-family:var(--serif);font-size:17.5px;line-height:1.78;color:#1f2a4a}
+  .article-body h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(32px,3.2vw,42px);line-height:1.1;letter-spacing:-.018em;color:var(--ink);margin:72px 0 14px;scroll-margin-top:96px}
+  .article-body h2 em{font-style:italic;color:var(--accent)}
+  .article-body h2:first-child{margin-top:0}
+  .article-body h2 .num{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;font-weight:600;display:block;margin-bottom:14px;letter-spacing:.22em}
+  .article-body h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.25;letter-spacing:-.01em;color:var(--ink);margin:48px 0 12px}
+  .article-body h3 em{font-style:italic;color:var(--accent)}
+  .article-body h3 .num{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-right:14px;letter-spacing:.18em}
+  .article-body p{margin:0 0 22px}
+  .article-body p b{color:var(--ink);font-weight:600}
+  .article-body p i, .article-body p em{font-style:italic;color:var(--ink)}
+  .article-body a{color:var(--accent);border-bottom:1px solid rgba(37,99,235,.3);transition:border-color .15s}
+  .article-body a:hover{border-bottom-color:var(--accent)}
+  .article-body ol{padding-left:24px;margin:0 0 28px}
+  .article-body ol li{margin-bottom:10px;padding-left:6px}
+  .article-body ol li::marker{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+  .article-body ul{margin:0 0 28px;padding-left:0;list-style:none}
+  .article-body ul li{position:relative;padding-left:28px;margin-bottom:10px}
+  .article-body ul li::before{content:"→";position:absolute;left:0;top:0;color:var(--accent);font-family:var(--mono);font-weight:500}
+  .article-body sup a{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;border:none;padding:0 2px}
+
+  /* citation refs in text */
+  .ref{font-family:var(--mono);font-size:11.5px;color:var(--accent);font-weight:600;border:none;padding:0 2px;vertical-align:super;line-height:1}
+
+  /* figures */
+  .fig{margin:48px 0;border:1px solid var(--line);background:#fff;padding:36px}
+  .fig .fcanvas{height:280px;background:#fff;position:relative;overflow:hidden;border-bottom:1px dashed var(--line);margin:-36px -36px 24px;padding:36px}
+  .fig .fcanvas::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(155,181,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(155,181,255,.1) 1px,transparent 1px);background-size:24px 24px;opacity:.6}
+  .fig .fcanvas svg{position:relative;z-index:1;display:block;width:100%;height:100%}
+  .fig .fcap{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;line-height:1.7}
+  .fig .fcap b{color:var(--ink);font-weight:600;font-family:var(--mono);text-transform:uppercase}
+  .fig .fcap .num{color:var(--accent);font-weight:600;margin-right:10px}
+  .fig .fdesc{margin-top:14px;font-size:14.5px;line-height:1.6;color:var(--ink-soft);font-family:var(--serif);font-style:italic;font-weight:400}
+
+  /* tables */
+  .tbl{margin:48px 0;border:1px solid var(--line);overflow:hidden;background:#fff}
+  .tbl-head{padding:18px 24px;background:var(--bg-warm);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .tbl-head b{color:var(--ink);font-weight:600;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+  .tbl-head .num{color:var(--accent);font-weight:600;margin-right:10px}
+  table{width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:14px}
+  table th,table td{padding:14px 24px;text-align:left;border-bottom:1px solid var(--line-2)}
+  table th{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:600;background:#fbfcfe;border-bottom:1px solid var(--line)}
+  table td{color:var(--ink);font-weight:500}
+  table td.num{font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;color:var(--accent);font-weight:400;letter-spacing:-.005em}
+  table td.code{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--ink-soft)}
+  table tr:last-child td{border-bottom:none}
+  table tr:hover td{background:#fbfcfe}
+  .tbl-foot{padding:14px 24px;border-top:1px solid var(--line);font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--muted);background:#fbfcfe}
+
+  /* code blocks (pseudocode / contracts) */
+  .code{margin:48px 0;border:1px solid var(--line);background:#0b1b3f;color:#cdd5e8;padding:0;overflow:hidden;font-family:var(--mono);font-size:13px;line-height:1.7}
+  .code-head{padding:14px 22px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:rgba(155,181,255,.85);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .code-head .lang{color:#9bb5ff;font-weight:600}
+  .code pre{margin:0;padding:24px 26px;overflow-x:auto;color:#cdd5e8}
+  .code pre .kw{color:#9bb5ff;font-weight:600}
+  .code pre .str{color:#7fdab1}
+  .code pre .com{color:#6b7591;font-style:italic}
+  .code pre .fn{color:#fff;font-weight:500}
+
+  /* pull quote */
+  .pq{margin:54px 0;padding:36px 40px;background:var(--paper);border-left:4px solid var(--accent)}
+  .pq q{display:block;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:clamp(24px,2.4vw,32px);line-height:1.3;color:var(--ink);quotes:"\201C""\201D";letter-spacing:-.01em;margin:0 0 18px;max-width:32ch}
+  .pq q::before{content:open-quote;color:var(--accent);margin-right:6px}
+  .pq q::after{content:close-quote;color:var(--accent);margin-left:4px}
+  .pq .qsig{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .pq .qsig b{color:var(--ink);font-weight:600;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+
+  /* references */
+  .refs{margin-top:80px;padding-top:36px;border-top:1px solid var(--line)}
+  .refs h2{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 28px;display:flex;align-items:center;gap:14px}
+  .refs h2::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .refs ol{counter-reset:ref;list-style:none;padding:0;margin:0;font-family:var(--serif);font-size:14.5px;line-height:1.65}
+  .refs ol li{counter-increment:ref;position:relative;padding:14px 0 14px 56px;border-bottom:1px solid var(--line-2);color:var(--ink-soft)}
+  .refs ol li:last-child{border-bottom:none}
+  .refs ol li::before{content:"["counter(ref)"]";position:absolute;left:0;top:14px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--accent);font-weight:600;font-style:normal;width:46px}
+  .refs ol li b{color:var(--ink);font-weight:600;font-family:var(--serif)}
+  .refs ol li i{font-style:italic;color:var(--ink)}
+  .refs ol li a{color:var(--accent);border-bottom:1px solid rgba(37,99,235,.25)}
+
+  /* bibtex block */
+  .bibtex{margin-top:42px}
+  .bibtex h3{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:14px}
+  .bibtex h3::before{content:"";width:30px;height:1px;background:var(--accent)}
+  .bibtex pre{font-family:var(--mono);font-size:12.5px;line-height:1.65;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent);padding:22px 26px;margin:0;overflow-x:auto;white-space:pre}
+
+  /* end note */
+  .endnote{margin-top:60px;padding-top:30px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;line-height:1.85}
+  .endnote b{color:var(--ink);font-weight:600;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{position:sticky;top:120px;display:flex;flex-direction:column;gap:24px}
+  .scard{background:#fff;border:1px solid var(--line);padding:22px}
+  .scard h6{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin:0 0 16px;display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line-2)}
+  .scard h6 .n{font-family:'Instrument Serif',serif;font-style:italic;font-size:14px;color:var(--muted);font-weight:400;margin-left:auto;letter-spacing:0;text-transform:none}
+
+  /* TOC */
+  .toc-list{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .toc-list li{counter-increment:toc;border-top:1px solid var(--line-2)}
+  .toc-list li:first-child{border-top:none}
+  .toc-list a{display:flex;align-items:flex-start;gap:14px;padding:10px 0;font-size:13.5px;color:var(--ink-soft);font-weight:500;line-height:1.4;transition:color .15s}
+  .toc-list a::before{content:counter(toc,decimal-leading-zero);font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:500;flex-shrink:0;padding-top:2px;letter-spacing:.04em}
+  .toc-list a:hover{color:var(--ink)}
+  .toc-list a.active{color:var(--accent);font-weight:600}
+  .toc-list a.active::before{color:var(--accent)}
+
+  /* metric block */
+  .metric{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--line-2)}
+  .metric:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+  .metric b{font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;color:var(--ink);font-weight:400;line-height:1;letter-spacing:-.012em}
+  .metric b em{color:var(--accent);font-style:italic}
+  .metric span{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500}
+
+  /* track related */
+  .trel{display:flex;flex-direction:column;gap:14px}
+  .trel a{padding:10px 0;border-bottom:1px solid var(--line-2);transition:padding .15s}
+  .trel a:last-child{border-bottom:none}
+  .trel a:hover{padding-left:6px}
+  .trel a:hover h5{color:var(--accent)}
+  .trel .rmeta{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:5px}
+  .trel h5{font-family:'Instrument Serif',serif;font-weight:400;font-size:16px;line-height:1.2;letter-spacing:-.005em;margin:0;color:var(--ink);transition:color .15s}
+  .trel h5 em{font-style:italic;color:var(--accent)}
+
+  /* repo card */
+  .repo-card{background:#0b1b3f;color:#fff;border-color:#0b1b3f;padding:24px}
+  .repo-card h6{color:#9bb5ff;border-bottom-color:rgba(155,181,255,.18)}
+  .repo-card h6::before{background:#9bb5ff}
+  .repo-card h4{font-family:var(--mono);font-size:13.5px;letter-spacing:.06em;color:#fff;font-weight:500;margin:0 0 14px;line-height:1.4;text-transform:none;word-break:break-all}
+  .repo-card p{font-size:13.5px;line-height:1.55;color:#b8c3df;margin:0 0 18px;font-family:var(--serif)}
+  .repo-card .stat{display:flex;gap:18px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid rgba(155,181,255,.18);flex-wrap:wrap}
+  .repo-card .stat span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:rgba(184,195,223,.7);text-transform:uppercase}
+  .repo-card .stat span b{color:#9bb5ff;font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;font-weight:400;letter-spacing:0;text-transform:none;margin-right:6px;display:inline-block}
+  .repo-card .gh{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:#9bb5ff;color:#0b1b3f;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;border-radius:0;transition:.2s}
+  .repo-card .gh:hover{background:#fff}
+
+  /* tags */
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tags a{padding:5px 10px;background:transparent;border:1px solid var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase;font-weight:500;transition:.15s}
+  .tags a:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* ===== FOOTER NEXT IN TRACK ===== */
+  .nextin{padding:120px 0 130px;background:var(--bg-warm);border-top:1px solid var(--line)}
+  .nextin-head{padding:0 56px;display:flex;justify-content:space-between;align-items:end;margin-bottom:50px;gap:40px}
+  .nextin-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(32px,3.6vw,48px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch}
+  .nextin-head h3 em{font-style:italic;color:var(--accent)}
+  .nextin-head a.go{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--accent);padding-bottom:3px}
+  .ngrid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .ncard{background:#fff;border:1px solid var(--line);padding:30px 28px;display:flex;flex-direction:column;transition:transform .25s, box-shadow .25s}
+  .ncard:hover{transform:translateY(-3px);box-shadow:0 22px 50px -30px rgba(11,27,63,.25)}
+  .ncard .nmeta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;font-weight:600}
+  .ncard h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:-.005em;margin:0 0 12px;color:var(--ink)}
+  .ncard h4 em{font-style:italic;color:var(--accent)}
+  .ncard p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 22px;font-family:var(--serif)}
+  .ncard .nfoot{margin-top:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px dashed var(--line)}
+  .ncard .nfoot b{color:var(--ink);font-weight:600}
+
+  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
+  footer a{color:#cdd5e8;margin:0 14px}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:1080px){
+    .hero-meta,.crumb,.hero-content,.paper-meta,.abstract,.citebar,.article,.nextin-head,.ngrid{padding-left:24px;padding-right:24px}
+    .article{grid-template-columns:1fr;gap:60px}
+    .sidebar{position:relative;top:auto}
+    .ngrid{grid-template-columns:1fr;gap:18px}
+    .nextin-head{flex-direction:column;align-items:flex-start;gap:18px}
+    .citebar{flex-direction:column;align-items:flex-start}
+    .hero-meta{padding-top:108px}
+  }
+  @media (min-width:641px) and (max-width:1080px){
+    .hero-meta,.crumb,.hero-content,.paper-meta,.abstract,.citebar,.article,.nextin-head,.ngrid{padding-left:32px;padding-right:32px}
+    .ngrid{grid-template-columns:1fr 1fr;gap:20px;max-width:760px}
+  }
+  @media (max-width:560px){
+    .hero-meta,.crumb,.hero-content,.paper-meta,.abstract,.citebar,.article,.nextin-head,.ngrid{padding-left:18px;padding-right:18px}
+    .hero-meta{padding-top:84px;font-size:9.5px;letter-spacing:.14em;gap:8px}
+    .hero-meta b{font-size:14px}
+    .hero{height:100vh;min-height:0}
+    .hero-content{padding-bottom:60px}
+    .hero-byline{flex-wrap:wrap;gap:10px;font-size:9.5px;letter-spacing:.12em}
+    .hero-byline .meta-sep{display:none}
+    .hero-byline .avatar{width:32px;height:32px}
+    .hero-byline .who b{font-size:13px}
+    .article-body{font-size:16px}
+    .article-body h2{font-size:28px;margin:54px 0 12px}
+    .article-body h3{font-size:20px}
+    .paper-h{font-size:clamp(36px,9vw,56px);line-height:1.02}
+    .paper-sub{font-size:16px;line-height:1.5}
+    .track-tag{font-size:10px;letter-spacing:.18em;margin-bottom:18px}
+    .paper-meta{padding:42px 18px}
+    .abstract{padding-top:42px;padding-bottom:42px}
+    .abstract p{font-size:16px}
+    .fig{padding:22px}
+    .fig .fcanvas{height:200px;margin:-22px -22px 18px;padding:22px}
+    .pq{padding:24px 26px}
+    .citebar{padding:22px 18px}
+    table th,table td{padding:11px 14px;font-size:13px}
+    .nextin{padding:80px 0 90px}
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="hero-meta">
+    <div class="left">
+      <span>xR&amp;D Research<b>·</b></span>
+      <span>Track 01<b>· AI agents</b></span>
+      <span>Write-up<b>· R-2026-04-01</b></span>
+      <span>Version<b>· v0.4</b></span>
+    </div>
+    <div class="right">
+      <span>Released<b>· 2026.04.18</b></span>
+      <a href="#bibtex">↘ Cite this work</a>
+    </div>
+  </div>
+
+  <nav class="crumb">
+    <a href="research.html">Research</a>
+    <span class="sep">/</span>
+    <span>Track 01 · AI agents</span>
+    <span class="sep">/</span>
+    <span>Write-up R-2026-04-01</span>
+  </nav>
+
+  <div class="hero-content">
+    <div class="track-tag">Track 01 · AI agents · Open access · MIT licence</div>
+    <h1 class="paper-h">How we ship AI <em>agents</em> that hold up in production.</h1>
+    <p class="paper-sub">A framework for prompt scaffolding, tool-call contracts, evaluation harnesses, and operational rituals — drawn from four production engagements between 2025 Q3 and 2026 Q1.</p>
+    <div class="hero-byline">
+      <div class="avatar"></div>
+      <div class="who">
+        <b>xR&amp;D Engineering · Tomoki · Nghia</b>
+        <span>4 authors · xR&amp;D Studio</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="read"><b>~12 min</b><br>R-2026-04-01 · v0.4</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PAPER META ============== -->
+<section class="paper-meta">
+  <div class="paper-meta-inner">
+  <div class="authors-block">
+    <div class="author">
+      <b>xR&amp;D Engineering</b>
+      <span>Track 01 lead</span>
+      <div class="aff">xR&amp;D Studio · Da Nang</div>
+    </div>
+    <div class="author">
+      <b>Tomoki</b>
+      <span>Founder</span>
+      <div class="aff">xR&amp;D Studio · Tokyo / Da Nang</div>
+    </div>
+    <div class="author">
+      <b>Nghia</b>
+      <span>Founding Partner</span>
+      <div class="aff">xR&amp;D Studio · Da Nang</div>
+    </div>
+    <div class="author">
+      <b>Vietnam Studio Cohort 02</b>
+      <span>Contributors</span>
+      <div class="aff">xR&amp;D Studio · Da Nang</div>
+    </div>
+  </div>
+
+  <div class="id-row">
+    <div class="v"><span>Identifier</span><b>R-2026-04-01</b></div>
+    <div class="v"><span>Status</span><b>Open · v0.4</b></div>
+    <div class="v"><span>Track</span><b>01 · AI agents</b></div>
+    <div class="v"><span>Engagements</span><b>04 · production</b></div>
+    <div class="v"><span>Reading time</span><b>~12 min</b></div>
+    <div class="v"><span>Code</span><b>MIT · agent-eval</b></div>
+  </div>
+  </div>
+</section>
+
+<!-- ============== ABSTRACT ============== -->
+<section class="abstract">
+  <div class="abstract-inner">
+    <h2>Abstract</h2>
+    <p>Many AI agent demos work in the demo and break in production. The reasons are familiar: prompts that drift under unexpected input, evaluation runs that pass for the wrong reasons, tool integrations that look connected but are silently unobserved. <b>This write-up documents the framework we use to ship AI agents that survive contact with real business operations.</b></p>
+    <p>We describe four components — (i) modular prompt scaffolding, (ii) typed tool-call contracts with negative-example coverage, (iii) an evaluation harness with explicit failure-mode buckets, and (iv) operational rituals (logging, replay, human-in-loop overrides) for the deployed agent. The framework was applied across <b>four production engagements</b> in 2025 Q3 – 2026 Q1, including a knowledge-search agent over twenty years of JP-language internal documentation. We report the metrics we track, the failure modes we observed, and the operational changes we made between v0.1 and v0.4 of the harness. The harness itself is released under MIT licence as <a href="#"><i>agent-eval</i></a>.</p>
+    <div class="keywords">
+      <span><b>Keywords</b>AI agents</span>
+      <span>Production deployment</span>
+      <span>Evaluation</span>
+      <span>Tool-use</span>
+      <span>Operational reliability</span>
+      <span>RAG</span>
+      <span>Failure modes</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CITATION BAR ============== -->
+<section class="citebar">
+  <div class="left">
+    <span>Cite as<b>xR&amp;D / R-2026-04-01</b></span>
+    <span>DOI<b>10.xxxx/xrd.r-2026-04-01</b></span>
+    <span>Engagements<b>04</b></span>
+  </div>
+  <div class="actions">
+    <a class="pill" href="#bibtex">BibTeX ↓</a>
+    <a class="pill" href="#">PDF (preprint)</a>
+    <a class="pill fill" href="#">View code · agent-eval</a>
+  </div>
+</section>
+
+<!-- ============== ARTICLE ============== -->
+<article class="article">
+  <div class="article-body" id="articleBody">
+
+    <h2 id="s1"><span class="num">§ 1 — Introduction</span>The <em>gap</em> between demo and deployment.</h2>
+    <p>Generative AI agents — language-model-driven systems that plan, call tools, and produce structured outputs — have shipped in demos faster than in production. The gap between the two settings is not primarily a model-capability gap. We argue, on the basis of four production engagements between 2025 Q3 and 2026 Q1, that the gap is operational: <b>agents fail in production because the framework around the agent is missing</b>, not because the underlying model is insufficient.</p>
+    <p>The literature on agent design <span class="ref">[1]</span><span class="ref">[2]</span> emphasises planning architectures and tool-use protocols. Less attention has been paid to the operational substrate: how prompts are versioned, how tool calls are contractually constrained, how evaluation handles negative cases, and how the deployed agent is observed at runtime. Each of these is a place where production agents fail silently. Each is, in our experience, fixable with disciplined engineering rather than further model capability.</p>
+
+    <p>This write-up describes the framework we have converged on. It is deliberately not novel: the components are recognisable to any infrastructure-minded engineer. The contribution is in their <i>combination and operational tuning</i>, validated across four real engagements with paying clients. The framework's evaluation harness is open-sourced as <a href="#"><i>agent-eval</i></a> under MIT licence.</p>
+
+    <h2 id="s2"><span class="num">§ 2 — Background</span>Three failure modes we keep <em>seeing</em>.</h2>
+    <p>Before describing the framework, it is worth being concrete about what fails. Across the four engagements, three failure modes accounted for the majority of observed production incidents:</p>
+
+    <ol>
+      <li><b>Prompt drift under input variance.</b> A prompt that performs well on the curated eval set degrades on real user input distributions. The model produces plausible but incorrect outputs that pass automated checks because the checks were calibrated to the eval set, not production traffic.</li>
+      <li><b>Silent tool-call mismatch.</b> The agent emits a structured tool call that the orchestrator parses successfully but the downstream tool rejects (or, worse, accepts and produces wrong output). Because the orchestrator-side parse succeeds, the agent assumes success and proceeds.</li>
+      <li><b>Evaluation passing for the wrong reasons.</b> The eval suite reports high accuracy, but inspection of the passing cases reveals that the model is exploiting an artefact of the test data — a phrase, a structural cue — rather than answering the underlying question.<span class="ref">[3]</span></li>
+    </ol>
+
+    <p>None of these are resolved by switching to a more capable model. All three are architectural: they belong to the framework around the agent, not to the agent itself.</p>
+
+    <div class="fig">
+      <div class="fcanvas">
+        <svg viewBox="0 0 800 220" preserveAspectRatio="none">
+          <!-- four-panel system diagram -->
+          <g font-family="JetBrains Mono" font-size="11" fill="#3a4a72">
+            <!-- panel 1: prompt -->
+            <rect x="20" y="40" width="170" height="140" fill="none" stroke="#2563eb" stroke-width="1.4"/>
+            <text x="32" y="64" font-weight="600" fill="#0B1B3F">PROMPT</text>
+            <text x="32" y="84">scaffold v3.2</text>
+            <line x1="32" y1="100" x2="178" y2="100" stroke="#9bb5ff" stroke-dasharray="3 3"/>
+            <text x="32" y="120">— task block</text>
+            <text x="32" y="138">— context block</text>
+            <text x="32" y="156">— tool block</text>
+            <!-- arrow -->
+            <path d="M 200 110 L 230 110" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#arr1)"/>
+            <!-- panel 2: agent -->
+            <rect x="240" y="40" width="170" height="140" fill="#eef2fb" stroke="#2563eb" stroke-width="1.4"/>
+            <text x="252" y="64" font-weight="600" fill="#0B1B3F">AGENT</text>
+            <text x="252" y="84">model · v_n</text>
+            <line x1="252" y1="100" x2="398" y2="100" stroke="#9bb5ff" stroke-dasharray="3 3"/>
+            <text x="252" y="120">plan → tool call</text>
+            <text x="252" y="138">→ observe</text>
+            <text x="252" y="156">→ respond</text>
+            <path d="M 420 110 L 450 110" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#arr1)"/>
+            <!-- panel 3: tools -->
+            <rect x="460" y="40" width="170" height="140" fill="none" stroke="#2563eb" stroke-width="1.4"/>
+            <text x="472" y="64" font-weight="600" fill="#0B1B3F">TOOLS</text>
+            <text x="472" y="84">contracts · typed</text>
+            <line x1="472" y1="100" x2="618" y2="100" stroke="#9bb5ff" stroke-dasharray="3 3"/>
+            <text x="472" y="120">— retrieval</text>
+            <text x="472" y="138">— actions</text>
+            <text x="472" y="156">— compute</text>
+            <path d="M 640 110 L 670 110" stroke="#2563eb" stroke-width="1.5" fill="none" marker-end="url(#arr1)"/>
+            <!-- panel 4: eval/ops -->
+            <rect x="680" y="40" width="100" height="140" fill="#0b1b3f" stroke="#0b1b3f"/>
+            <text x="692" y="64" font-weight="600" fill="#9bb5ff">OPS</text>
+            <text x="692" y="84" fill="#cdd5e8">eval +</text>
+            <text x="692" y="100" fill="#cdd5e8">replay</text>
+            <text x="692" y="120" fill="#cdd5e8">— logs</text>
+            <text x="692" y="138" fill="#cdd5e8">— rubric</text>
+            <text x="692" y="156" fill="#cdd5e8">— H-in-L</text>
+            <!-- feedback loop -->
+            <path d="M 730 180 Q 730 200 680 200 L 110 200 Q 60 200 60 180" stroke="#9bb5ff" stroke-width="1" stroke-dasharray="4 4" fill="none"/>
+            <text x="380" y="214" fill="#6b7591" font-size="10">FEEDBACK · prompt + harness updates</text>
+            <defs>
+              <marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/>
+              </marker>
+            </defs>
+          </g>
+        </svg>
+      </div>
+      <div class="fcap"><span class="num">Fig. 1</span><b>Framework overview.</b> Four substrate components — prompt scaffolding, agent runtime, tool-call contracts, and operational eval — connected by a feedback loop that drives both prompt revisions and harness updates between deployments.</div>
+      <div class="fdesc">The dashed feedback path is the part most often missing in demo-grade systems. In the framework, every production incident produces an entry that re-enters either the prompt scaffold or the eval harness within one working day.</div>
+    </div>
+
+    <h2 id="s3"><span class="num">§ 3 — Method</span>The four-component <em>framework</em>.</h2>
+    <p>The framework consists of four components, each addressing one of the operational gaps identified in §2. We describe each in turn, with worked examples drawn from the production engagements summarised in Table 1 (§4).</p>
+
+    <h3 id="s3-1"><span class="num">3.1</span>Modular prompt <em>scaffolding</em>.</h3>
+    <p>The prompt is structured as a versioned, modular document with five blocks: <i>task</i>, <i>context</i>, <i>tools</i>, <i>constraints</i>, and <i>examples</i>. Each block can be revised independently. The scaffold is checked into the same repository as the agent code and reviewed under the same code-review process. We treat prompt revisions as code changes — diffs reviewed, commits annotated, regressions caught by the eval harness before deployment.</p>
+    <p>This is not novel; what we found important is the <b>versioning discipline</b>. A prompt is never edited in production. Every change ships with a version bump and an eval delta. We have rejected prompt edits whose eval delta was within noise — even when the human reviewer felt the new prompt was "clearer" — on the principle that uninspected drift is the leading cause of production regressions.<span class="ref">[4]</span></p>
+
+    <h3 id="s3-2"><span class="num">3.2</span>Typed tool-call <em>contracts</em>.</h3>
+    <p>Each tool exposes a typed contract: input schema, output schema, error taxonomy, and (critically) a <i>negative-example set</i>. The orchestrator validates both successful and failed tool calls against the contract before they reach the agent. A tool call that does not satisfy the negative-example set is treated as a contract violation regardless of the model's reported success.</p>
+
+    <div class="code">
+      <div class="code-head"><span class="lang">contract.ts</span><span>agent-eval / contracts</span></div>
+<pre><span class="kw">export</span> <span class="kw">const</span> <span class="fn">searchInternalDocs</span>: ToolContract = {
+  <span class="str">name</span>: <span class="str">"search_internal_docs"</span>,
+  <span class="str">input</span>: z.<span class="fn">object</span>({
+    query: z.<span class="fn">string</span>().<span class="fn">min</span>(<span class="str">1</span>),
+    locale: z.<span class="fn">enum</span>([<span class="str">"ja"</span>, <span class="str">"en"</span>]),
+    topK: z.<span class="fn">number</span>().<span class="fn">int</span>().<span class="fn">min</span>(<span class="str">1</span>).<span class="fn">max</span>(<span class="str">20</span>)
+  }),
+  <span class="str">output</span>: z.<span class="fn">object</span>({
+    docs: z.<span class="fn">array</span>(DocSchema),
+    confidence: z.<span class="fn">number</span>().<span class="fn">min</span>(<span class="str">0</span>).<span class="fn">max</span>(<span class="str">1</span>)
+  }),
+
+  <span class="com">// negative examples — must NOT pass without explicit reason</span>
+  <span class="str">negativeExamples</span>: [
+    { input: { query: <span class="str">""</span>, locale: <span class="str">"ja"</span>, topK: <span class="str">5</span> },
+      mustReject: <span class="str">"empty_query"</span> },
+    { input: { query: <span class="str">"&lt;script&gt;"</span>, locale: <span class="str">"ja"</span>, topK: <span class="str">5</span> },
+      mustReject: <span class="str">"injection_pattern"</span> },
+    { input: { query: <span class="str">"valid"</span>, locale: <span class="str">"ja"</span>, topK: <span class="str">9999</span> },
+      mustReject: <span class="str">"topK_out_of_range"</span> }
+  ],
+
+  <span class="str">errorTaxonomy</span>: [
+    <span class="str">"empty_query"</span>, <span class="str">"injection_pattern"</span>,
+    <span class="str">"topK_out_of_range"</span>, <span class="str">"upstream_timeout"</span>,
+    <span class="str">"corpus_unavailable"</span>
+  ]
+};</pre>
+    </div>
+
+    <p>The negative-example set is the single most useful piece of the contract. It encodes what should <i>fail</i>, which forces the team to reason about failure surfaces before deployment. We collect negative examples from incidents in production — every failure, once root-caused, becomes a negative example for the contract — so the contract grows monotonically with operational experience.</p>
+
+    <h3 id="s3-3"><span class="num">3.3</span>Evaluation harness with <em>failure-mode buckets</em>.</h3>
+    <p>Conventional evaluation reports aggregate accuracy. We instead bucket eval cases by the failure mode they target: drift, injection, multilingual, out-of-corpus, ambiguity, refusal-correctness. Each bucket has its own pass-rate threshold and is gated independently. A regression in any single bucket blocks deployment, even if aggregate accuracy is unchanged.</p>
+
+    <div class="tbl">
+      <div class="tbl-head"><span><span class="num">Tab. 1</span><b>Eval buckets — agent-eval v0.4</b></span><span>Per-bucket gates, last 30 days</span></div>
+      <table>
+        <thead><tr><th>Bucket</th><th>Cases</th><th>Pass-rate gate</th><th>Current</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Prompt drift</td><td class="num">412</td><td class="code">≥ 0.92</td><td class="num">0.94</td><td>✓ within gate</td></tr>
+          <tr><td>Injection / adversarial</td><td class="num">128</td><td class="code">≥ 0.99</td><td class="num">1.00</td><td>✓ within gate</td></tr>
+          <tr><td>Multilingual (JP / EN mixed)</td><td class="num">186</td><td class="code">≥ 0.90</td><td class="num">0.91</td><td>✓ within gate</td></tr>
+          <tr><td>Out-of-corpus refusal</td><td class="num">64</td><td class="code">≥ 0.95</td><td class="num">0.97</td><td>✓ within gate</td></tr>
+          <tr><td>Ambiguous query handling</td><td class="num">92</td><td class="code">≥ 0.85</td><td class="num">0.81</td><td>⚠ blocked v0.5</td></tr>
+          <tr><td>Tool-call contract violation</td><td class="num">240</td><td class="code">= 1.00</td><td class="num">1.00</td><td>✓ within gate</td></tr>
+        </tbody>
+      </table>
+      <div class="tbl-foot">Bucketed gates surface regressions that aggregate accuracy hides. The ambiguous-query bucket below threshold is currently blocking the v0.5 release of the agent in engagement #2.</div>
+    </div>
+
+    <p>The bucketing is the difference between a passing eval and a useful one. A 92% aggregate accuracy is meaningless if the 8% failures concentrate in the bucket the deployment cares about. Bucket-level gates make that concentration impossible to overlook.</p>
+
+    <h3 id="s3-4"><span class="num">3.4</span>Operational <em>rituals</em>.</h3>
+    <p>Deployment is not the end of the framework but its operational entry point. Every deployed agent runs four standing rituals:</p>
+
+    <ul>
+      <li><b>Structured logging</b> of every prompt-input-output triple, indexed by version, with hashed user identifiers for privacy</li>
+      <li><b>Replay tooling</b> that lets any production trace be re-run against any prompt or agent version, locally or in CI</li>
+      <li><b>Human-in-loop overrides</b> on every action above a configured cost or risk threshold (configurable per engagement)</li>
+      <li><b>Weekly incident review</b> in which any failed trace is root-caused and either added to a contract negative-example set or to an eval bucket</li>
+    </ul>
+
+    <div class="pq">
+      <q>The single highest-leverage practice we have adopted is making every production incident produce a deterministic test in the harness within 24 hours. The agent gets harder to break with every break.</q>
+      <div class="qsig"><b>Engineering lead</b> · Track 01 · 2026.04</div>
+    </div>
+
+    <h2 id="s4"><span class="num">§ 4 — Evaluation</span>Four production <em>engagements</em>.</h2>
+    <p>The framework has been deployed across four production engagements. We summarise the engagements anonymised by industry and outcome class, with the operational metrics that drove decisions during the deployment.</p>
+
+    <div class="tbl">
+      <div class="tbl-head"><span><span class="num">Tab. 2</span><b>Production engagements</b></span><span>2025 Q3 — 2026 Q1</span></div>
+      <table>
+        <thead><tr><th>#</th><th>Industry</th><th>Agent class</th><th>Build</th><th>Deploy</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>01</td><td>Manufacturing · JP</td><td>Knowledge-search</td><td class="num">8 wk</td><td class="num">2026.03</td><td>Operational</td></tr>
+          <tr><td>02</td><td>Consumer goods · JP</td><td>Customer Q&amp;A</td><td class="num">6 wk</td><td class="num">2025.11</td><td>Operational</td></tr>
+          <tr><td>03</td><td>BtoB SaaS · JP</td><td>Workflow automation</td><td class="num">10 wk</td><td class="num">2025.09</td><td>Operational</td></tr>
+          <tr><td>04</td><td>Pro. services · JP</td><td>Document drafting</td><td class="num">7 wk</td><td class="num">2026.01</td><td>Operational</td></tr>
+        </tbody>
+      </table>
+      <div class="tbl-foot">All four engagements operational at time of writing. Reported metrics are aggregated and anonymised per client agreement.</div>
+    </div>
+
+    <p>Across the four engagements we observed three results worth reporting. First, <b>build-to-deploy time</b> averaged 7.75 weeks across the four engagements, against an internal estimate of 8.0 weeks set before the framework was applied — within noise of estimate. Second, <b>thumbs-up satisfaction</b> on production traffic stabilised between 76% and 82% across the four engagements, with the variation driven primarily by the difficulty of the underlying corpus rather than by the agent itself. Third, <b>operational incidents</b> per agent per month declined from 11 (engagement #03, pre-framework v0.1) to 2 (engagement #01, post-framework v0.4), a 5.5× reduction we attribute primarily to the bucketed eval and the contract negative-example sets.</p>
+
+    <h2 id="s5"><span class="num">§ 5 — Failure modes</span>What still <em>breaks</em>.</h2>
+    <p>The framework reduces but does not eliminate operational failures. We document the residual failure modes here, both for honesty and to scope future work.</p>
+
+    <ol>
+      <li><b>Domain depth.</b> Where the corpus contains genuinely uncommon technical content (rare manufacturing protocols, niche legal language), the agent answers fluently but incorrectly. Bucketing helps surface these but does not solve them. Resolution requires domain-specific fine-tunes or retrieval-enhanced grounding,<span class="ref">[5]</span> both outside the framework's scope.</li>
+      <li><b>Multi-turn drift.</b> Agents that hold long conversations exhibit slow drift in instruction-following over many turns. Our current mitigation is a periodic re-grounding prompt, applied every <i>n</i> turns. The mitigation is brittle and we expect to revise it in v0.5.</li>
+      <li><b>Compliance signal coverage.</b> Compliance constraints (industry-specific, jurisdictional) are not natively bucketed in the harness. We currently encode them as constraint blocks in the prompt scaffold, which works but is unsatisfying. v0.5 will add a dedicated compliance bucket type to the harness.</li>
+    </ol>
+
+    <h2 id="s6"><span class="num">§ 6 — Discussion</span>What this <em>doesn't</em> do.</h2>
+    <p>The framework is operational, not research-level. It does not advance the state of the art on agent planning, tool-use, or reasoning. It does the unglamorous work of taking a working agent demo and putting it on a deployment surface where it can be observed, evaluated, and revised under production conditions. We expect the framework to be largely uncontroversial to teams that ship language-model systems for paying clients; we publish it because the components are not, in our experience, written down anywhere in one place, and the negative-example discipline is — anecdotally — the part most teams have not converged on.</p>
+
+    <p>Limits we want to be explicit about: (a) all four engagements are JP-language enterprise deployments; cross-cultural / cross-language generalisation is not established. (b) The bucket structure has accumulated organically; we do not yet have a principled methodology for bucket design. (c) The harness is open source but the eval datasets used in §4 are not, for client-confidentiality reasons. We release synthetic substitutes alongside the harness for reproducibility.</p>
+
+    <h2 id="s7"><span class="num">§ 7 — Conclusion</span>The <em>framework</em>, in one sentence.</h2>
+    <p>An agent that is shipped, observed, and revised against bucketed evaluation under typed tool contracts will outlive an agent that is shipped against aggregate accuracy. The framework is the engineering substrate that makes that possible without superhuman discipline. The harness is at <a href="#"><i>github.com/xrd-technologies/agent-eval</i></a>. We welcome contributions, especially from teams operating in non-JP languages.</p>
+
+    <div class="endnote">
+      <b>Authors</b> &nbsp;xR&amp;D Engineering · Tomoki · Nghia · Cohort 02 contributors &nbsp; <br>
+      <b>Visuals</b> &nbsp;xR&amp;D Creative · pipeline-trained &nbsp; <br>
+      <b>Reviewed by</b> &nbsp;xR&amp;D Studio internal review · v0.4 · 2026.04.18 &nbsp; <br>
+      <b>Acknowledgements</b> &nbsp;The four client engineering teams who agreed to publication of anonymised incident counts. The two anonymous external readers whose comments shaped §5.
+    </div>
+
+    <!-- ============== REFERENCES ============== -->
+    <div class="refs" id="refs">
+      <h2>References</h2>
+      <ol>
+        <li><b>Yao, S. et al.</b> <i>ReAct: Synergizing reasoning and acting in language models.</i> ICLR, 2023.</li>
+        <li><b>Park, J. S. et al.</b> <i>Generative agents: interactive simulacra of human behavior.</i> UIST, 2023.</li>
+        <li><b>Bowman, S. R. et al.</b> <i>What will it take to fix benchmarking in NLP?</i> NAACL, 2021. — on benchmarks passing for the wrong reasons.</li>
+        <li><b>Sculley, D. et al.</b> <i>Hidden technical debt in machine learning systems.</i> NeurIPS, 2015. — the foundational text on operational drift in ML systems.</li>
+        <li><b>Lewis, P. et al.</b> <i>Retrieval-augmented generation for knowledge-intensive NLP tasks.</i> NeurIPS, 2020.</li>
+        <li><b>xR&amp;D Engineering.</b> <i>Eight weeks to ship a knowledge-search AI agent.</i> Insights · Build log · 2026.04. <a href="insight-knowledge-search-agent.html">[link]</a></li>
+        <li><b>Beam, A. L. &amp; Kohane, I. S.</b> <i>Big data and machine learning in health care.</i> JAMA, 2018. — for the discussion on human-in-loop overrides.</li>
+      </ol>
+    </div>
+
+    <!-- ============== BIBTEX ============== -->
+    <div class="bibtex" id="bibtex">
+      <h3>Cite this work</h3>
+<pre>@techreport{xrd-r-2026-04-01,
+  author      = {xR&amp;D Engineering and Tomoki and Nghia},
+  title       = {How we ship AI agents that hold up in production},
+  institution = {xR&amp;D Studio},
+  number      = {R-2026-04-01},
+  year        = {2026},
+  month       = {April},
+  type        = {Track 01 write-up},
+  version     = {v0.4},
+  url         = {https://xrd.studio/research-agent-eval.html},
+  note        = {Open access · MIT licence on agent-eval harness},
+  keywords    = {AI agents, production deployment, evaluation,
+                 tool-use, operational reliability}
+}</pre>
+    </div>
+
+  </div>
+
+  <!-- ============== SIDEBAR ============== -->
+  <aside class="sidebar">
+    <div class="scard">
+      <h6>Contents <span class="n">7 sections</span></h6>
+      <ol class="toc-list">
+        <li><a href="#s1">Introduction</a></li>
+        <li><a href="#s2">Background</a></li>
+        <li><a href="#s3">Method</a></li>
+        <li><a href="#s4">Evaluation</a></li>
+        <li><a href="#s5">Failure modes</a></li>
+        <li><a href="#s6">Discussion</a></li>
+        <li><a href="#s7">Conclusion</a></li>
+        <li><a href="#refs">References</a></li>
+        <li><a href="#bibtex">Cite this work</a></li>
+      </ol>
+    </div>
+
+    <div class="scard">
+      <h6>Key metrics</h6>
+      <div class="metric"><b><em>04</em></b><span>Production engagements</span></div>
+      <div class="metric"><b><em>5.5×</em></b><span>Reduction in incidents (v0.1 → v0.4)</span></div>
+      <div class="metric"><b><em>1,122</em></b><span>Eval cases · 6 buckets</span></div>
+      <div class="metric"><b><em>v0.4</em></b><span>Current harness version</span></div>
+    </div>
+
+    <div class="scard repo-card">
+      <h6>Open source</h6>
+      <h4>github.com/xrd-technologies/agent-eval</h4>
+      <p>The evaluation harness described in §3.3, with synthetic eval data and bucket scaffolding. MIT licence.</p>
+      <div class="stat">
+        <span><b>v0.4</b>release</span>
+        <span><b>TS</b>language</span>
+        <span><b>MIT</b>licence</span>
+      </div>
+      <a class="gh" href="#">View on GitHub
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+
+    <div class="scard">
+      <h6>Track 01 · related</h6>
+      <div class="trel">
+        <a href="insight-knowledge-search-agent.html">
+          <div class="rmeta">Build log · 9 min · Apr 2026</div>
+          <h5>Eight weeks to ship a <em>knowledge-search</em> agent.</h5>
+        </a>
+        <a href="insight-ai-workflows-3-days.html">
+          <div class="rmeta">Method · 6 min · Apr 2026</div>
+          <h5>How AI <em>workflows</em> save us 3 days a week.</h5>
+        </a>
+        <a href="research.html">
+          <div class="rmeta">Track index</div>
+          <h5>All Track 01 <em>write-ups</em> →</h5>
+        </a>
+      </div>
+    </div>
+
+    <div class="scard">
+      <h6>Tags</h6>
+      <div class="tags">
+        <a href="#">AI agents</a>
+        <a href="#">Production</a>
+        <a href="#">Evaluation</a>
+        <a href="#">Tool-use</a>
+        <a href="#">RAG</a>
+        <a href="#">Open source</a>
+        <a href="#">Track 01</a>
+      </div>
+    </div>
+  </aside>
+</article>
+
+<!-- ============== NEXT IN TRACK ============== -->
+<section class="nextin">
+  <div class="nextin-head">
+    <h3>More from the <em>research</em> notebook.</h3>
+    <a class="go" href="research.html">All tracks &amp; publications →</a>
+  </div>
+  <div class="ngrid">
+    <a class="ncard" href="insight-knowledge-search-agent.html">
+      <div class="nmeta">Track 01 · Build log</div>
+      <h4>Eight weeks to ship a <em>knowledge-search</em> agent.</h4>
+      <p>The build log of engagement #01 from §4 of this paper — eight-week build, twenty-year corpus, three operational surprises.</p>
+      <div class="nfoot"><span>9 min read</span><b>Apr 2026 →</b></div>
+    </a>
+    <a class="ncard" href="insight-200-brand-visuals.html">
+      <div class="nmeta">Track 02 · Build log</div>
+      <h4>Generating <em>200 brand visuals</em> in five days.</h4>
+      <p>Companion build log on the visual side of the studio — prompt scaffolding and bucketed QA in a campaign context.</p>
+      <div class="nfoot"><span>5 min read</span><b>Mar 2026 →</b></div>
+    </a>
+    <a class="ncard" href="insight-talent-grown-not-found.html">
+      <div class="nmeta">Track 04 · Method</div>
+      <h4>AI-native talent is <em>grown</em>, not found.</h4>
+      <p>The talent-side write-up referenced in the engagement model — why every contributor to this paper came through the same pipeline.</p>
+      <div class="nfoot"><span>7 min read</span><b>Apr 2026 →</b></div>
+    </a>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+(function(){
+  const bar = document.getElementById('scrollBar');
+  const heroImg = document.getElementById('heroImg');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const sections = Array.from(tocLinks).map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+
+  function onScroll(){
+    const y = window.scrollY;
+    if (bar){
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
+    }
+    if (heroImg && y < window.innerHeight){
+      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
+    }
+    let active = sections[0];
+    sections.forEach(s => {
+      if (s.getBoundingClientRect().top < window.innerHeight*0.4) active = s;
+    });
+    if (active){
+      tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+active.id));
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  if (typeof gsap !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero-meta > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.05,delay:.1});
+    gsap.from('.crumb',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.25});
+    gsap.from('.track-tag',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.4});
+    gsap.fromTo('.paper-h',{y:40,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',delay:.5});
+    gsap.fromTo('.paper-sub',{y:24,opacity:0},{y:0,opacity:1,duration:.9,ease:'power3.out',delay:.7});
+    gsap.from('.hero-byline',{y:18,opacity:0,duration:.8,ease:'power3.out',delay:.9});
+
+    gsap.fromTo('.author',{y:18,opacity:0},{y:0,opacity:1,duration:.6,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.paper-meta',start:'top 88%'}});
+    gsap.fromTo('.id-row .v',{y:14,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out',stagger:.04,scrollTrigger:{trigger:'.id-row',start:'top 92%'}});
+
+    gsap.fromTo('.abstract-inner > *',{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.abstract',start:'top 85%'}});
+    gsap.from('.citebar > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.06,scrollTrigger:{trigger:'.citebar',start:'top 90%'}});
+
+    gsap.utils.toArray('.article-body > *').forEach(el=>{
+      gsap.fromTo(el,{y:20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});
+    });
+    gsap.utils.toArray('.sidebar .scard').forEach((c,i)=>{
+      gsap.fromTo(c,{y:18,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',delay:i*.05,scrollTrigger:{trigger:c,start:'top 92%'}});
+    });
+
+    gsap.from('.nextin-head h3',{y:24,opacity:0,duration:.9,ease:'power4.out',scrollTrigger:{trigger:'.nextin',start:'top 85%'}});
+    gsap.fromTo('.ncard',{y:30,opacity:0},{y:0,opacity:1,duration:.8,ease:'power4.out',stagger:.1,scrollTrigger:{trigger:'.ngrid',start:'top 88%'}});
+
+    window.addEventListener('load',()=>ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  }
+})();
+</script>
+
+</body>
+</html>
