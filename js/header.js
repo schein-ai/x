@@ -1,20 +1,26 @@
 (function(){
-  // Detect active section from current URL
+  // Detect language from current URL: -jp suffix → Japanese, otherwise English
   const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  const activeMap = {
-    'solutions.html':'solutions.html',
-    'solution-ai-design.html':'solutions.html',
-    'projects.html':'projects.html',
-    'project-mekong-delta.html':'projects.html',
-    'about.html':'about.html',
-    'insights.html':'insights.html',
-    'insight-bio-campus.html':'insights.html',
-    'careers.html':'careers.html',
-    'research.html':'research.html',
-    'contact.html':'contact.html'
-  };
-  const active = activeMap[path] || '';
-  const cls = (page) => page === active ? ' class="active"' : '';
+  const isJp = /-jp\.html$/.test(path);
+  const sfx = isJp ? '-jp' : '';
+  // Active section map (works for both EN and JP via dynamic suffix)
+  const baseActive = (() => {
+    const stripped = path.replace(/-jp\.html$/, '.html');
+    const map = {
+      'solutions.html':'solutions',
+      'solution-ai-design.html':'solutions',
+      'projects.html':'projects',
+      'project-mekong-delta.html':'projects',
+      'about.html':'about',
+      'insights.html':'insights',
+      'insight-bio-campus.html':'insights',
+      'careers.html':'careers',
+      'research.html':'research',
+      'contact.html':'contact'
+    };
+    return map[stripped] || '';
+  })();
+  const cls = (page) => page === baseActive ? ' class="active"' : '';
 
   const styles = `
 .site-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -110,32 +116,32 @@ body.menu-open{overflow:hidden}
 
   const html = `<nav class="site-nav nav" id="nav">
   <div class="nav-inner">
-    <a class="logo" href="index.html"><img src="assets/logo-white.png" alt="xR&D Technologies" style="height:40px;width:auto"></a>
+    <a class="logo" href="index${sfx}.html"><img src="assets/logo-white.png" alt="xR&D Technologies" style="height:40px;width:auto"></a>
     <div class="nav-links">
-      <a href="solutions.html"${cls('solutions.html')}>Solutions</a>
-      <a href="projects.html"${cls('projects.html')}>Projects</a>
-      <a href="about.html"${cls('about.html')}>About</a>
-      <a href="insights.html"${cls('insights.html')}>Insights</a>
-      <a href="careers.html"${cls('careers.html')}>Careers</a>
-      <a href="research.html"${cls('research.html')}>Research</a>
+      <a href="solutions${sfx}.html"${cls('solutions')}>Solutions</a>
+      <a href="projects${sfx}.html"${cls('projects')}>Projects</a>
+      <a href="about${sfx}.html"${cls('about')}>About</a>
+      <a href="insights${sfx}.html"${cls('insights')}>Insights</a>
+      <a href="careers${sfx}.html"${cls('careers')}>Careers</a>
+      <a href="research${sfx}.html"${cls('research')}>Research</a>
     </div>
     <div class="nav-end">
       <div class="lang-wrap">
         <button class="nav-tool lang" type="button" aria-label="Language" aria-haspopup="true" aria-expanded="false">
-          <span class="lang-current">EN</span>
+          <span class="lang-current">${isJp ? 'JP' : 'EN'}</span>
           <svg class="caret" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="lang-menu" role="menu">
-          <a href="#" data-lang="EN" class="active" role="menuitem">English<span class="lcode">EN</span></a>
-          <a href="#" data-lang="JP" role="menuitem">日本語<span class="lcode">JP</span></a>
-          <a href="#" data-lang="VN" role="menuitem">Tiếng Việt<span class="lcode">VN</span></a>
+          <a href="index.html" data-lang="EN"${isJp ? '' : ' class="active"'} role="menuitem">English<span class="lcode">EN</span></a>
+          <a href="index-jp.html" data-lang="JP"${isJp ? ' class="active"' : ''} role="menuitem">日本語<span class="lcode">JP</span></a>
+          <a href="index-vn.html" data-lang="VN" role="menuitem">Tiếng Việt<span class="lcode">VN</span></a>
         </div>
       </div>
       <button class="nav-tool theme" type="button" aria-label="Toggle dark mode" aria-pressed="false">
         <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="nav-cta" href="contact.html">Contact Us
+      <a class="nav-cta" href="contact${sfx}.html">Contact Us
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </a>
     </div>
@@ -148,23 +154,23 @@ body.menu-open{overflow:hidden}
   <button class="ov-close" type="button" aria-label="Close menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </button>
-  <a class="ov-logo" href="index.html"><img src="assets/logo-white.png" alt="xR&D Technologies"></a>
+  <a class="ov-logo" href="index${sfx}.html"><img src="assets/logo-white.png" alt="xR&D Technologies"></a>
   <div class="ov-inner">
     <div class="ov-eyebrow">Menu</div>
     <nav class="ov-list" aria-label="Mobile navigation">
-      <a href="solutions.html" style="--i:0"${cls('solutions.html')}>Solutions<span class="num">01</span></a>
-      <a href="projects.html" style="--i:1"${cls('projects.html')}>Projects<span class="num">02</span></a>
-      <a href="about.html" style="--i:2"${cls('about.html')}>About<span class="num">03</span></a>
-      <a href="insights.html" style="--i:3"${cls('insights.html')}>Insights<span class="num">04</span></a>
-      <a href="careers.html" style="--i:4"${cls('careers.html')}>Careers<span class="num">05</span></a>
-      <a href="research.html" style="--i:5"${cls('research.html')}>Research<span class="num">06</span></a>
+      <a href="solutions${sfx}.html" style="--i:0"${cls('solutions')}>Solutions<span class="num">01</span></a>
+      <a href="projects${sfx}.html" style="--i:1"${cls('projects')}>Projects<span class="num">02</span></a>
+      <a href="about${sfx}.html" style="--i:2"${cls('about')}>About<span class="num">03</span></a>
+      <a href="insights${sfx}.html" style="--i:3"${cls('insights')}>Insights<span class="num">04</span></a>
+      <a href="careers${sfx}.html" style="--i:4"${cls('careers')}>Careers<span class="num">05</span></a>
+      <a href="research${sfx}.html" style="--i:5"${cls('research')}>Research<span class="num">06</span></a>
     </nav>
     <div class="ov-foot">
-      <a class="ov-cta" href="contact.html">Contact Us
+      <a class="ov-cta" href="contact${sfx}.html">Contact Us
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </a>
       <div class="ov-tools">
-        <button class="ov-lang" type="button">EN <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="ov-lang" type="button">${isJp ? 'JP' : 'EN'} <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </div>
@@ -236,6 +242,8 @@ body.menu-open{overflow:hidden}
       });
       langItems.forEach(item=>{
         item.addEventListener('click', e=>{
+          const href = item.getAttribute('href');
+          if (href && href !== '#'){ return; } /* let browser navigate to translated index */
           e.preventDefault();
           langItems.forEach(x=>x.classList.remove('active'));
           item.classList.add('active');
