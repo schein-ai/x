@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Eight weeks to ship a knowledge-search AI agent — xR&amp;D Insights</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/insight-article.css">
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="hero-img" id="heroImg" style="background-image:url('assets/img1.png')"></div>
+  <nav class="crumb">
+    <a href="insights.html">Insights</a>
+    <span class="sep">/</span>
+    <span>Build log</span>
+    <span class="sep">/</span>
+    <span>No. 008</span>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-kicker">Build log · 09 min read</div>
+    <h1 class="hero-h">Eight weeks to ship a <em>knowledge-search</em> AI agent.</h1>
+    <p class="hero-lede">From spec to operational, an AI agent built for a JP manufacturer's internal docs. The estimates we hit, the ones we missed, and the three details we'd refine next time.</p>
+    <div class="hero-byline">
+      <div class="avatar"></div>
+      <div>
+        <b>Engineering</b>
+        <span>xR&amp;D Build · Da Nang</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="read"><b>28 Apr 2026</b><br>Issue 008</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ARTICLE ============== -->
+<article class="article">
+  <div class="article-body" id="articleBody">
+
+    <p class="lede">A mid-sized JP manufacturer asked us to build a knowledge-search agent over twenty years of internal documentation. The brief was unfussy — make the docs answer questions in natural language. We quoted eight weeks. We shipped in eight weeks. About 70% of the work was where we expected it to be.</p>
+
+    <p>The remaining 30% was not. This is the build log: where the estimate held, where it didn't, and what we'd put on the spec sheet if we ran the same engagement again next quarter.</p>
+
+    <h2 id="ch01"><span class="section-mark">01 Brief</span>What the client actually <em>asked</em> for.</h2>
+    <p>The original ask was a chatbot. After two scoping sessions with the operations team, the actual ask was something narrower and more useful: a search interface that returns paragraph-length, source-linked answers from a heterogeneous corpus — PDFs scanned in 2008, mid-2010s confluence dumps, structured CMMS records, and a folder of engineering memos saved as PowerPoint.</p>
+
+    <ul>
+      <li>Eight years of CMMS records (structured, ~120k entries)</li>
+      <li>Four years of confluence wiki (semi-structured, ~9k pages)</li>
+      <li>Twenty years of scanned engineering documents (unstructured, ~28k PDFs)</li>
+      <li>Operating notes in PowerPoint format that nobody had touched since 2017</li>
+    </ul>
+
+    <figure class="art-fig">
+      <div class="ifimg" style="background-image:url('assets/img2.png')"></div>
+      <figcaption><b>Corpus map, week 02.</b> &nbsp;·&nbsp; The four document classes had to be ingested separately. The PowerPoint stack was the surprise.</figcaption>
+    </figure>
+
+    <h2 id="ch02"><span class="section-mark">02 Architecture</span>Boring on <em>purpose</em>.</h2>
+    <p>The architecture is unremarkable, which is the point. Document ingestion runs nightly, pushing chunks into a vector store. A retrieval layer pulls top-K candidates with a re-ranker pass, and a reasoning model composes the final answer with inline source citations. We benchmarked four embedding models and three rerankers on the client's actual queries before committing.</p>
+
+    <p>What we did differently was an explicit <b>uncertainty layer</b>. The agent is allowed to say "I don't have a confident answer" — and roughly 11% of the time, on real queries, that's exactly what it says. The client's first reaction was disappointment. Six weeks of operation later, it's the feature they cite most often as a trust signal.</p>
+
+    <h2 id="ch03"><span class="section-mark">03 Where we hit estimate</span>The <em>boring</em> 70%.</h2>
+    <p>Ingestion, embedding, retrieval, ranking, response composition — all of it tracked. Our internal estimate was four developer-weeks for the core pipeline; we shipped at four-and-a-half. The OCR pass on the scanned PDFs ran twice as fast as we'd planned (vendor model improvements between quote and start), bought us two days, which we burned on something else.</p>
+
+    <h2 id="ch04"><span class="section-mark">04 Where we missed</span>Three <em>surprises</em>.</h2>
+    <p><b>Surprise one:</b> the PowerPoint corpus. We'd estimated a day to extract text. Took four. The slides were heavily figure-driven, with text rendered as bitmap on a third of the deck. We ended up with a custom OCR-and-VLM pass and quietly billed it as "ingestion polish."</p>
+
+    <div class="art-quote">
+      <q>If a corpus has been touched by humans for twenty years, every weird ingestion edge case has been waiting for you, lined up.</q>
+      <div class="qsig"><b>Engineering lead</b> · Build</div>
+    </div>
+
+    <p><b>Surprise two:</b> Japanese-English mixed queries. The corpus is in Japanese; the operators sometimes type in English. The reranker we'd benchmarked on JP-only queries underperformed on the mixed set by a wide margin. We swapped models in week six. Two days lost, then recovered through better indexing.</p>
+
+    <p><b>Surprise three:</b> the legal review took longer than the build. The client's compliance team needed to approve every category of source the agent could cite. Reasonable in hindsight. Unbudgeted on our side. Two weeks of calendar time, fortunately overlapped with QA.</p>
+
+    <h2 id="ch05"><span class="section-mark">05 Operational data</span>What it <em>does</em>, six weeks in.</h2>
+    <p>The agent has been live for forty-three working days at the time of writing. Daily query volume has stabilised around 380. Answer satisfaction (thumbs-up rate) sits at 78% for confident answers, with the remaining queries split between "I don't have an answer" (11%) and explicit thumbs-down (about 11%). The thumbs-down cases are reviewed weekly; we ship retrieval tweaks every Friday.</p>
+
+    <figure class="art-fig full">
+      <div class="ifimg" style="background-image:url('assets/img3.png')"></div>
+      <figcaption><b>Operations dashboard, week 06.</b> &nbsp;·&nbsp; Query volume held steady after the initial burst. The flat line is good news — the agent is being used as a tool, not as a novelty.</figcaption>
+    </figure>
+
+    <h2 id="ch06"><span class="section-mark">06 What we'd refine</span>The <em>next</em> version.</h2>
+    <p>Three refinements for v2, all already in the backlog:</p>
+    <ul>
+      <li><b>Conversational follow-up.</b> Single-shot queries cover most of the use, but the operators are starting to ask follow-ups. We'll ship session memory in the next iteration.</li>
+      <li><b>Inline figure retrieval.</b> The agent answers in text. About 14% of the corpus value is in diagrams. v2 returns the relevant figure alongside the textual answer.</li>
+      <li><b>Active learning loop.</b> Thumbs-down cases currently feed a manual review queue. v2 closes the loop automatically — bad answers retrain the reranker, with a human review gate before the model ships.</li>
+    </ul>
+
+    <h2 id="ch07"><span class="section-mark">07 What we'd quote</span>For the <em>next</em> client.</h2>
+    <p>If we ran the same engagement again, the quote would be eight weeks for build, plus two weeks for compliance, plus a week of buffer for the corpus surprise we know is in there somewhere. So eleven weeks, calendared as eight build + three slack. We'd hold the price flat — the surprises are part of the work, not extras.</p>
+
+    <p>The bigger lesson is that knowledge-search agents are now a known shape of engagement for us. The architecture is stable, the team has done it before, and the surprises are starting to repeat. That's when an engagement type becomes a service offering.</p>
+
+    <div class="article-end">
+      <b>Authors</b> &nbsp;Engineering · xR&amp;D Build &nbsp; <br>
+      <b>Visuals</b> &nbsp;xR&amp;D Creative · pipeline-trained &nbsp; <br>
+      <b>Reviewed by</b> &nbsp;xR&amp;D Studio · v1 · 2026.04.28 &nbsp; <br>
+      <b>Acknowledgements</b> &nbsp;The client's compliance team — patient, thorough, and right about the things they pushed back on.
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="scard">
+      <h6>On this page</h6>
+      <ol class="toc-list">
+        <li><a href="#ch01">Brief</a></li>
+        <li><a href="#ch02">Architecture</a></li>
+        <li><a href="#ch03">Where we hit estimate</a></li>
+        <li><a href="#ch04">Where we missed</a></li>
+        <li><a href="#ch05">Operational data</a></li>
+        <li><a href="#ch06">What we'd refine</a></li>
+        <li><a href="#ch07">What we'd quote</a></li>
+      </ol>
+    </div>
+
+    <div class="scard">
+      <h6>Build details</h6>
+      <div class="bio">
+        <div class="av"></div>
+        <div>
+          <b>Engineering</b>
+          <span>xR&amp;D Build</span>
+        </div>
+      </div>
+      <p class="biocopy">Build duration: 8 weeks. Team: 4 (lead, 2 engineers, 1 ML reviewer). Client: JP manufacturer, mid-sized, multi-site.</p>
+    </div>
+
+    <div class="scard">
+      <h6>Share</h6>
+      <div class="share-btns">
+        <a href="#" aria-label="Share on X"><svg viewBox="0 0 24 24"><path d="M18.244 2H21l-6.5 7.43L22 22h-6.91l-4.81-6.3L4.5 22H1.74l6.96-7.96L1.5 2h7.06l4.36 5.76L18.24 2z"/></svg></a>
+        <a href="#" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zM8.34 8h4.37v1.91h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v8.45h-4.56v-7.5c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V22H8.34V8z"/></svg></a>
+        <a href="#" aria-label="Send by email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        <a href="#" aria-label="Copy link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg></a>
+      </div>
+      <div class="share-meta"><b>1,950</b> words · 09 min read</div>
+    </div>
+
+    <div class="scard">
+      <h6>Related reading</h6>
+      <div class="rel-list">
+        <a class="rel-item" href="insight-ai-workflows-3-days.html">
+          <div class="rimg" style="background-image:url('assets/img2.png')"></div>
+          <div>
+            <div class="rmeta">Method · 6 min</div>
+            <h5>How AI workflows save us <em>3 days</em> a week.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="insight-200-brand-visuals.html">
+          <div class="rimg" style="background-image:url('assets/img1.png')"></div>
+          <div>
+            <div class="rmeta">Build log · 5 min</div>
+            <h5>Generating <em>200 brand</em> visuals in five days.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="insight-why-ai-native-vietnam.html">
+          <div class="rimg" style="background-image:url('assets/img3.png')"></div>
+          <div>
+            <div class="rmeta">Editorial · 14 min</div>
+            <h5>Why we started <em>AI-native</em>, from Vietnam.</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="scard news-card">
+      <h6>The Friday letter</h6>
+      <h4>One <em>email</em> a week. Written by us.</h4>
+      <p>The next one drops Friday with the new article and a snippet from internal review.</p>
+      <form onsubmit="event.preventDefault();this.querySelector('.nbtn').textContent='Subscribed ✓'">
+        <div class="nfield"><input type="email" placeholder="you@company.com" required></div>
+        <button class="nbtn" type="submit">Subscribe
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="nfine">EN / JP · Friday 10:00 ICT · No tracking</div>
+      </form>
+    </div>
+
+    <div class="scard">
+      <h6>Tags</h6>
+      <div class="tags">
+        <a href="#">Build log</a>
+        <a href="#">AI agent</a>
+        <a href="#">RAG</a>
+        <a href="#">Manufacturing</a>
+        <a href="#">Knowledge search</a>
+        <a href="#">JP client</a>
+      </div>
+    </div>
+  </aside>
+</article>
+
+<!-- ============== MORE READING ============== -->
+<section class="more">
+  <div class="more-head">
+    <h3>More from the <em>journal</em>.</h3>
+    <a class="go" href="insights.html">All entries →</a>
+  </div>
+  <div class="mgrid">
+    <a class="mcard" href="insight-talent-grown-not-found.html">
+      <div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Method · 7 min</span><b>Apr 2026</b></div>
+        <h4>AI-native talent is <em>grown</em>, not found.</h4>
+        <p>Why every Vietnamese teammate at xR&amp;D came through the same partner-university pipeline.</p>
+      </div>
+    </a>
+    <a class="mcard" href="insight-four-businesses-synergy.html">
+      <div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Editorial · 11 min</span><b>Apr 2026</b></div>
+        <h4>One studio, four <em>businesses</em>: 3 synergy patterns.</h4>
+        <p>Build × visual, consulting → build, build + talent. Why the four sit better together than apart.</p>
+      </div>
+    </a>
+    <a class="mcard" href="insight-why-ai-native-vietnam.html">
+      <div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Editorial · 14 min</span><b>May 2026</b></div>
+        <h4>Why we started <em>AI-native</em>, from Vietnam.</h4>
+        <p>The full story behind xR&amp;D — Tomoki's exploration, Nghia's pipeline, and the meeting that joined them.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="assets/insight-article.js"></script>
+
+</body>
+</html>

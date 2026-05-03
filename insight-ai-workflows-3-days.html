@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>How AI-driven workflows save us 3 days a week — xR&amp;D Insights</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/insight-article.css">
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<section class="hero">
+  <div class="hero-img" id="heroImg" style="background-image:url('assets/img2.png')"></div>
+  <nav class="crumb">
+    <a href="insights.html">Insights</a>
+    <span class="sep">/</span>
+    <span>Method</span>
+    <span class="sep">/</span>
+    <span>No. 004</span>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-kicker">Method · 06 min read</div>
+    <h1 class="hero-h">How AI-driven <em>workflows</em> save us 3 days a week.</h1>
+    <p class="hero-lede">Code, visuals, research, testing — every part of our process runs through AI as the default. A look at what gets used, where it fails, and what's still manual.</p>
+    <div class="hero-byline">
+      <div class="avatar"></div>
+      <div>
+        <b>Engineering</b>
+        <span>xR&amp;D Build · Da Nang</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="read"><b>05 Apr 2026</b><br>Issue 004</div>
+    </div>
+  </div>
+</section>
+
+<article class="article">
+  <div class="article-body" id="articleBody">
+
+    <p class="lede">Every quarter we tally up internal time. The latest tally puts AI-driven workflows at roughly three working days saved per engineer per week, against a counterfactual of the same work done without AI assistance. The number is rough — there's no perfect counterfactual — but it's been stable for three quarters in a row, so we're publishing it.</p>
+
+    <p>This is a method note, not a celebration. The interesting part is where the saving comes from, where it doesn't, and what we still do manually because the AI can't yet help.</p>
+
+    <h2 id="ch01"><span class="section-mark">01 Where it saves</span>The <em>boring</em> wins.</h2>
+    <p>Roughly half of the saving is from boring tasks: meeting notes, code review setup, email drafts in Japanese, ticket triage, status updates. None of these were ever the interesting part of an engineer's day. AI eats them, the engineer never does them, the day starts with the actual work.</p>
+
+    <ul>
+      <li><b>Meeting notes</b> — automatic transcription + summary, reviewed in 90 seconds</li>
+      <li><b>Code review</b> — first pass run by AI before human review (catches roughly 40% of issues)</li>
+      <li><b>Status writeups</b> — drafted from commit history and slack, edited by human</li>
+      <li><b>JP-language drafts</b> — bilingual engineers no longer write client emails from scratch</li>
+      <li><b>Ticket triage</b> — auto-categorised, auto-prioritised, human-confirmed</li>
+    </ul>
+
+    <h2 id="ch02"><span class="section-mark">02 Where it saves more</span>The <em>interesting</em> wins.</h2>
+    <p>The other half is from work that used to be interesting but is now routine: scaffolding code, writing tests, generating visual variants, drafting prompts for downstream agents. These are the wins that change what an engineer does with their week — fewer hours on plumbing, more on the parts that need human judgement.</p>
+
+    <figure class="art-fig">
+      <div class="ifimg" style="background-image:url('assets/img1.png')"></div>
+      <figcaption><b>Internal workflow board, March 2026.</b> &nbsp;·&nbsp; Green nodes are AI-default. Yellow are AI-assisted. Red are manual. The mix moves quarterly.</figcaption>
+    </figure>
+
+    <p>For a typical build engineer, that's roughly 15 hours a week reclaimed from plumbing into design and review. The 15 hours don't all go back into "more output" — some of it goes into deeper review, some into reading, some into pair time with newer engineers. We don't optimise for output throughput; we optimise for output quality.</p>
+
+    <h2 id="ch03"><span class="section-mark">03 Where it fails</span>Three <em>known</em> failure modes.</h2>
+    <p><b>Failure one:</b> domain depth. The AI is fluent on common patterns and shallow on uncommon ones. For a senior engineer working on a niche manufacturing protocol, the assistant slows them down more often than it speeds them up. We've stopped pushing AI use in those contexts and let the engineer call when they want it.</p>
+
+    <div class="art-quote">
+      <q>The AI is great at the first 80% of any new task. The last 20% is where humans still earn their keep, and the assistant gets in the way of that part.</q>
+      <div class="qsig"><b>Engineering lead</b> · Build</div>
+    </div>
+
+    <p><b>Failure two:</b> confident wrongness. The model writes a plausible-sounding answer that is wrong in subtle ways. We catch most of these in review, but the catch-rate isn't 100%. We've added an explicit "model confidence" check on critical outputs — if the model can't justify its answer, the task escalates to human review.</p>
+
+    <p><b>Failure three:</b> over-trust by junior engineers. New engineers are sometimes too willing to accept AI output as correct. The pipeline curriculum addresses this directly — year two is largely about teaching engineers to challenge model outputs reliably. It works, but it takes deliberate practice.</p>
+
+    <h2 id="ch04"><span class="section-mark">04 What's still manual</span>Where AI <em>doesn't</em> help us.</h2>
+    <p>Three categories of work where AI use is intentionally minimal:</p>
+
+    <ul>
+      <li><b>Client conversations.</b> No AI in live calls. We take notes after, we don't transcribe-and-summarise during. The conversation matters more than the artefact.</li>
+      <li><b>Architecture decisions.</b> AI can scaffold. AI doesn't get to choose the architecture. Senior engineers do that on whiteboards, with humans only.</li>
+      <li><b>Hiring and 1:1s.</b> Internal HR work is fully manual. Trust is built between humans, period.</li>
+    </ul>
+
+    <h2 id="ch05"><span class="section-mark">05 The cost</span>What this <em>actually</em> costs.</h2>
+    <p>The full AI-tooling stack costs about USD 380 per engineer per month at current pricing — codegen, image generation, document Q&amp;A, transcription, the agent tooling we use ourselves. That's roughly 11% of total per-engineer operating cost. The three days a week paid for itself within the first month of any engineer's tenure.</p>
+
+    <p>This number will change. Tooling pricing is volatile; we re-tally each quarter. We don't anchor commercial decisions on the savings — they're a margin compounding effect, not the basis of pricing.</p>
+
+    <h2 id="ch06"><span class="section-mark">06 What we'll change</span>Next <em>quarter</em>.</h2>
+    <p>Two changes coming in Q3:</p>
+
+    <ul>
+      <li><b>Internal "AI-no-go" list.</b> An explicit list of contexts where the team is told not to use AI (currently informal). Formalising it removes ambiguity.</li>
+      <li><b>Quarterly retro on the workflow itself.</b> We've been reviewing engagements but not the meta-workflow. Adding that as a standing review.</li>
+    </ul>
+
+    <p>The full operating notes ship as part of the quarterly dossier, available to clients on request. The headline numbers will continue to publish here.</p>
+
+    <div class="article-end">
+      <b>Authors</b> &nbsp;Engineering · xR&amp;D Build &nbsp; <br>
+      <b>Visuals</b> &nbsp;xR&amp;D Creative · pipeline-trained &nbsp; <br>
+      <b>Reviewed by</b> &nbsp;xR&amp;D Studio · v1 · 2026.04.05 &nbsp; <br>
+      <b>Acknowledgements</b> &nbsp;The two engineers who held out against AI-default coding for the first six months — their critique made the workflow better.
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="scard">
+      <h6>On this page</h6>
+      <ol class="toc-list">
+        <li><a href="#ch01">The boring wins</a></li>
+        <li><a href="#ch02">The interesting wins</a></li>
+        <li><a href="#ch03">Where it fails</a></li>
+        <li><a href="#ch04">What's still manual</a></li>
+        <li><a href="#ch05">The cost</a></li>
+        <li><a href="#ch06">What we'll change</a></li>
+      </ol>
+    </div>
+
+    <div class="scard">
+      <h6>About the author</h6>
+      <div class="bio">
+        <div class="av"></div>
+        <div>
+          <b>Engineering</b>
+          <span>xR&amp;D Build</span>
+        </div>
+      </div>
+      <p class="biocopy">The build team writes most of the method notes. Tally compiled from the operations log, March 2026.</p>
+    </div>
+
+    <div class="scard">
+      <h6>Share</h6>
+      <div class="share-btns">
+        <a href="#" aria-label="Share on X"><svg viewBox="0 0 24 24"><path d="M18.244 2H21l-6.5 7.43L22 22h-6.91l-4.81-6.3L4.5 22H1.74l6.96-7.96L1.5 2h7.06l4.36 5.76L18.24 2z"/></svg></a>
+        <a href="#" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zM8.34 8h4.37v1.91h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v8.45h-4.56v-7.5c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V22H8.34V8z"/></svg></a>
+        <a href="#" aria-label="Send by email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        <a href="#" aria-label="Copy link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg></a>
+      </div>
+      <div class="share-meta"><b>1,420</b> words · 06 min read</div>
+    </div>
+
+    <div class="scard">
+      <h6>Related reading</h6>
+      <div class="rel-list">
+        <a class="rel-item" href="insight-knowledge-search-agent.html">
+          <div class="rimg" style="background-image:url('assets/img1.png')"></div>
+          <div>
+            <div class="rmeta">Build log · 9 min</div>
+            <h5>Eight weeks to ship a <em>knowledge-search</em> agent.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="insight-200-brand-visuals.html">
+          <div class="rimg" style="background-image:url('assets/img4.png')"></div>
+          <div>
+            <div class="rmeta">Build log · 5 min</div>
+            <h5>Generating <em>200 brand</em> visuals in five days.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="insight-talent-grown-not-found.html">
+          <div class="rimg" style="background-image:url('assets/img3.png')"></div>
+          <div>
+            <div class="rmeta">Method · 7 min</div>
+            <h5>AI-native talent is <em>grown</em>, not found.</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="scard news-card">
+      <h6>The Friday letter</h6>
+      <h4>One <em>email</em> a week. Written by us.</h4>
+      <p>Method notes ship occasionally; the next one is on the AI-no-go list.</p>
+      <form onsubmit="event.preventDefault();this.querySelector('.nbtn').textContent='Subscribed ✓'">
+        <div class="nfield"><input type="email" placeholder="you@company.com" required></div>
+        <button class="nbtn" type="submit">Subscribe
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="nfine">EN / JP · Friday 10:00 ICT · No tracking</div>
+      </form>
+    </div>
+
+    <div class="scard">
+      <h6>Tags</h6>
+      <div class="tags">
+        <a href="#">Method</a>
+        <a href="#">Workflow</a>
+        <a href="#">Operations</a>
+        <a href="#">AI-native</a>
+        <a href="#">Productivity</a>
+      </div>
+    </div>
+  </aside>
+</article>
+
+<section class="more">
+  <div class="more-head">
+    <h3>More from the <em>journal</em>.</h3>
+    <a class="go" href="insights.html">All entries →</a>
+  </div>
+  <div class="mgrid">
+    <a class="mcard" href="insight-200-brand-visuals.html">
+      <div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Build log · 5 min</span><b>Mar 2026</b></div>
+        <h4>Generating <em>200 brand visuals</em> in five days.</h4>
+        <p>Multi-language, multi-variation campaign visuals — without a photo shoot.</p>
+      </div>
+    </a>
+    <a class="mcard" href="insight-knowledge-search-agent.html">
+      <div class="mimg" style="background-image:url('assets/img1.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Build log · 9 min</span><b>Apr 2026</b></div>
+        <h4>Eight weeks to ship a <em>knowledge-search</em> agent.</h4>
+        <p>Build log of an AI agent integrated into a JP manufacturer's internal docs.</p>
+      </div>
+    </a>
+    <a class="mcard" href="insight-four-businesses-synergy.html">
+      <div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Editorial · 11 min</span><b>Apr 2026</b></div>
+        <h4>One studio, four <em>businesses</em>: 3 synergy patterns.</h4>
+        <p>The cross-business engagements clients keep coming back for.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="assets/insight-article.js"></script>
+
+</body>
+</html>

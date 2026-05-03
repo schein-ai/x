@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Generating 200 brand visuals in five days — xR&amp;D Insights</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/insight-article.css">
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- ============== NAV (shared via js/header.js) ============== -->
+
+<section class="hero">
+  <div class="hero-img" id="heroImg" style="background-image:url('assets/img1.png')"></div>
+  <nav class="crumb">
+    <a href="insights.html">Insights</a>
+    <span class="sep">/</span>
+    <span>Build log</span>
+    <span class="sep">/</span>
+    <span>No. 003</span>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-kicker">Build log · 05 min read</div>
+    <h1 class="hero-h">Generating <em>200 brand visuals</em> in five days.</h1>
+    <p class="hero-lede">Multi-language, multi-variation campaign visuals for a JP consumer goods launch — without a photo shoot. The prompt scaffolding, the QA pass, and the output we shipped.</p>
+    <div class="hero-byline">
+      <div class="avatar"></div>
+      <div>
+        <b>Creative</b>
+        <span>xR&amp;D Visual · Da Nang</span>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="read"><b>30 Mar 2026</b><br>Issue 003</div>
+    </div>
+  </div>
+</section>
+
+<article class="article">
+  <div class="article-body" id="articleBody">
+
+    <p class="lede">A JP consumer goods client booked us on a Monday morning to ship 200 campaign visuals by Friday end-of-day. The brief: four product variants, five regional adaptations, ten size formats, two languages. No photo shoot, no agency overhead, full creative direction. We delivered 218 visuals at 16:40 on the Friday. Here's what the week looked like.</p>
+
+    <h2 id="ch01"><span class="section-mark">01 The brief</span>What the <em>client</em> needed.</h2>
+    <p>The launch was a new product line aimed at four customer segments, with regional adaptation for five JP markets and two languages (JP / EN). Each segment needed a hero visual, three lifestyle scenes, two product detail crops. Multiplied across formats and locales, the math comes out to ~200 distinct outputs.</p>
+
+    <p>Conventional approach: hire a photo studio, book talent, two weeks of pre-production, three days of shoot, two weeks of post. Six-figure budget, six-week timeline. The client had four weeks until launch and a fraction of that budget. They came to us asking if AI could close the gap.</p>
+
+    <h2 id="ch02"><span class="section-mark">02 The setup</span>Day <em>one</em>.</h2>
+    <p>Monday morning was scoping. By Monday afternoon we had a creative direction agreed, a brand-style reference deck, a list of regional adaptations, and a prompt scaffolding plan. Two designers, one prompt engineer, one client-side reviewer. The team stayed at four people through Friday.</p>
+
+    <ul>
+      <li><b>Reference pack</b> — 40 images from prior brand work, used as style anchors</li>
+      <li><b>Prompt scaffolding</b> — modular prompt templates (subject, lighting, locale, language)</li>
+      <li><b>Generation pipeline</b> — base model with brand-specific LoRA fine-tune we already had</li>
+      <li><b>Review loop</b> — human approval gate every 50 images, structured rubric</li>
+    </ul>
+
+    <h2 id="ch03"><span class="section-mark">03 The middle days</span>Tuesday through <em>Thursday</em>.</h2>
+    <p>Tuesday and Wednesday were generation. Roughly 1,800 candidates went through the pipeline. About 11% passed the first-pass automated QA (composition, brand alignment, colour). The remaining 89% went into a triage bucket — some salvageable with prompt tweaks, most not. By end of Wednesday we had ~200 candidates that had passed first-pass review.</p>
+
+    <figure class="art-fig">
+      <div class="ifimg" style="background-image:url('assets/img4.png')"></div>
+      <figcaption><b>Mid-week candidate grid.</b> &nbsp;·&nbsp; The visual team's review board mid-Wednesday — green dots are approved, yellow are conditional, red are rejected.</figcaption>
+    </figure>
+
+    <p>Thursday was the human review pass. The two designers walked the full set, removed 14 visuals that didn't hold up, generated 32 replacements, and shipped a v1 review pack to the client at 18:00 Thursday. The client came back Friday morning with 9 specific changes — all subtle copy or composition tweaks. We turned those by lunch.</p>
+
+    <h2 id="ch04"><span class="section-mark">04 Friday</span>Final <em>delivery</em>.</h2>
+    <p>Friday afternoon was format export. 218 visuals across 10 formats — square, portrait, landscape, banner, story, carousel, plus print-ready variants for the regional adaptations. Auto-exported with format-specific composition tweaks (we'd built the export pipeline three weeks earlier on a different engagement). Delivered as a structured drive, with a one-page brief on usage.</p>
+
+    <div class="art-quote">
+      <q>The first thing the client said in the wrap call: 'We don't actually need to do this in the studio anymore, do we?' That's the question we want them to ask.</q>
+      <div class="qsig"><b>Creative lead</b> · Visual</div>
+    </div>
+
+    <h2 id="ch05"><span class="section-mark">05 What worked</span>Three <em>things</em>.</h2>
+    <p><b>Modular prompt scaffolding</b> — built once, reused across all 200 visuals. Changing locale was a parameter swap, not a re-prompting exercise.</p>
+
+    <p><b>Brand-specific LoRA</b> — we'd trained a small fine-tune on this client's prior brand work in a previous engagement. The new work landed on-brand by default rather than after iteration.</p>
+
+    <p><b>Tight human review</b> — automated QA caught colour and composition issues, but humans caught the things that needed taste. Both layers were necessary; neither alone would have shipped at this pace.</p>
+
+    <h2 id="ch06"><span class="section-mark">06 What we'd refine</span>Two <em>things</em>.</h2>
+    <p><b>Faces.</b> The hero visuals featured stylised people; we still struggle with consistent character identity across a full set. We worked around it by avoiding repeat characters across visuals. Next iteration: a small character LoRA per launch.</p>
+
+    <p><b>Print-ready output.</b> The print export pipeline added two hours to Friday. We've since rebuilt that to run during generation, not after. Next time, no Friday afternoon spike.</p>
+
+    <h2 id="ch07"><span class="section-mark">07 The economics</span>What this <em>cost</em>.</h2>
+    <p>Total engagement: USD 18k, four people for one week. The client's prior comparable shoot ran six weeks and roughly USD 90k. Output volume was higher this time. The savings aren't the headline — the speed is. Six weeks compressed into one means a launch can move with market signal rather than against a frozen plan.</p>
+
+    <p>We don't think AI replaces shoots. We think AI replaces certain kinds of shoots, the ones that were never about the photography in the first place but about the volume and the speed. This was one of those.</p>
+
+    <div class="article-end">
+      <b>Authors</b> &nbsp;Creative · xR&amp;D Visual &nbsp; <br>
+      <b>Visuals</b> &nbsp;The campaign itself · pipeline-trained &nbsp; <br>
+      <b>Reviewed by</b> &nbsp;xR&amp;D Studio · v1 · 2026.03.30 &nbsp; <br>
+      <b>Acknowledgements</b> &nbsp;The client's brand reviewer — patient with the morning revision pass.
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="scard">
+      <h6>On this page</h6>
+      <ol class="toc-list">
+        <li><a href="#ch01">The brief</a></li>
+        <li><a href="#ch02">The setup</a></li>
+        <li><a href="#ch03">Tuesday through Thursday</a></li>
+        <li><a href="#ch04">Friday</a></li>
+        <li><a href="#ch05">What worked</a></li>
+        <li><a href="#ch06">What we'd refine</a></li>
+        <li><a href="#ch07">The economics</a></li>
+      </ol>
+    </div>
+
+    <div class="scard">
+      <h6>Build details</h6>
+      <div class="bio">
+        <div class="av" style="background:linear-gradient(135deg,#9bb5ff,#3b82f6)"></div>
+        <div>
+          <b>Creative</b>
+          <span>xR&amp;D Visual</span>
+        </div>
+      </div>
+      <p class="biocopy">Engagement duration: 5 working days. Team: 4. Output: 218 visuals across 10 formats, 2 languages, 5 regional adaptations.</p>
+    </div>
+
+    <div class="scard">
+      <h6>Share</h6>
+      <div class="share-btns">
+        <a href="#" aria-label="Share on X"><svg viewBox="0 0 24 24"><path d="M18.244 2H21l-6.5 7.43L22 22h-6.91l-4.81-6.3L4.5 22H1.74l6.96-7.96L1.5 2h7.06l4.36 5.76L18.24 2z"/></svg></a>
+        <a href="#" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zM8.34 8h4.37v1.91h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v8.45h-4.56v-7.5c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V22H8.34V8z"/></svg></a>
+        <a href="#" aria-label="Send by email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        <a href="#" aria-label="Copy link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg></a>
+      </div>
+      <div class="share-meta"><b>1,180</b> words · 05 min read</div>
+    </div>
+
+    <div class="scard">
+      <h6>Related reading</h6>
+      <div class="rel-list">
+        <a class="rel-item" href="insight-knowledge-search-agent.html">
+          <div class="rimg" style="background-image:url('assets/img2.png')"></div>
+          <div>
+            <div class="rmeta">Build log · 9 min</div>
+            <h5>Eight weeks to ship a <em>knowledge-search</em> agent.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="insight-ai-workflows-3-days.html">
+          <div class="rimg" style="background-image:url('assets/img3.png')"></div>
+          <div>
+            <div class="rmeta">Method · 6 min</div>
+            <h5>How AI workflows save us <em>3 days</em>.</h5>
+          </div>
+        </a>
+        <a class="rel-item" href="insight-four-businesses-synergy.html">
+          <div class="rimg" style="background-image:url('assets/img4.png')"></div>
+          <div>
+            <div class="rmeta">Editorial · 11 min</div>
+            <h5>Four <em>businesses</em>: 3 synergy patterns.</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="scard news-card">
+      <h6>The Friday letter</h6>
+      <h4>One <em>email</em> a week. Written by us.</h4>
+      <p>Build logs ship roughly fortnightly. The next one is on motion design.</p>
+      <form onsubmit="event.preventDefault();this.querySelector('.nbtn').textContent='Subscribed ✓'">
+        <div class="nfield"><input type="email" placeholder="you@company.com" required></div>
+        <button class="nbtn" type="submit">Subscribe
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="nfine">EN / JP · Friday 10:00 ICT · No tracking</div>
+      </form>
+    </div>
+
+    <div class="scard">
+      <h6>Tags</h6>
+      <div class="tags">
+        <a href="#">Build log</a>
+        <a href="#">Visual</a>
+        <a href="#">Brand</a>
+        <a href="#">Campaign</a>
+        <a href="#">Generative</a>
+      </div>
+    </div>
+  </aside>
+</article>
+
+<section class="more">
+  <div class="more-head">
+    <h3>More from the <em>journal</em>.</h3>
+    <a class="go" href="insights.html">All entries →</a>
+  </div>
+  <div class="mgrid">
+    <a class="mcard" href="insight-knowledge-search-agent.html">
+      <div class="mimg" style="background-image:url('assets/img2.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Build log · 9 min</span><b>Apr 2026</b></div>
+        <h4>Eight weeks to ship a <em>knowledge-search</em> agent.</h4>
+        <p>Build log of an AI agent integrated into a JP manufacturer's internal docs.</p>
+      </div>
+    </a>
+    <a class="mcard" href="insight-ai-workflows-3-days.html">
+      <div class="mimg" style="background-image:url('assets/img3.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Method · 6 min</span><b>Apr 2026</b></div>
+        <h4>How AI-driven <em>workflows</em> save us 3 days a week.</h4>
+        <p>What gets used, where it fails, and what's still manual.</p>
+      </div>
+    </a>
+    <a class="mcard" href="insight-first-5-engineers-jp.html">
+      <div class="mimg" style="background-image:url('assets/img4.png')"></div>
+      <div class="mbody">
+        <div class="mmeta"><span>Build log · 4 min</span><b>Mar 2026</b></div>
+        <h4>The first <em>5 engineers</em> placed onto a JP client.</h4>
+        <p>How a small AI-native team integrated with an existing IT services firm in Tokyo.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<script src="js/header.js"></script>
+<script src="js/footer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="assets/insight-article.js"></script>
+
+</body>
+</html>
