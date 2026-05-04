@@ -1,574 +1,2195 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="robots" content="noindex, nofollow" />
-<title>Internal AI training program — xR&amp;D Technologies</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
-    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
-    --accent:#2563eb; --accent-soft:#9bb5ff;
-  }
-  *{box-sizing:border-box}
-  html{overflow-x:clip}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
-  a{color:inherit;text-decoration:none}
-  .wrap{width:100%;margin:0;padding:0 56px}
-  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;font-size:11px}
-  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
-  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
-  .logo{display:flex;align-items:baseline;gap:6px}
-  .nav-links{display:flex;align-items:center;gap:38px}
-  .nav-links a{font-size:15px;opacity:.85;font-weight:500;transition:opacity .15s}
-  .nav-links a:hover{opacity:1}
-  .nav-links a.active{opacity:1;color:#9bb5ff}
-  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
-  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
-  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent-soft);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
-
-  .hero{position:relative;height:80vh;min-height:620px;overflow:hidden;background:#0b1b3f;color:#fff;display:flex;flex-direction:column}
-  .hero-img{position:absolute;inset:0;background:url('assets/img1.png') center/cover no-repeat;transform:scale(1.15);will-change:transform}
-  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.35) 0%,rgba(11,27,63,.15) 35%,rgba(11,27,63,.85) 100%)}
-  .breadcrumb{position:relative;z-index:2;padding:140px 56px 0;display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.7)}
-  .breadcrumb a{color:#9bb5ff;border-bottom:1px solid rgba(155,181,255,.25);padding-bottom:1px}
-  .breadcrumb a:hover{border-color:#9bb5ff}
-  .breadcrumb .sep{opacity:.4}
-  .hero-content{position:relative;z-index:2;margin-top:auto;padding:0 56px 90px;display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:end}
-  .hero-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:14px}
-  .hero-num::before{content:"";width:36px;height:1px;background:#9bb5ff}
-  .hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(64px,8vw,128px);line-height:.94;letter-spacing:-.025em;margin:0;max-width:14ch}
-  .hero-h em{font-style:italic;color:#9bb5ff}
-  .hero-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.7);text-transform:uppercase;line-height:1.95;border-left:1px solid rgba(155,181,255,.3);padding-left:28px}
-  .hero-meta b{color:#fff;font-weight:500}
-  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.65);text-transform:uppercase}
-  .hero-foot .scroll{display:inline-flex;align-items:center;gap:8px}
-
-  .fact{padding:140px 0 120px;background:var(--bg);border-top:1px solid var(--line)}
-  .fact-grid{padding:0 56px;display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:start}
-  .fact-lead .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:24px}
-  .fact-lead .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
-  .fact-lead h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0 0 32px;max-width:18ch}
-  .fact-lead h2 em{font-style:italic;color:var(--accent)}
-  .fact-lead p{font-size:17px;line-height:1.65;color:var(--ink-soft);margin:0 0 18px;max-width:54ch}
-  .fact-lead p b{color:var(--ink);font-weight:500}
-  .fact-sheet{background:#fff;border:1px solid var(--line);border-radius:12px;padding:36px;display:grid;grid-template-columns:1fr;gap:0;box-shadow:0 1px 2px rgba(11,27,63,.04),0 14px 40px -12px rgba(11,27,63,.1)}
-  .fact-row{display:grid;grid-template-columns:130px 1fr;gap:20px;padding:18px 0;border-bottom:1px dashed var(--line);align-items:baseline}
-  .fact-row:last-child{border-bottom:none;padding-bottom:0}
-  .fact-row:first-child{padding-top:0}
-  .fact-row .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500}
-  .fact-row .v{font-size:15.5px;color:var(--ink);font-weight:500;line-height:1.45}
-  .fact-row .v small{display:block;color:var(--muted);font-weight:400;font-size:13px;margin-top:3px}
-
-  .film{position:relative;width:100%;height:78vh;min-height:560px;overflow:hidden;background:#0b1b3f;cursor:pointer;border:none;padding:0;display:block}
-  .film-img{position:absolute;inset:0;background:url('assets/img4.png') center/cover no-repeat;transition:transform 1.4s cubic-bezier(.2,.7,.2,1),opacity .4s}
-  .film:hover .film-img{transform:scale(1.03)}
-  .film::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.15) 0%,rgba(11,27,63,.5) 100%);pointer-events:none;z-index:1;transition:opacity .4s}
-  .film-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;background:#000;z-index:0;transition:opacity .4s}
-  .film-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px -10px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s,opacity .3s;z-index:3;border:none;cursor:pointer}
-  .film:hover .film-play{transform:translate(-50%,-50%) scale(1.08);background:#fff}
-  .film-play svg{width:36px;height:36px;margin-left:6px;fill:var(--ink)}
-  .film-cap{position:absolute;left:56px;bottom:36px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.85);text-transform:uppercase;transition:opacity .3s}
-  .film-cap b{color:#fff;font-weight:500}
-  .film-tag{position:absolute;right:56px;top:36px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;transition:opacity .3s}
-  .film.playing{cursor:default}
-  .film.playing .film-video{opacity:1;pointer-events:auto;z-index:5}
-  .film.playing .film-img,.film.playing .film-play,.film.playing .film-tag,.film.playing .film-cap{opacity:0;pointer-events:none}
-  .film.playing::after{opacity:0}
-
-  .narrative{padding:130px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
-  .narr-inner{padding:0 56px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
-  .narr-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:14px}
-  .narr-eyebrow::before{content:"";width:30px;height:1px;background:var(--accent)}
-  .narr-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,56px);line-height:1.08;letter-spacing:-.02em;margin:0;max-width:14ch}
-  .narr-h em{font-style:italic;color:var(--accent)}
-  .narr-body p{font-size:16px;line-height:1.7;color:var(--ink-soft);margin:0 0 20px;max-width:55ch}
-  .narr-body p:last-child{margin-bottom:0}
-  .narr-body p b{color:var(--ink);font-weight:500}
-
-  .gallery{padding:130px 0;background:var(--bg);border-top:1px solid var(--line)}
-  .gal-head{padding:0 56px 56px;display:flex;align-items:end;justify-content:space-between;gap:60px}
-  .gal-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:18ch}
-  .gal-head h3 em{font-style:italic;color:var(--accent)}
-  .gal-head .gnote{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;line-height:1.8;text-align:right}
-  .gal-head .gnote b{color:var(--ink);font-weight:500}
-  .gal-grid{padding:0 56px;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:120px;gap:20px}
-  .gtile{position:relative;overflow:hidden;border-radius:10px;background:#0b1b3f}
-  .gtile .gimg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
-  .gtile:hover .gimg{transform:scale(1.05)}
-  .gtile .gcap{position:absolute;left:18px;bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:#fff;text-transform:uppercase;background:rgba(11,27,63,.8);padding:6px 10px;border-radius:6px;backdrop-filter:blur(6px)}
-  .gt-a{grid-column:span 4;grid-row:span 4}
-  .gt-b{grid-column:span 2;grid-row:span 2}
-  .gt-c{grid-column:span 2;grid-row:span 2}
-  .gt-d{grid-column:span 3;grid-row:span 3}
-  .gt-e{grid-column:span 3;grid-row:span 3}
-
-  .approach{padding:140px 0;background:#0b1b3f;color:#fff;border-top:1px solid var(--line);position:relative;overflow:hidden}
-  .approach::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 80% 20%, rgba(99,140,255,.16), rgba(99,140,255,0) 60%);pointer-events:none}
-  .approach-inner{position:relative;z-index:1;padding:0 56px}
-  .approach-head{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:end;margin-bottom:80px}
-  .approach-head .clabel{color:#9bb5ff;display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;margin-bottom:20px}
-  .approach-head .clabel::before{content:"";width:30px;height:1px;background:#9bb5ff}
-  .approach-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch;color:#fff}
-  .approach-head h3 em{font-style:italic;color:#9bb5ff}
-  .approach-head p{font-size:16px;line-height:1.65;color:#b8c3df;margin:0;max-width:52ch}
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid rgba(155,181,255,.18);border-bottom:1px solid rgba(155,181,255,.18)}
-  .step{padding:42px 30px;border-left:1px solid rgba(155,181,255,.18);position:relative}
-  .step:first-child{border-left:none;padding-left:0}
-  .step .sn{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:18px}
-  .step h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.2;margin:0 0 14px;color:#fff;letter-spacing:-.012em}
-  .step h4 em{font-style:italic;color:#9bb5ff}
-  .step p{font-size:14.5px;line-height:1.65;color:#b8c3df;margin:0}
-
-  .metrics{padding:130px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
-  .metrics-head{padding:0 56px;max-width:760px;margin-bottom:50px}
-  .metrics-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:22px}
-  .metrics-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
-  .metrics-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:16ch}
-  .metrics-head h3 em{font-style:italic;color:var(--accent)}
-  .mgrid{padding:0 56px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .mcell{padding:42px 30px 38px;border-left:1px solid var(--line);position:relative}
-  .mcell:first-child{border-left:none;padding-left:0}
-  .mcell .mlabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:18px}
-  .mcell .mnum{font-family:'Instrument Serif',serif;font-style:italic;font-size:64px;line-height:1;color:var(--accent);font-weight:400;letter-spacing:-.025em;margin-bottom:10px}
-  .mcell .mnote{font-size:13.5px;line-height:1.55;color:var(--ink-soft);margin:0}
-  .mcell .mnote b{color:var(--ink);font-weight:500}
-
-  .pullquote{padding:130px 0;background:var(--bg);border-top:1px solid var(--line)}
-  .pullquote-inner{padding:0 56px;display:grid;grid-template-columns:1.7fr 1fr;gap:80px;align-items:center}
-  .pq-stage{position:relative;min-height:380px}
-  .pq-slide{position:absolute;inset:0;opacity:0;transform:translateY(14px);transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1);pointer-events:none}
-  .pq-slide.active{opacity:1;transform:translateY(0);pointer-events:auto}
-  .pq-slide q{display:block;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:clamp(30px,3.4vw,50px);line-height:1.2;color:var(--ink);quotes:"\201C""\201D";letter-spacing:-.012em;margin:0 0 32px;max-width:28ch}
-  .pq-slide q::before{content:open-quote;color:var(--accent);margin-right:6px}
-  .pq-slide q::after{content:close-quote;color:var(--accent);margin-left:4px}
-  .pq-slide .qsig{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500}
-  .pq-slide .qsig b{color:var(--ink);font-weight:600}
-  .pq-slide .qsig::before{content:"";width:36px;height:1px;background:var(--accent)}
-  .pq-dots{position:absolute;left:0;bottom:-8px;display:flex;gap:8px}
-  .pq-dot{width:24px;height:2px;background:var(--line);border:none;padding:0;cursor:pointer;transition:background .25s}
-  .pq-dot.active{background:var(--accent)}
-  .pq-form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 1px 2px rgba(11,27,63,.04),0 14px 40px -12px rgba(11,27,63,.1)}
-  .pq-form .pflabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:14px}
-  .pq-form .pflabel::before{content:"";width:24px;height:1px;background:var(--accent)}
-  .pq-form h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;line-height:1.15;margin:0 0 12px;color:var(--ink);letter-spacing:-.012em}
-  .pq-form h4 em{font-style:italic;color:var(--accent)}
-  .pq-form > p{font-size:14.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 24px}
-  .pq-field{display:block;margin-bottom:14px}
-  .pq-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:6px}
-  .pq-field input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:8px 0;font-size:15.5px;font-family:'Inter',sans-serif;color:var(--ink);outline:none;transition:border-color .2s}
-  .pq-field input:focus{border-color:var(--accent)}
-  .pq-field input::placeholder{color:var(--muted)}
-  .pq-submit{margin-top:20px;display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;background:var(--ink);color:#fff;border:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:background .2s}
-  .pq-submit:hover{background:var(--accent)}
-  .pq-form .pffine{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;line-height:1.7}
-
-  .related{padding:130px 0 160px;background:var(--bg-warm);border-top:1px solid var(--line)}
-  .related-head{padding:0 56px;display:flex;align-items:end;justify-content:space-between;margin-bottom:50px;gap:40px}
-  .related-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch}
-  .related-head h3 em{font-style:italic;color:var(--accent)}
-  .related-head a.go{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--accent);padding-bottom:3px}
-  .rgrid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  .rcard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease, box-shadow .25s ease}
-  .rcard:hover{transform:translateY(-3px);box-shadow:0 22px 50px -30px rgba(11,27,63,.25)}
-  .rcard .rimg{height:240px;background-size:cover;background-position:center}
-  .rcard .rbody{padding:24px 24px 26px}
-  .rcard .rmeta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:10px;display:flex;justify-content:space-between}
-  .rcard .rmeta b{color:var(--accent);font-weight:600}
-  .rcard h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.18;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink)}
-  .rcard h4 em{font-style:italic;color:var(--accent)}
-  .rcard p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0}
-
-  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
-  footer a{color:#cdd5e8;margin:0 14px}
-
-  @media (max-width:980px){
-    .wrap,.breadcrumb,.hero-content,.hero-foot,.fact-grid,.narr-inner,.gal-head,.gal-grid,.approach-inner,.metrics-head,.mgrid,.pullquote-inner,.related-head,.rgrid{padding-left:24px;padding-right:24px}
-    .hero-foot{left:24px;right:24px}
-    .film{height:60vh;min-height:380px}
-    .film-cap{left:24px;bottom:24px}
-    .film-tag{right:24px;top:24px}
-    .film-play{width:90px;height:90px}
-    .film-play svg{width:28px;height:28px}
-    .fact-grid,.narr-inner,.approach-head,.gal-head,.pullquote-inner{grid-template-columns:1fr;gap:40px}
-    .pq-stage{min-height:0}
-    .pq-slide{position:relative}
-    .pq-slide:not(.active){display:none}
-    .pq-dots{position:relative;bottom:auto;margin-top:24px}
-    .pq-form{padding:28px}
-    .hero-content{grid-template-columns:1fr;align-items:stretch;gap:30px;padding-bottom:60px}
-    .breadcrumb{padding:108px 24px 0;flex-wrap:wrap}
-    .hero-meta{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:20px}
-    .hero-h{font-size:clamp(56px,9vw,88px)}
-    .gal-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}
-    .gt-a,.gt-b,.gt-c,.gt-d,.gt-e{grid-column:span 2;grid-row:span 2}
-    .steps,.mgrid{grid-template-columns:1fr 1fr}
-    .step:nth-child(3),.mcell:nth-child(3){border-left:none;padding-left:0}
-    .step:nth-child(n+3),.mcell:nth-child(n+3){border-top:1px solid rgba(155,181,255,.18)}
-    .mcell:nth-child(n+3){border-top:1px solid var(--line)}
-    .rgrid{grid-template-columns:1fr}
-    .related-head{flex-direction:column;align-items:flex-start;gap:20px}
-    .nav-links{display:none}
-  }
-  @media (max-width:560px){
-    .gal-grid{grid-template-columns:1fr;grid-auto-rows:200px}
-    .gt-a,.gt-b,.gt-c,.gt-d,.gt-e{grid-column:span 1;grid-row:span 1}
-    .steps,.mgrid{grid-template-columns:1fr}
-    .step,.mcell{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18)}
-    .mcell{border-top:1px solid var(--line)}
-    .step:first-child,.mcell:first-child{border-top:none}
-    .fact-sheet{padding:24px}
-    .pq-form{padding:22px}
-    .film-play{width:72px;height:72px}
-    .film-play svg{width:22px;height:22px}
-    .hero{height:100vh;min-height:0}
-    .breadcrumb{position:absolute;top:64px;left:0;right:0;z-index:5;padding:0 18px;font-size:10px;letter-spacing:.14em;gap:8px;flex-wrap:wrap}
-    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;flex:1;padding:0 18px 56px;gap:22px;margin-top:0}
-    .hero-h{font-size:clamp(48px,11vw,76px);line-height:.98;max-width:100%}
-    .hero-num{font-size:9.5px;letter-spacing:.18em;margin-bottom:14px}
-    .hero-meta{font-size:9.5px;line-height:1.75;letter-spacing:.12em;border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:14px}
-    .hero-foot{font-size:9.5px;letter-spacing:.14em;left:18px;right:18px;flex-direction:column;align-items:flex-start;gap:14px;bottom:24px}
-  }
-</style>
-</head>
-<body>
-
-<div class="scroll-bar" id="scrollBar"></div>
-
-<!-- ============== NAV (shared via js/header.js) ============== -->
-
-<!-- ============== HERO ============== -->
-<section class="hero">
-  <div class="hero-img" id="heroImg"></div>
-  <nav class="breadcrumb mono">
-    <a href="projects.html">Projects</a>
-    <span class="sep">/</span>
-    <span>④ Talent</span>
-    <span class="sep">/</span>
-    <span>P—011</span>
-  </nav>
-  <div class="hero-content">
-    <div>
-      <div class="hero-num">P—011 · Running 2026</div>
-      <h1 class="hero-h">Internal AI <em>training</em> program.</h1>
-    </div>
-    <div class="hero-meta">
-      <b>Large enterprise HR — Japan</b><br>
-      100 staff · 3-month cohort<br>
-      xR&amp;D curriculum · applied<br>
-      ④ Talent / 2026
-    </div>
-  </div>
-  <div class="hero-foot">
-    <div>XRD/PROJ.011 · ④ TALENT · DA NANG → JP</div>
-    <div class="scroll">SCROLL <span>↓</span></div>
-  </div>
-</section>
-
-<!-- ============== FACT SHEET ============== -->
-<section class="fact">
-  <div class="fact-grid">
-    <div class="fact-lead">
-      <div class="clabel">Engagement No. 011</div>
-      <h2>Train your team to be <em>AI-native</em>, with the curriculum we used on ours.</h2>
-      <p>The client's HR organisation needed to ramp 100 staff into AI-native workflow inside three months. Hiring would take longer; firing-and-rehiring wasn't on the table; off-the-shelf "AI literacy" courses don't ship people who can actually work AI-native.</p>
-      <p>We packaged the curriculum xR&amp;D uses internally — <b>3-month cohort program</b>, applied to the client team's real projects, run by xR&amp;D mentors. Real-project applied learning, not a video library. Internal certification + ongoing community after graduation.</p>
-      <p>Currently running. Cohort completion tracked, applied projects shipping inside the client's own systems. Graduates carry the operating model forward.</p>
-    </div>
-    <aside class="fact-sheet">
-      <div class="fact-row"><div class="k">Industry</div><div class="v">Large enterprise HR<small>Japan</small></div></div>
-      <div class="fact-row"><div class="k">Business area</div><div class="v">④ AI-native talent<small>Training program</small></div></div>
-      <div class="fact-row"><div class="k">Status</div><div class="v">Running · 2026</div></div>
-      <div class="fact-row"><div class="k">Scope</div><div class="v">3 months<small>Cohort program</small></div></div>
-      <div class="fact-row"><div class="k">Cohort</div><div class="v">100 staff<small>Mixed-role</small></div></div>
-      <div class="fact-row"><div class="k">Client</div><div class="v">Confidential<small>Large JP enterprise</small></div></div>
-      <div class="fact-row"><div class="k">Lead</div><div class="v">xR&amp;D Talent<small>Track 04 · Training</small></div></div>
-      <div class="fact-row"><div class="k">Approach</div><div class="v">Same curriculum we used on ourselves</div></div>
-    </aside>
-  </div>
-</section>
-
-<!-- ============== FILM ============== -->
-<section class="film" aria-label="Watch the project film">
-  <div class="film-img"></div>
-  <video class="film-video" src="assets/pv.mp4" controls playsinline preload="metadata"></video>
-  <div class="film-tag">Engagement film · 2026</div>
-  <button class="film-play" type="button" aria-label="Play engagement film">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-  </button>
-  <div class="film-cap"><b>P—011 · HR × Training program</b> &nbsp;·&nbsp; 4 min 12 sec</div>
-</section>
-
-<!-- ============== NARRATIVE ============== -->
-<section class="narrative">
-  <div class="narr-inner">
-    <div>
-      <div class="narr-eyebrow">The premise</div>
-      <h3 class="narr-h">Train, don't <em>hire</em>, when the team is already there.</h3>
-    </div>
-    <div class="narr-body">
-      <p>The client's existing team had decades of domain knowledge that any new AI-native hire would take a year to absorb. The fast path wasn't replacing them; it was <b>upskilling</b> them — and doing it in three months, not three years.</p>
-      <p>Off-the-shelf AI courses teach you what AI is. We teach you how to work AI-native — the same curriculum that produced xR&amp;D's own staff. Real projects in the client's systems, mentored by people who use the workflow daily.</p>
-      <p>Graduates aren't certified to use AI. They're operating the way our team operates. Different bar, different result.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============== GALLERY ============== -->
-<section class="gallery">
-  <div class="gal-head">
-    <h3>Selected <em>views</em>.</h3>
-    <div class="gnote">Anonymised <b>with client permission</b><br>Day-to-day workflow snapshots<br>Onboarding through internalisation</div>
-  </div>
-  <div class="gal-grid">
-    <div class="gtile gt-a"><div class="gimg" style="background-image:url('assets/img1.png')"></div><span class="gcap">Cohort kickoff · week 1</span></div>
-    <div class="gtile gt-b"><div class="gimg" style="background-image:url('assets/img2.png')"></div><span class="gcap">Weekly modules · live</span></div>
-    <div class="gtile gt-c"><div class="gimg" style="background-image:url('assets/img3.png')"></div><span class="gcap">Mid-program project sprint</span></div>
-    <div class="gtile gt-d"><div class="gimg" style="background-image:url('assets/img4.png')"></div><span class="gcap">Mentor pairings</span></div>
-    <div class="gtile gt-e"><div class="gimg" style="background-image:url('assets/hero-bg.png')"></div><span class="gcap">Certification + community</span></div>
-  </div>
-</section>
-
-<!-- ============== APPROACH ============== -->
-<section class="approach">
-  <div class="approach-inner">
-    <div class="approach-head">
-      <div>
-        <div class="clabel">The approach</div>
-        <h3>Four <em>moves</em>, applied not abstract.</h3>
-      </div>
-      <p>The curriculum is structured as a working program. Each move builds on real client projects, not exercises.</p>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="sn">Move 01</div>
-        <h4>Cohort <em>kickoff</em></h4>
-        <p>Role-mapped tracks, baseline assessment, mentor pairing, real project assignment. Starts with the work, not the theory.</p>
-      </div>
-      <div class="step">
-        <div class="sn">Move 02</div>
-        <h4>Weekly <em>cadence</em></h4>
-        <p>Weekly modules on AI-native workflow — prompt design, tool use, eval, code review under AI assist. Each module applied immediately.</p>
-      </div>
-      <div class="step">
-        <div class="sn">Move 03</div>
-        <h4>Project <em>sprints</em></h4>
-        <p>Mid-program project sprints. Cohort ships real work into client systems, mentored by xR&amp;D engineers.</p>
-      </div>
-      <div class="step">
-        <div class="sn">Move 04</div>
-        <h4>Certify + <em>community</em></h4>
-        <p>Internal certification at month three. Ongoing community, optional advisory, refresher modules. Graduates support the next cohort.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============== METRICS ============== -->
-<section class="metrics">
-  <div class="metrics-head">
-    <div class="clabel">Outcomes (in progress)</div>
-    <h3>What the <em>cohort</em> is changing.</h3>
-  </div>
-  <div class="mgrid">
-    <div class="mcell">
-      <div class="mlabel">Cohort</div>
-      <div class="mnum">100</div>
-      <p class="mnote"><b>Staff in program</b>, mixed roles, role-mapped tracks. Single cohort, three-month run.</p>
-    </div>
-    <div class="mcell">
-      <div class="mlabel">Duration</div>
-      <div class="mnum">3mo</div>
-      <p class="mnote"><b>Cohort program</b>. Faster than hiring, slower than a video course — and produces a different kind of graduate.</p>
-    </div>
-    <div class="mcell">
-      <div class="mlabel">Curriculum</div>
-      <div class="mnum">xR&amp;D</div>
-      <p class="mnote">The same <b>operating model</b> our staff use daily, packaged for transfer.</p>
-    </div>
-    <div class="mcell">
-      <div class="mlabel">Output</div>
-      <div class="mnum">Real</div>
-      <p class="mnote"><b>Real projects shipped</b>, not exercises. Cohort delivers work into client systems mid-program.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============== QUOTE + FORM ============== -->
-<section class="pullquote">
-  <div class="pullquote-inner">
-    <div class="pq-stage" id="pqStage">
-      <div class="pq-slide active">
-        <q>Off-the-shelf AI courses teach what AI is. We teach how to work AI-native. Different curriculum, different graduate.</q>
-        <div class="qsig"><b>Tomoki</b> · Founder · Engagement lead</div>
-      </div>
-      <div class="pq-slide">
-        <q>Real projects in client systems beat exercises every time. Mid-program output is the proof we're not running theatre.</q>
-        <div class="qsig"><b>xR&amp;D Talent</b> · Track 04 lead</div>
-      </div>
-      <div class="pq-slide">
-        <q>The graduates of this cohort will run the next cohort. That's how culture transfers — through people, not slides.</q>
-        <div class="qsig"><b>Nghia</b> · Founding Partner · xR&amp;D</div>
-      </div>
-      <div class="pq-dots" id="pqDots">
-        <button class="pq-dot active" type="button" aria-label="Quote 1"></button>
-        <button class="pq-dot" type="button" aria-label="Quote 2"></button>
-        <button class="pq-dot" type="button" aria-label="Quote 3"></button>
-      </div>
-    </div>
-    <aside class="pq-form">
-      <div class="pflabel">Engagement enquiry</div>
-      <h4>Need to <em>upskill</em> a team?</h4>
-      <p>Send a one-line note about the cohort and timeline. A partner will reply within two working days.</p>
-      <form onsubmit="event.preventDefault();this.querySelector('.pq-submit').innerHTML='Sent &nbsp;✓&nbsp; — we will be in touch'">
-        <div class="pq-field"><label>Name</label><input type="text" placeholder="e.g. Yamada Taro" required></div>
-        <div class="pq-field"><label>Email</label><input type="email" placeholder="you@company.com" required></div>
-        <div class="pq-field"><label>Cohort · timeline</label><input type="text" placeholder="One line — staff count and target date"></div>
-        <button type="submit" class="pq-submit">Send enquiry
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
-        <div class="pffine">No tracking · No marketing · Replies from a partner</div>
-      </form>
-    </aside>
-  </div>
-</section>
-
-<!-- ============== RELATED ============== -->
-<section class="related">
-  <div class="related-head">
-    <h3>Related <em>projects</em>.</h3>
-    <a class="go" href="projects.html">All projects →</a>
-  </div>
-  <div class="rgrid">
-    <a class="rcard" href="project-006.html">
-      <div class="rimg" style="background-image:url('assets/img1.png')"></div>
-      <div class="rbody">
-        <div class="rmeta"><span>P—006 · ④ Talent</span><b>Running · 2025→</b></div>
-        <h4>AI-native <em>talent</em> lab</h4>
-        <p>Five AI-native engineers placed onto a mid-sized IT services firm's product line. Internalisation in twelve months.</p>
-      </div>
-    </a>
-    <a class="rcard" href="project-008.html">
-      <div class="rimg" style="background-image:url('assets/img3.png')"></div>
-      <div class="rbody">
-        <div class="rmeta"><span>P—008 · ③ + ④ Cross</span><b>Running · 2025→</b></div>
-        <h4>Consulting + <em>talent</em></h4>
-        <p>Strategy from xR&amp;D consulting executed by xR&amp;D engineers. Internalisation as the goal.</p>
-      </div>
-    </a>
-    <a class="rcard" href="project-009.html">
-      <div class="rimg" style="background-image:url('assets/img4.png')"></div>
-      <div class="rbody">
-        <div class="rmeta"><span>P—009 · ③ Consulting</span><b>Delivered · 2025</b></div>
-        <h4>AI <em>governance</em> guidelines</h4>
-        <p>Company-wide AI usage policy + tooling + training. Operational, not just policy.</p>
-      </div>
-    </a>
-  </div>
-</section>
-
-<!-- ============== FOOTER (shared via js/footer.js) ============== -->
-<script src="js/header.js"></script>
-<script src="js/footer.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script>
-(function(){
-  const nav = document.getElementById('nav');
-  const bar = document.getElementById('scrollBar');
-  const heroImg = document.getElementById('heroImg');
-  function onScroll(){
-    const y = window.scrollY;
-    if (nav) nav.classList.toggle('scrolled', y > 80);
-    if (bar){
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
-    }
-    if (heroImg && y < window.innerHeight){
-      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
-    }
-  }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-
-  const slides = document.querySelectorAll('#pqStage .pq-slide');
-  const dots = document.querySelectorAll('#pqDots .pq-dot');
-  let pqIndex = 0;
-  let pqTimer = null;
-  function showSlide(i){
-    slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
-    dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
-    pqIndex = i;
-  }
-  function startPq(){ stopPq(); pqTimer = setInterval(()=>showSlide((pqIndex+1)%slides.length), 6500); }
-  function stopPq(){ if (pqTimer){clearInterval(pqTimer); pqTimer=null;} }
-  if (slides.length > 1){
-    dots.forEach((d,idx)=>d.addEventListener('click',()=>{showSlide(idx); startPq();}));
-    startPq();
-  }
-
-  if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
-    gsap.from('.breadcrumb',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.2});
-    gsap.from('.hero-num',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.35});
-    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.45});
-    gsap.from('.hero-meta',{y:24,opacity:0,duration:.9,ease:'power3.out',delay:.7});
-    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.9});
-    gsap.from('.fact-lead .clabel',{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.fact',start:'top 80%'}});
-    gsap.from('.fact-lead h2',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.fact',start:'top 80%'}});
-    gsap.from('.fact-lead p',{y:18,opacity:0,duration:.7,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.fact',start:'top 75%'}});
-    gsap.fromTo('.fact-sheet',{y:50,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.fact',start:'top 78%'}});
-    gsap.fromTo('.fact-row',{x:-12,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out',stagger:.05,delay:.2,scrollTrigger:{trigger:'.fact-sheet',start:'top 80%'}});
-    gsap.fromTo('.film-img',{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:'.film',start:'top 90%'}});
-    gsap.to('.film-img',{yPercent:-8,ease:'none',scrollTrigger:{trigger:'.film',start:'top bottom',end:'bottom top',scrub:true}});
-    gsap.from('.film-play',{scale:.6,opacity:0,duration:.9,ease:'back.out(1.6)',scrollTrigger:{trigger:'.film',start:'top 80%'}});
-    gsap.from('.narr-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.narrative',start:'top 80%'}});
-    gsap.from('.narr-h',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.narrative',start:'top 80%'}});
-    gsap.from('.narr-body p',{y:20,opacity:0,duration:.7,ease:'power3.out',stagger:.12,scrollTrigger:{trigger:'.narr-body',start:'top 85%'}});
-    gsap.from('.gal-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.gallery',start:'top 80%'}});
-    gsap.utils.toArray('.gtile').forEach(tile=>{
-      gsap.fromTo(tile,{y:50,opacity:0},{y:0,opacity:1,duration:1,ease:'power4.out',scrollTrigger:{trigger:tile,start:'top 88%'}});
-      const img = tile.querySelector('.gimg');
-      if (img){
-        gsap.fromTo(img,{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:tile,start:'top 90%'}});
-        gsap.to(img,{yPercent:-6,ease:'none',scrollTrigger:{trigger:tile,start:'top bottom',end:'bottom top',scrub:true}});
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Japanese learning platform · KotobaAI — xR&amp;D Technologies</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0b1b3f;
+        --ink-soft: #3a4a72;
+        --muted: #6b7591;
+        --line: #e4e8f0;
+        --line-2: #eef1f7;
+        --bg: #fafaf7;
+        --bg-warm: #f4f2ec;
+        --accent: #2563eb;
+        --accent-soft: #9bb5ff;
       }
-    });
-    gsap.from('.approach-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.approach',start:'top 80%'}});
-    gsap.fromTo('.step',{y:40,opacity:0},{y:0,opacity:1,duration:.8,ease:'power4.out',stagger:.1,scrollTrigger:{trigger:'.steps',start:'top 85%'}});
-    gsap.from('.metrics-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.metrics',start:'top 80%'}});
-    gsap.fromTo('.mcell',{y:30,opacity:0},{y:0,opacity:1,duration:.8,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.mgrid',start:'top 85%'}});
-    gsap.utils.toArray('.mcell .mnum').forEach(num=>{
-      gsap.fromTo(num,{scale:.85,opacity:0},{scale:1,opacity:1,duration:.9,ease:'back.out(1.6)',scrollTrigger:{trigger:num,start:'top 88%'}});
-    });
-    gsap.from('.pq-stage',{y:30,opacity:0,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.pullquote',start:'top 80%'}});
-    gsap.from('.pq-form',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.15,scrollTrigger:{trigger:'.pullquote',start:'top 80%'}});
-    gsap.from('.related-head h3',{y:30,opacity:0,duration:.9,ease:'power4.out',scrollTrigger:{trigger:'.related',start:'top 85%'}});
-    gsap.fromTo('.rcard',{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:'power4.out',stagger:.12,scrollTrigger:{trigger:'.rgrid',start:'top 85%'}});
-    window.addEventListener('load',()=>ScrollTrigger.refresh());
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
-  }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        overflow-x: clip;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: clip;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .wrap {
+        width: 100%;
+        margin: 0;
+        padding: 0 56px;
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 11px;
+      }
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        padding: 22px 0;
+        transition: 0.3s;
+        color: #fff;
+      }
+      .nav.scrolled {
+        background: rgba(11, 27, 63, 0.88);
+        backdrop-filter: blur(14px);
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+      }
+      .logo {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 38px;
+      }
+      .nav-links a {
+        font-size: 15px;
+        opacity: 0.85;
+        font-weight: 500;
+        transition: opacity 0.15s;
+      }
+      .nav-links a:hover {
+        opacity: 1;
+      }
+      .nav-links a.active {
+        opacity: 1;
+        color: #9bb5ff;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 22px;
+        border-radius: 999px;
+        font-size: 14.5px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid currentColor;
+        transition: 0.2s;
+      }
+      .btn-fill {
+        background: #fff;
+        color: var(--ink);
+        border-color: #fff;
+      }
+      .scroll-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: var(--accent-soft);
+        z-index: 300;
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 0.1s linear;
+      }
 
-  document.querySelectorAll('.film .film-play').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      e.preventDefault();
-      const sec = btn.closest('.film');
-      if (!sec) return;
-      sec.classList.add('playing');
-      const video = sec.querySelector('.film-video');
-      if (video) video.play().catch(()=>{});
-    });
-  });
-})();
-</script>
+      .hero {
+        position: relative;
+        height: 80vh;
+        min-height: 620px;
+        overflow: hidden;
+        background: #0b1b3f;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+      }
+      .hero-img {
+        position: absolute;
+        inset: 0;
+        background: url("assets/projects/project-011-lesson.png") center/cover
+          no-repeat;
+        transform: scale(1.15);
+        will-change: transform;
+      }
+      .hero-img::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 27, 63, 0.35) 0%,
+          rgba(11, 27, 63, 0.15) 35%,
+          rgba(11, 27, 63, 0.85) 100%
+        );
+      }
+      .breadcrumb {
+        position: relative;
+        z-index: 2;
+        padding: 140px 56px 0;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .breadcrumb a {
+        color: #9bb5ff;
+        border-bottom: 1px solid rgba(155, 181, 255, 0.25);
+        padding-bottom: 1px;
+      }
+      .breadcrumb a:hover {
+        border-color: #9bb5ff;
+      }
+      .breadcrumb .sep {
+        opacity: 0.4;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        margin-top: auto;
+        padding: 0 56px 90px;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 60px;
+        align-items: end;
+      }
+      .hero-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: #9bb5ff;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .hero-num::before {
+        content: "";
+        width: 36px;
+        height: 1px;
+        background: #9bb5ff;
+      }
+      .hero-h {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(64px, 8vw, 128px);
+        line-height: 0.94;
+        letter-spacing: -0.025em;
+        margin: 0;
+        max-width: 14ch;
+      }
+      .hero-h em {
+        font-style: italic;
+        color: #9bb5ff;
+      }
+      .hero-meta {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        line-height: 1.95;
+        border-left: 1px solid rgba(155, 181, 255, 0.3);
+        padding-left: 28px;
+      }
+      .hero-meta b {
+        color: #fff;
+        font-weight: 500;
+      }
+      .hero-foot {
+        position: absolute;
+        bottom: 36px;
+        left: 56px;
+        right: 56px;
+        z-index: 3;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.65);
+        text-transform: uppercase;
+      }
+      .hero-foot .scroll {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-</body>
+      .fact {
+        padding: 140px 0 120px;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+      }
+      .fact-grid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .fact-lead .clabel {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+      .fact-lead .clabel::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .fact-lead h2 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(40px, 4.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0 0 32px;
+        max-width: 18ch;
+      }
+      .fact-lead h2 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .fact-lead p {
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--ink-soft);
+        margin: 0 0 18px;
+        max-width: 54ch;
+      }
+      .fact-lead p b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .fact-sheet {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 36px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        box-shadow:
+          0 1px 2px rgba(11, 27, 63, 0.04),
+          0 14px 40px -12px rgba(11, 27, 63, 0.1);
+      }
+      .fact-row {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 20px;
+        padding: 18px 0;
+        border-bottom: 1px dashed var(--line);
+        align-items: baseline;
+      }
+      .fact-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .fact-row:first-child {
+        padding-top: 0;
+      }
+      .fact-row .k {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .fact-row .v {
+        font-size: 15.5px;
+        color: var(--ink);
+        font-weight: 500;
+        line-height: 1.45;
+      }
+      .fact-row .v small {
+        display: block;
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 13px;
+        margin-top: 3px;
+      }
+
+      .film {
+        position: relative;
+        width: 100%;
+        height: 78vh;
+        min-height: 560px;
+        overflow: hidden;
+        background: #0b1b3f;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+        display: block;
+      }
+      .film-img {
+        position: absolute;
+        inset: 0;
+        background: url("assets/projects/project-011-hero.png") center/cover
+          no-repeat;
+        transition:
+          transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+          opacity 0.4s;
+      }
+      .film:hover .film-img {
+        transform: scale(1.03);
+      }
+      .film::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 27, 63, 0.15) 0%,
+          rgba(11, 27, 63, 0.5) 100%
+        );
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.4s;
+      }
+      .film-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        pointer-events: none;
+        background: #000;
+        z-index: 0;
+        transition: opacity 0.4s;
+      }
+      .film-play {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.35);
+        transition:
+          transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+          background 0.3s,
+          opacity 0.3s;
+        z-index: 3;
+        border: none;
+        cursor: pointer;
+      }
+      .film:hover .film-play {
+        transform: translate(-50%, -50%) scale(1.08);
+        background: #fff;
+      }
+      .film-play svg {
+        width: 36px;
+        height: 36px;
+        margin-left: 6px;
+        fill: var(--ink);
+      }
+      .film-cap {
+        position: absolute;
+        left: 56px;
+        bottom: 36px;
+        z-index: 2;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.85);
+        text-transform: uppercase;
+        transition: opacity 0.3s;
+      }
+      .film-cap b {
+        color: #fff;
+        font-weight: 500;
+      }
+      .film-tag {
+        position: absolute;
+        right: 56px;
+        top: 36px;
+        z-index: 2;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        transition: opacity 0.3s;
+      }
+      .film.playing {
+        cursor: default;
+      }
+      .film.playing .film-video {
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 5;
+      }
+      .film.playing .film-img,
+      .film.playing .film-play,
+      .film.playing .film-tag,
+      .film.playing .film-cap {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .film.playing::after {
+        opacity: 0;
+      }
+
+      .narrative {
+        padding: 130px 0;
+        background: var(--bg-warm);
+        border-top: 1px solid var(--line);
+      }
+      .narr-inner {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .narr-eyebrow {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.22em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .narr-eyebrow::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .narr-h {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(36px, 4vw, 56px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 0;
+        max-width: 14ch;
+      }
+      .narr-h em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .narr-body p {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        margin: 0 0 20px;
+        max-width: 55ch;
+      }
+      .narr-body p:last-child {
+        margin-bottom: 0;
+      }
+      .narr-body p b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .gallery {
+        padding: 130px 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+      }
+      .gal-head {
+        padding: 0 56px 56px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 60px;
+      }
+      .gal-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(36px, 4vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 18ch;
+      }
+      .gal-head h3 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .gal-head .gnote {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        line-height: 1.8;
+        text-align: right;
+      }
+      .gal-head .gnote b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .gal-grid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 120px;
+        gap: 20px;
+      }
+      .gtile {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #0b1b3f;
+      }
+      .gtile .gimg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .gtile:hover .gimg {
+        transform: scale(1.05);
+      }
+      .gtile .gcap {
+        position: absolute;
+        left: 18px;
+        bottom: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        color: #fff;
+        text-transform: uppercase;
+        background: rgba(11, 27, 63, 0.8);
+        padding: 6px 10px;
+        border-radius: 6px;
+        backdrop-filter: blur(6px);
+      }
+      .gt-a {
+        grid-column: span 4;
+        grid-row: span 4;
+      }
+      .gt-b {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .gt-c {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .gt-d {
+        grid-column: span 3;
+        grid-row: span 3;
+      }
+      .gt-e {
+        grid-column: span 3;
+        grid-row: span 3;
+      }
+
+      .approach {
+        padding: 140px 0;
+        background: #0b1b3f;
+        color: #fff;
+        border-top: 1px solid var(--line);
+        position: relative;
+        overflow: hidden;
+      }
+      .approach::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          900px 500px at 80% 20%,
+          rgba(99, 140, 255, 0.16),
+          rgba(99, 140, 255, 0) 60%
+        );
+        pointer-events: none;
+      }
+      .approach-inner {
+        position: relative;
+        z-index: 1;
+        padding: 0 56px;
+      }
+      .approach-head {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 60px;
+        align-items: end;
+        margin-bottom: 80px;
+      }
+      .approach-head .clabel {
+        color: #9bb5ff;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .approach-head .clabel::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: #9bb5ff;
+      }
+      .approach-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(40px, 4.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 14ch;
+        color: #fff;
+      }
+      .approach-head h3 em {
+        font-style: italic;
+        color: #9bb5ff;
+      }
+      .approach-head p {
+        font-size: 16px;
+        line-height: 1.65;
+        color: #b8c3df;
+        margin: 0;
+        max-width: 52ch;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        border-top: 1px solid rgba(155, 181, 255, 0.18);
+        border-bottom: 1px solid rgba(155, 181, 255, 0.18);
+      }
+      .step {
+        padding: 42px 30px;
+        border-left: 1px solid rgba(155, 181, 255, 0.18);
+        position: relative;
+      }
+      .step:first-child {
+        border-left: none;
+        padding-left: 0;
+      }
+      .step .sn {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: #9bb5ff;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 18px;
+      }
+      .step h4 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 1.2;
+        margin: 0 0 14px;
+        color: #fff;
+        letter-spacing: -0.012em;
+      }
+      .step h4 em {
+        font-style: italic;
+        color: #9bb5ff;
+      }
+      .step p {
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: #b8c3df;
+        margin: 0;
+      }
+
+      .metrics {
+        padding: 130px 0;
+        background: var(--bg-warm);
+        border-top: 1px solid var(--line);
+      }
+      .metrics-head {
+        padding: 0 56px;
+        max-width: 760px;
+        margin-bottom: 50px;
+      }
+      .metrics-head .clabel {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 22px;
+      }
+      .metrics-head .clabel::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .metrics-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(40px, 4.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 16ch;
+      }
+      .metrics-head h3 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .mgrid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .mcell {
+        padding: 42px 30px 38px;
+        border-left: 1px solid var(--line);
+        position: relative;
+      }
+      .mcell:first-child {
+        border-left: none;
+        padding-left: 0;
+      }
+      .mcell .mlabel {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 18px;
+      }
+      .mcell .mnum {
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-size: 64px;
+        line-height: 1;
+        color: var(--accent);
+        font-weight: 400;
+        letter-spacing: -0.025em;
+        margin-bottom: 10px;
+      }
+      .mcell .mnote {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+      .mcell .mnote b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .pullquote {
+        padding: 130px 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+      }
+      .pullquote-inner {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .pq-stage {
+        position: relative;
+        min-height: 380px;
+      }
+      .pq-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transform: translateY(14px);
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+        pointer-events: none;
+      }
+      .pq-slide.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .pq-slide q {
+        display: block;
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: clamp(30px, 3.4vw, 50px);
+        line-height: 1.2;
+        color: var(--ink);
+        quotes: "\201C" "\201D";
+        letter-spacing: -0.012em;
+        margin: 0 0 32px;
+        max-width: 28ch;
+      }
+      .pq-slide q::before {
+        content: open-quote;
+        color: var(--accent);
+        margin-right: 6px;
+      }
+      .pq-slide q::after {
+        content: close-quote;
+        color: var(--accent);
+        margin-left: 4px;
+      }
+      .pq-slide .qsig {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .pq-slide .qsig b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .pq-slide .qsig::before {
+        content: "";
+        width: 36px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .pq-dots {
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        display: flex;
+        gap: 8px;
+      }
+      .pq-dot {
+        width: 24px;
+        height: 2px;
+        background: var(--line);
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: background 0.25s;
+      }
+      .pq-dot.active {
+        background: var(--accent);
+      }
+      .pq-form {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 36px;
+        box-shadow:
+          0 1px 2px rgba(11, 27, 63, 0.04),
+          0 14px 40px -12px rgba(11, 27, 63, 0.1);
+      }
+      .pq-form .pflabel {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .pq-form .pflabel::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .pq-form h4 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: 30px;
+        line-height: 1.15;
+        margin: 0 0 12px;
+        color: var(--ink);
+        letter-spacing: -0.012em;
+      }
+      .pq-form h4 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .pq-form > p {
+        font-size: 14.5px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        margin: 0 0 24px;
+      }
+      .pq-field {
+        display: block;
+        margin-bottom: 14px;
+      }
+      .pq-field label {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+      .pq-field input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--line);
+        padding: 8px 0;
+        font-size: 15.5px;
+        font-family: "Inter", sans-serif;
+        color: var(--ink);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .pq-field input:focus {
+        border-color: var(--accent);
+      }
+      .pq-field input::placeholder {
+        color: var(--muted);
+      }
+      .pq-submit {
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 22px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        border: none;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .pq-submit:hover {
+        background: var(--accent);
+      }
+      .pq-form .pffine {
+        margin-top: 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9.5px;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        text-transform: uppercase;
+        line-height: 1.7;
+      }
+
+      .related {
+        padding: 130px 0 160px;
+        background: var(--bg-warm);
+        border-top: 1px solid var(--line);
+      }
+      .related-head {
+        padding: 0 56px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        margin-bottom: 50px;
+        gap: 40px;
+      }
+      .related-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(36px, 4vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 14ch;
+      }
+      .related-head h3 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .related-head a.go {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--accent);
+        padding-bottom: 3px;
+      }
+      .rgrid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .rcard {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+      .rcard:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 22px 50px -30px rgba(11, 27, 63, 0.25);
+      }
+      .rcard .rimg {
+        height: 240px;
+        background-size: cover;
+        background-position: center;
+      }
+      .rcard .rbody {
+        padding: 24px 24px 26px;
+      }
+      .rcard .rmeta {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .rcard .rmeta b {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .rcard h4 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        margin: 0 0 10px;
+        color: var(--ink);
+      }
+      .rcard h4 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .rcard p {
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+
+      footer {
+        background: #06122e;
+        color: #9aa9c8;
+        padding: 50px 0;
+        text-align: center;
+        font-size: 13px;
+      }
+      footer a {
+        color: #cdd5e8;
+        margin: 0 14px;
+      }
+
+      @media (max-width: 980px) {
+        .wrap,
+        .breadcrumb,
+        .hero-content,
+        .hero-foot,
+        .fact-grid,
+        .narr-inner,
+        .gal-head,
+        .gal-grid,
+        .approach-inner,
+        .metrics-head,
+        .mgrid,
+        .pullquote-inner,
+        .related-head,
+        .rgrid {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .hero-foot {
+          left: 24px;
+          right: 24px;
+        }
+        .film {
+          height: 60vh;
+          min-height: 380px;
+        }
+        .film-cap {
+          left: 24px;
+          bottom: 24px;
+        }
+        .film-tag {
+          right: 24px;
+          top: 24px;
+        }
+        .film-play {
+          width: 90px;
+          height: 90px;
+        }
+        .film-play svg {
+          width: 28px;
+          height: 28px;
+        }
+        .fact-grid,
+        .narr-inner,
+        .approach-head,
+        .gal-head,
+        .pullquote-inner {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .pq-stage {
+          min-height: 0;
+        }
+        .pq-slide {
+          position: relative;
+        }
+        .pq-slide:not(.active) {
+          display: none;
+        }
+        .pq-dots {
+          position: relative;
+          bottom: auto;
+          margin-top: 24px;
+        }
+        .pq-form {
+          padding: 28px;
+        }
+        .hero-content {
+          grid-template-columns: 1fr;
+          align-items: stretch;
+          gap: 30px;
+          padding-bottom: 60px;
+        }
+        .breadcrumb {
+          padding: 108px 24px 0;
+          flex-wrap: wrap;
+        }
+        .hero-meta {
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+          padding-top: 20px;
+        }
+        .hero-h {
+          font-size: clamp(56px, 9vw, 88px);
+        }
+        .gal-grid {
+          grid-template-columns: repeat(2, 1fr);
+          grid-auto-rows: 160px;
+        }
+        .gt-a,
+        .gt-b,
+        .gt-c,
+        .gt-d,
+        .gt-e {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
+        .steps,
+        .mgrid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .step:nth-child(3),
+        .mcell:nth-child(3) {
+          border-left: none;
+          padding-left: 0;
+        }
+        .step:nth-child(n + 3),
+        .mcell:nth-child(n + 3) {
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+        }
+        .mcell:nth-child(n + 3) {
+          border-top: 1px solid var(--line);
+        }
+        .rgrid {
+          grid-template-columns: 1fr;
+        }
+        .related-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+      @media (max-width: 560px) {
+        .gal-grid {
+          grid-template-columns: 1fr;
+          grid-auto-rows: 200px;
+        }
+        .gt-a,
+        .gt-b,
+        .gt-c,
+        .gt-d,
+        .gt-e {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
+        .steps,
+        .mgrid {
+          grid-template-columns: 1fr;
+        }
+        .step,
+        .mcell {
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+        }
+        .mcell {
+          border-top: 1px solid var(--line);
+        }
+        .step:first-child,
+        .mcell:first-child {
+          border-top: none;
+        }
+        .fact-sheet {
+          padding: 24px;
+        }
+        .pq-form {
+          padding: 22px;
+        }
+        .film-play {
+          width: 72px;
+          height: 72px;
+        }
+        .film-play svg {
+          width: 22px;
+          height: 22px;
+        }
+        .hero {
+          height: 100vh;
+          min-height: 0;
+        }
+        .breadcrumb {
+          position: absolute;
+          top: 64px;
+          left: 0;
+          right: 0;
+          z-index: 5;
+          padding: 0 18px;
+          font-size: 10px;
+          letter-spacing: 0.14em;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .hero-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: stretch;
+          flex: 1;
+          padding: 0 18px 56px;
+          gap: 22px;
+          margin-top: 0;
+        }
+        .hero-h {
+          font-size: clamp(48px, 11vw, 76px);
+          line-height: 0.98;
+          max-width: 100%;
+        }
+        .hero-num {
+          font-size: 9.5px;
+          letter-spacing: 0.18em;
+          margin-bottom: 14px;
+        }
+        .hero-meta {
+          font-size: 9.5px;
+          line-height: 1.75;
+          letter-spacing: 0.12em;
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+          padding-top: 14px;
+        }
+        .hero-foot {
+          font-size: 9.5px;
+          letter-spacing: 0.14em;
+          left: 18px;
+          right: 18px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 14px;
+          bottom: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-bar" id="scrollBar"></div>
+
+    <!-- ============== NAV (shared via js/header.js) ============== -->
+
+    <!-- ============== HERO ============== -->
+    <section class="hero">
+      <div class="hero-img" id="heroImg"></div>
+      <nav class="breadcrumb mono">
+        <a href="projects.html">Projects</a>
+        <span class="sep">/</span>
+        <span>① AI app development</span>
+        <span class="sep">/</span>
+        <span>P—011</span>
+      </nav>
+      <div class="hero-content">
+        <div>
+          <div class="hero-num">P—011 · Shipped 2026</div>
+          <h1 class="hero-h">
+            A Japanese learning <em>platform</em>, taught by AI.
+          </h1>
+        </div>
+        <div class="hero-meta">
+          <b>EdTech — Japan / Vietnam</b><br />
+          AI tutor · adaptive lessons<br />
+          JLPT N5–N1 · web + mobile<br />
+          ① App development / 2026
+        </div>
+      </div>
+      <div class="hero-foot">
+        <div>XRD/PROJ.011 · ① APP · DA NANG → JP / VN</div>
+        <div class="scroll">SCROLL <span>↓</span></div>
+      </div>
+    </section>
+
+    <!-- ============== FACT SHEET ============== -->
+    <section class="fact">
+      <div class="fact-grid">
+        <div class="fact-lead">
+          <div class="clabel">Engagement No. 011</div>
+          <h2>
+            One platform, every <em>JLPT band</em>, taught by an AI tutor that
+            listens.
+          </h2>
+          <p>
+            The client serves Vietnamese and Southeast Asian learners aiming at
+            JLPT and at conversational fluency for work in Japan. Off-the-shelf
+            apps drilled vocabulary; private tutors charged per hour. Neither
+            covered the gap a serious learner actually has —
+            <b>real-time speaking practice that doesn't get bored</b>.
+          </p>
+          <p>
+            We built <b>KotobaAI</b> end-to-end: an AI tutor that listens to the
+            learner's speech, scores pronunciation and grammar, and adapts the
+            next lesson; an evidence-backed JLPT track from N5 to N1; and a
+            teacher dashboard so partner schools can supervise without grading
+            by hand.
+          </p>
+          <p>
+            The platform launched on web and mobile, in JP and VN, with the AI
+            tutor handling 90%+ of practice time. Live teachers stepped in only
+            where the model said they were needed.
+          </p>
+        </div>
+        <aside class="fact-sheet">
+          <div class="fact-row">
+            <div class="k">Industry</div>
+            <div class="v">EdTech<small>Japanese language · JLPT</small></div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Business area</div>
+            <div class="v">
+              ① AI app development<small>End-to-end platform build</small>
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Status</div>
+            <div class="v">Shipped · 2026</div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Scope</div>
+            <div class="v">14 weeks<small>MVP to public launch</small></div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Surface</div>
+            <div class="v">
+              Web + iOS + Android<small>Bilingual JP / VN</small>
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Client</div>
+            <div class="v">
+              KotobaAI<small>Confidential — JP / VN partnership</small>
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Lead</div>
+            <div class="v">
+              xR&amp;D App<small>Track 01 · AI app team</small>
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Approach</div>
+            <div class="v">
+              AI tutor · adaptive curriculum · teacher dashboard
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============== FILM ============== -->
+    <section class="film" aria-label="Watch the project film">
+      <div class="film-img"></div>
+      <video
+        class="film-video"
+        src="assets/pv.mp4"
+        controls
+        playsinline
+        preload="metadata"
+      ></video>
+      <div class="film-tag">Product film · 2026</div>
+      <button class="film-play" type="button" aria-label="Play product film">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+      </button>
+      <div class="film-cap">
+        <b>P—011 · KotobaAI · Adaptive Japanese tutor</b> &nbsp;·&nbsp; 2 min 10
+        sec
+      </div>
+    </section>
+
+    <!-- ============== NARRATIVE ============== -->
+    <section class="narrative">
+      <div class="narr-inner">
+        <div>
+          <div class="narr-eyebrow">The premise</div>
+          <h3 class="narr-h">
+            Drill apps don't <em>speak back</em>. Tutors don't scale.
+          </h3>
+        </div>
+        <div class="narr-body">
+          <p>
+            The serious learner — the one targeting JLPT N3 by year-end so they
+            can take a job in Japan — sits in a gap. Drill apps are cheap but
+            silent. Native tutors give real feedback but cost real money and
+            aren't available at 11pm on a Tuesday.
+          </p>
+          <p>
+            We built KotobaAI to occupy that gap.
+            <b>The AI tutor listens, scores, and re-plans the next lesson</b> —
+            not just vocabulary, but pronunciation, grammar, and the
+            conversational moves that JLPT examiners and Japanese co-workers
+            actually look for.
+          </p>
+          <p>
+            Behind the learner sits a teacher dashboard for partner schools:
+            who's behind, who's ready for the mock test, who needs human
+            intervention. The model is honest about when to escalate.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== GALLERY ============== -->
+    <section class="gallery">
+      <div class="gal-head">
+        <h3>The <em>product</em>.</h3>
+        <div class="gnote">
+          Web, mobile, teacher dashboard<br /><b>KotobaAI · ことばAI</b
+          ><br />Bilingual JP / VN · shipped 2026
+        </div>
+      </div>
+      <div class="gal-grid">
+        <div class="gtile gt-a">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-011-dashboard.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Learner dashboard</span>
+        </div>
+        <div class="gtile gt-b">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-011-lesson.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Lesson · café conversation</span>
+        </div>
+        <div class="gtile gt-c">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-011-devices.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Web + mobile</span>
+        </div>
+        <div class="gtile gt-d">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-011-user.png&quot;);
+            "
+          ></div>
+          <span class="gcap">In-product · learner</span>
+        </div>
+        <div class="gtile gt-e">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-011-user-alt.png&quot;);
+            "
+          ></div>
+          <span class="gcap">In-product · learner alt</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== APPROACH ============== -->
+    <section class="approach">
+      <div class="approach-inner">
+        <div class="approach-head">
+          <div>
+            <div class="clabel">The approach</div>
+            <h3>Four <em>moves</em>, one tutor that adapts.</h3>
+          </div>
+          <p>
+            We treated the curriculum as data and the lesson as a function over
+            learner state. The AI tutor isn't a chatbot bolted on — it's the
+            loop the product runs on.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="sn">Move 01</div>
+            <h4>Encode the <em>curriculum</em></h4>
+            <p>
+              JLPT N5–N1 mapped as a graph of skills, examples, and
+              prerequisites — not a flat lesson list.
+            </p>
+          </div>
+          <div class="step">
+            <div class="sn">Move 02</div>
+            <h4>Build the <em>tutor</em></h4>
+            <p>
+              Streaming speech-in, grammar &amp; pronunciation scoring, lesson
+              planning. Hooked into the curriculum graph, not the model's guess.
+            </p>
+          </div>
+          <div class="step">
+            <div class="sn">Move 03</div>
+            <h4>Ship the <em>surfaces</em></h4>
+            <p>
+              Web, iOS, Android, teacher dashboard. One product, three surfaces,
+              one feedback loop.
+            </p>
+          </div>
+          <div class="step">
+            <div class="sn">Move 04</div>
+            <h4>Watch &amp; <em>iterate</em></h4>
+            <p>
+              Real learner outcomes feed back into curriculum graph + tutor
+              planner. The product gets sharper monthly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== METRICS ============== -->
+    <section class="metrics">
+      <div class="metrics-head">
+        <div class="clabel">Outcomes</div>
+        <h3>What the <em>tutor</em> changed.</h3>
+      </div>
+      <div class="mgrid">
+        <div class="mcell">
+          <div class="mlabel">JLPT bands</div>
+          <div class="mnum">N5–N1</div>
+          <p class="mnote">
+            <b>Full coverage</b> from absolute beginner to advanced. Single
+            curriculum graph.
+          </p>
+        </div>
+        <div class="mcell">
+          <div class="mlabel">Tutor uptime</div>
+          <div class="mnum">24/7</div>
+          <p class="mnote">
+            <b>AI tutor available</b> for speaking practice at any hour. No
+            tutor-booking friction.
+          </p>
+        </div>
+        <div class="mcell">
+          <div class="mlabel">Practice handled by AI</div>
+          <div class="mnum">90%+</div>
+          <p class="mnote">
+            <b>Live teachers</b> step in only where the model says intervention
+            is needed.
+          </p>
+        </div>
+        <div class="mcell">
+          <div class="mlabel">Surfaces</div>
+          <div class="mnum">3</div>
+          <p class="mnote">
+            Web, iOS, Android. <b>One product</b>, one feedback loop, bilingual
+            JP / VN.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== QUOTE + FORM ============== -->
+    <section class="pullquote">
+      <div class="pullquote-inner">
+        <div class="pq-stage" id="pqStage">
+          <div class="pq-slide active">
+            <q
+              >The tutor never gets bored. That's the part regulars said no one
+              had built before.</q
+            >
+            <div class="qsig"><b>Product lead</b> · KotobaAI</div>
+          </div>
+          <div class="pq-slide">
+            <q
+              >We didn't bolt a chatbot onto a textbook. The lesson IS the
+              model's plan over learner state.</q
+            >
+            <div class="qsig"><b>xR&amp;D App</b> · Track 01 lead</div>
+          </div>
+          <div class="pq-slide">
+            <q
+              >The teacher dashboard was the unlock for partner schools. They
+              could supervise without grading by hand.</q
+            >
+            <div class="qsig"><b>Tomoki</b> · Founder · Engagement lead</div>
+          </div>
+          <div class="pq-dots" id="pqDots">
+            <button
+              class="pq-dot active"
+              type="button"
+              aria-label="Quote 1"
+            ></button>
+            <button class="pq-dot" type="button" aria-label="Quote 2"></button>
+            <button class="pq-dot" type="button" aria-label="Quote 3"></button>
+          </div>
+        </div>
+        <aside class="pq-form">
+          <div class="pflabel">Engagement enquiry</div>
+          <h4>Have a learning <em>product</em> to build?</h4>
+          <p>
+            Send a one-line note about the learner and the outcome. A partner
+            will reply within two working days.
+          </p>
+          <form
+            onsubmit="
+              event.preventDefault();
+              this.querySelector('.pq-submit').innerHTML =
+                'Sent &nbsp;✓&nbsp; — we will be in touch';
+            "
+          >
+            <div class="pq-field">
+              <label>Name</label
+              ><input type="text" placeholder="e.g. Yamada Taro" required />
+            </div>
+            <div class="pq-field">
+              <label>Email</label
+              ><input type="email" placeholder="you@company.com" required />
+            </div>
+            <div class="pq-field">
+              <label>Learner · outcome</label
+              ><input
+                type="text"
+                placeholder="One line — who's learning, and toward what"
+              />
+            </div>
+            <button type="submit" class="pq-submit">
+              Send enquiry
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+            <div class="pffine">
+              No tracking · No marketing · Replies from a partner
+            </div>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============== RELATED ============== -->
+    <section class="related">
+      <div class="related-head">
+        <h3>Related <em>projects</em>.</h3>
+        <a class="go" href="projects.html">All projects →</a>
+      </div>
+      <div class="rgrid">
+        <a class="rcard" href="project-014.html">
+          <div
+            class="rimg"
+            style="
+              background-image: url(&quot;assets/projects/project-014-hero.png&quot;);
+            "
+          ></div>
+          <div class="rbody">
+            <div class="rmeta">
+              <span>P—014 · ① App</span><b>Running · 2026→</b>
+            </div>
+            <h4>AI agent × engineer <em>collab platform</em></h4>
+            <p>
+              BuildFlow AI: a development platform where AI agents and human
+              engineers collaborate on the same codebase.
+            </p>
+          </div>
+        </a>
+        <a class="rcard" href="project-003.html">
+          <div
+            class="rimg"
+            style="background-image: url(&quot;assets/img3.png&quot;)"
+          ></div>
+          <div class="rbody">
+            <div class="rmeta">
+              <span>P—003 · ① App</span><b>Delivered · 2025</b>
+            </div>
+            <h4>AI knowledge <em>chatbot</em></h4>
+            <p>
+              Internal knowledge-search chatbot for an enterprise client. 8-week
+              production ship.
+            </p>
+          </div>
+        </a>
+        <a class="rcard" href="project-006.html">
+          <div
+            class="rimg"
+            style="
+              background-image: url(&quot;assets/projects/project-006-academy-hero.png&quot;);
+            "
+          ></div>
+          <div class="rbody">
+            <div class="rmeta">
+              <span>P—006 · ④ Talent</span><b>Running · 2026→</b>
+            </div>
+            <h4>AI-native <em>talent lab</em></h4>
+            <p>
+              Generative AI practical academy run with VNUHCM — building
+              Vietnam's next AI-native engineers.
+            </p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============== FOOTER (shared via js/footer.js) ============== -->
+    <script src="js/header.js"></script>
+    <script src="js/footer.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script>
+      (function () {
+        const nav = document.getElementById("nav");
+        const bar = document.getElementById("scrollBar");
+        const heroImg = document.getElementById("heroImg");
+        function onScroll() {
+          const y = window.scrollY;
+          if (nav) nav.classList.toggle("scrolled", y > 80);
+          if (bar) {
+            const docH =
+              document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.transform = `scaleX(${Math.min(1, y / docH)})`;
+          }
+          if (heroImg && y < window.innerHeight) {
+            heroImg.style.transform = `scale(1.15) translateY(${y * 0.35}px)`;
+          }
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+
+        const slides = document.querySelectorAll("#pqStage .pq-slide");
+        const dots = document.querySelectorAll("#pqDots .pq-dot");
+        let pqIndex = 0;
+        let pqTimer = null;
+        function showSlide(i) {
+          slides.forEach((s, idx) => s.classList.toggle("active", idx === i));
+          dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
+          pqIndex = i;
+        }
+        function startPq() {
+          stopPq();
+          pqTimer = setInterval(
+            () => showSlide((pqIndex + 1) % slides.length),
+            6500,
+          );
+        }
+        function stopPq() {
+          if (pqTimer) {
+            clearInterval(pqTimer);
+            pqTimer = null;
+          }
+        }
+        if (slides.length > 1) {
+          dots.forEach((d, idx) =>
+            d.addEventListener("click", () => {
+              showSlide(idx);
+              startPq();
+            }),
+          );
+          startPq();
+        }
+
+        if (typeof gsap !== "undefined") {
+          gsap.registerPlugin(ScrollTrigger);
+          gsap.fromTo(
+            ".nav-inner > *",
+            { y: -20, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.7,
+              ease: "power3.out",
+              stagger: 0.07,
+              delay: 0.05,
+            },
+          );
+          gsap.from(".breadcrumb", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            delay: 0.2,
+          });
+          gsap.from(".hero-num", {
+            y: 18,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            delay: 0.35,
+          });
+          gsap.from(".hero-h", {
+            y: 40,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power4.out",
+            delay: 0.45,
+          });
+          gsap.from(".hero-meta", {
+            y: 24,
+            opacity: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            delay: 0.7,
+          });
+          gsap.from(".hero-foot > *", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            stagger: 0.1,
+            delay: 0.9,
+          });
+          gsap.from(".fact-lead .clabel", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: ".fact", start: "top 80%" },
+          });
+          gsap.from(".fact-lead h2", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".fact", start: "top 80%" },
+          });
+          gsap.from(".fact-lead p", {
+            y: 18,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.1,
+            scrollTrigger: { trigger: ".fact", start: "top 75%" },
+          });
+          gsap.fromTo(
+            ".fact-sheet",
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1.1,
+              ease: "power4.out",
+              scrollTrigger: { trigger: ".fact", start: "top 78%" },
+            },
+          );
+          gsap.fromTo(
+            ".fact-row",
+            { x: -12, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.5,
+              ease: "power3.out",
+              stagger: 0.05,
+              delay: 0.2,
+              scrollTrigger: { trigger: ".fact-sheet", start: "top 80%" },
+            },
+          );
+          gsap.fromTo(
+            ".film-img",
+            { scale: 1.18 },
+            {
+              scale: 1,
+              duration: 1.6,
+              ease: "expo.out",
+              scrollTrigger: { trigger: ".film", start: "top 90%" },
+            },
+          );
+          gsap.to(".film-img", {
+            yPercent: -8,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".film",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
+          gsap.from(".film-play", {
+            scale: 0.6,
+            opacity: 0,
+            duration: 0.9,
+            ease: "back.out(1.6)",
+            scrollTrigger: { trigger: ".film", start: "top 80%" },
+          });
+          gsap.from(".narr-eyebrow", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: ".narrative", start: "top 80%" },
+          });
+          gsap.from(".narr-h", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".narrative", start: "top 80%" },
+          });
+          gsap.from(".narr-body p", {
+            y: 20,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.12,
+            scrollTrigger: { trigger: ".narr-body", start: "top 85%" },
+          });
+          gsap.from(".gal-head h3", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".gallery", start: "top 80%" },
+          });
+          gsap.utils.toArray(".gtile").forEach((tile) => {
+            gsap.fromTo(
+              tile,
+              { y: 50, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power4.out",
+                scrollTrigger: { trigger: tile, start: "top 88%" },
+              },
+            );
+            const img = tile.querySelector(".gimg");
+            if (img) {
+              gsap.fromTo(
+                img,
+                { scale: 1.18 },
+                {
+                  scale: 1,
+                  duration: 1.6,
+                  ease: "expo.out",
+                  scrollTrigger: { trigger: tile, start: "top 90%" },
+                },
+              );
+              gsap.to(img, {
+                yPercent: -6,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: tile,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                },
+              });
+            }
+          });
+          gsap.from(".approach-head h3", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".approach", start: "top 80%" },
+          });
+          gsap.fromTo(
+            ".step",
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power4.out",
+              stagger: 0.1,
+              scrollTrigger: { trigger: ".steps", start: "top 85%" },
+            },
+          );
+          gsap.from(".metrics-head h3", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".metrics", start: "top 80%" },
+          });
+          gsap.fromTo(
+            ".mcell",
+            { y: 30, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power3.out",
+              stagger: 0.1,
+              scrollTrigger: { trigger: ".mgrid", start: "top 85%" },
+            },
+          );
+          gsap.utils.toArray(".mcell .mnum").forEach((num) => {
+            gsap.fromTo(
+              num,
+              { scale: 0.85, opacity: 0 },
+              {
+                scale: 1,
+                opacity: 1,
+                duration: 0.9,
+                ease: "back.out(1.6)",
+                scrollTrigger: { trigger: num, start: "top 88%" },
+              },
+            );
+          });
+          gsap.from(".pq-stage", {
+            y: 30,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".pullquote", start: "top 80%" },
+          });
+          gsap.from(".pq-form", {
+            y: 40,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power4.out",
+            delay: 0.15,
+            scrollTrigger: { trigger: ".pullquote", start: "top 80%" },
+          });
+          gsap.from(".related-head h3", {
+            y: 30,
+            opacity: 0,
+            duration: 0.9,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".related", start: "top 85%" },
+          });
+          gsap.fromTo(
+            ".rcard",
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: "power4.out",
+              stagger: 0.12,
+              scrollTrigger: { trigger: ".rgrid", start: "top 85%" },
+            },
+          );
+          window.addEventListener("load", () => ScrollTrigger.refresh());
+          if (document.fonts && document.fonts.ready)
+            document.fonts.ready.then(() => ScrollTrigger.refresh());
+        }
+
+        document.querySelectorAll(".film .film-play").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const sec = btn.closest(".film");
+            if (!sec) return;
+            sec.classList.add("playing");
+            const video = sec.querySelector(".film-video");
+            if (video) video.play().catch(() => {});
+          });
+        });
+      })();
+    </script>
+  </body>
 </html>

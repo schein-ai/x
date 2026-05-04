@@ -1,6 +1,6 @@
 # xR&D Technologies — Sitemap
 
-サイト全 51 ページの一覧と各ページのコンテンツ概要。`*-jp.html` は日本語版、`*-vn.html` はベトナム語版、それ以外は英語版。
+サイト全 54 ページの一覧と各ページのコンテンツ概要。`*-jp.html` は日本語版、`*-vn.html` はベトナム語版、それ以外は英語版。
 
 ## トップ / ランディング
 
@@ -28,7 +28,7 @@
 | [solution-ai-talent.html](solution-ai-talent.html) | EN | AI-Native Talent ／ AI ネイティブ人材紹介・派遣事業。 |
 | [solution-ai-visual.html](solution-ai-visual.html) | EN | AI Visual Production ／ AI ビジュアル制作事業。 |
 
-## Projects（事例 13 件）
+## Projects（事例 16 件）
 
 すべて英語ページ。一覧ハブは日英 2 言語。
 
@@ -37,18 +37,21 @@
 | [projects.html](projects.html) | Projects | 事例一覧（EN） |
 | [projects-jp.html](projects-jp.html) | Projects | 事例一覧（JP） |
 | [project-001.html](project-001.html) | AI agent × visual content, together | 1 クライアントで内部自動化と外向きクリエイティブを並走させた事例。 |
-| [project-002.html](project-002.html) | Brand campaign visuals, at scale | ブランドキャンペーン用ビジュアル大量生成。 |
+| [project-002.html](project-002.html) | Ryokan rebranding, end-to-end | 旅館リブランディング事例。コンセプト再設計からビジュアル・Web まで一貫制作。 |
 | [project-003.html](project-003.html) | AI knowledge chatbot | ナレッジ検索チャットボット導入事例。 |
-| [project-004.html](project-004.html) | AI product PR videos | プロダクト PR 動画の AI 制作。 |
+| [project-004.html](project-004.html) | Bridal commercial production | ブライダルコマーシャル映像の AI 制作事例。 |
 | [project-005.html](project-005.html) | DX report · AI strategy assessment | DX レポートと AI 戦略アセスメント。 |
 | [project-006.html](project-006.html) | AI-native talent lab | AI ネイティブ人材ラボの構築。 |
 | [project-007.html](project-007.html) | AI image generation app | 画像生成アプリ開発事例。 |
 | [project-008.html](project-008.html) | Consulting + talent, end-to-end | コンサル＋人材紹介の一気通貫支援。 |
 | [project-009.html](project-009.html) | AI governance & guidelines | AI ガバナンス・ガイドライン策定。 |
 | [project-010.html](project-010.html) | Architectural renders, for sales | 営業用建築レンダリング制作。 |
-| [project-011.html](project-011.html) | Internal AI training program | クライアント社内向け AI 研修プログラム。 |
+| [project-011.html](project-011.html) | Japanese learning platform | 日本語ラーニングプラットフォーム開発事例。AI チューター・教材自動生成。 |
 | [project-012.html](project-012.html) | AI sales agent | 営業 AI エージェント開発事例。 |
-| [project-013.html](project-013.html) | AI Web CAD system | Web CAD システム開発事例。 |
+| [project-013.html](project-013.html) | 3D spatial product placement AI simulator | ３D 空間商品配置 AI シミュレーションシステム。Web ベースの空間設計・配置最適化。 |
+| [project-014.html](project-014.html) | AI agent × engineer dev collaboration platform | AI エージェントとエンジニアが協働して開発を進めるプラットフォーム構築事例。 |
+| [project-015.html](project-015.html) | SNS posting automation | SNS 投稿自動化事例。生成 AI による投稿企画・画像・配信スケジューリング。 |
+| [project-016.html](project-016.html) | Glamping facility launch event | グランピング施設設立イベント事例。コンセプト・ビジュアル・当日運営まで一貫支援。 |
 
 ## Insights（記事 8 本）
 
@@ -110,7 +113,7 @@
 
 ## ページ数サマリ
 
-- 英語ページ：33（トップ・About・Solutions ハブ＋4、Projects ハブ＋13、Insights ハブ＋8、Research ハブ＋1、Careers、Contact、Privacy/Terms/Cookies）
+- 英語ページ：36（トップ・About・Solutions ハブ＋4、Projects ハブ＋16、Insights ハブ＋8、Research ハブ＋1、Careers、Contact、Privacy/Terms/Cookies）
 - 日本語ページ：14（トップ・About・Solutions・Projects・Insights・Research の各ハブ、Careers、Contact、Privacy/Terms/Cookies）
 - ベトナム語ページ：1（トップのみ）
-- HTML 合計：51（うち全ページが `<meta name="robots" content="noindex, nofollow">` 付き）
+- HTML 合計：54（うち全ページが `<meta name="robots" content="noindex, nofollow">` 付き）
