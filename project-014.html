@@ -1,574 +1,2209 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="robots" content="noindex, nofollow" />
-<title>AI agent × engineer dev collab platform · BuildFlow AI — xR&amp;D Technologies</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#0B1B3F; --ink-soft:#3a4a72; --muted:#6b7591;
-    --line:#e4e8f0; --line-2:#eef1f7; --bg:#fafaf7; --bg-warm:#f4f2ec;
-    --accent:#2563eb; --accent-soft:#9bb5ff;
-  }
-  *{box-sizing:border-box}
-  html{overflow-x:clip}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
-  a{color:inherit;text-decoration:none}
-  .wrap{width:100%;margin:0;padding:0 56px}
-  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;font-size:11px}
-  .nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 0;transition:.3s;color:#fff}
-  .nav.scrolled{background:rgba(11,27,63,.88);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
-  .logo{display:flex;align-items:baseline;gap:6px}
-  .nav-links{display:flex;align-items:center;gap:38px}
-  .nav-links a{font-size:15px;opacity:.85;font-weight:500;transition:opacity .15s}
-  .nav-links a:hover{opacity:1}
-  .nav-links a.active{opacity:1;color:#9bb5ff}
-  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:14.5px;font-weight:500;cursor:pointer;border:1px solid currentColor;transition:.2s}
-  .btn-fill{background:#fff;color:var(--ink);border-color:#fff}
-  .scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent-soft);z-index:300;transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
-
-  .hero{position:relative;height:80vh;min-height:620px;overflow:hidden;background:#0b1b3f;color:#fff;display:flex;flex-direction:column}
-  .hero-img{position:absolute;inset:0;background:url('assets/projects/project-014-hero.png') center/cover no-repeat;transform:scale(1.15);will-change:transform;opacity:.55}
-  .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.6) 0%,rgba(11,27,63,.45) 35%,rgba(11,27,63,.92) 100%)}
-  .breadcrumb{position:relative;z-index:2;padding:140px 56px 0;display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.7)}
-  .breadcrumb a{color:#9bb5ff;border-bottom:1px solid rgba(155,181,255,.25);padding-bottom:1px}
-  .breadcrumb a:hover{border-color:#9bb5ff}
-  .breadcrumb .sep{opacity:.4}
-  .hero-content{position:relative;z-index:2;margin-top:auto;padding:0 56px 90px;display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:end}
-  .hero-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9bb5ff;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:14px}
-  .hero-num::before{content:"";width:36px;height:1px;background:#9bb5ff}
-  .hero-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(64px,8vw,128px);line-height:.94;letter-spacing:-.025em;margin:0;max-width:14ch}
-  .hero-h em{font-style:italic;color:#9bb5ff}
-  .hero-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.7);text-transform:uppercase;line-height:1.95;border-left:1px solid rgba(155,181,255,.3);padding-left:28px}
-  .hero-meta b{color:#fff;font-weight:500}
-  .hero-foot{position:absolute;bottom:36px;left:56px;right:56px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.65);text-transform:uppercase}
-  .hero-foot .scroll{display:inline-flex;align-items:center;gap:8px}
-
-  .fact{padding:140px 0 120px;background:var(--bg);border-top:1px solid var(--line)}
-  .fact-grid{padding:0 56px;display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:start}
-  .fact-lead .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:24px}
-  .fact-lead .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
-  .fact-lead h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0 0 32px;max-width:18ch}
-  .fact-lead h2 em{font-style:italic;color:var(--accent)}
-  .fact-lead p{font-size:17px;line-height:1.65;color:var(--ink-soft);margin:0 0 18px;max-width:54ch}
-  .fact-lead p b{color:var(--ink);font-weight:500}
-  .fact-sheet{background:#fff;border:1px solid var(--line);border-radius:12px;padding:36px;display:grid;grid-template-columns:1fr;gap:0;box-shadow:0 1px 2px rgba(11,27,63,.04),0 14px 40px -12px rgba(11,27,63,.1)}
-  .fact-row{display:grid;grid-template-columns:130px 1fr;gap:20px;padding:18px 0;border-bottom:1px dashed var(--line);align-items:baseline}
-  .fact-row:last-child{border-bottom:none;padding-bottom:0}
-  .fact-row:first-child{padding-top:0}
-  .fact-row .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500}
-  .fact-row .v{font-size:15.5px;color:var(--ink);font-weight:500;line-height:1.45}
-  .fact-row .v small{display:block;color:var(--muted);font-weight:400;font-size:13px;margin-top:3px}
-
-  .film{position:relative;width:100%;height:78vh;min-height:560px;overflow:hidden;background:#0b1b3f;cursor:pointer;border:none;padding:0;display:block}
-  .film-img{position:absolute;inset:0;background:url('assets/projects/project-014-devices.png') center/cover no-repeat;transition:transform 1.4s cubic-bezier(.2,.7,.2,1),opacity .4s}
-  .film:hover .film-img{transform:scale(1.03)}
-  .film::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,63,.15) 0%,rgba(11,27,63,.5) 100%);pointer-events:none;z-index:1;transition:opacity .4s}
-  .film-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;background:#000;z-index:0;transition:opacity .4s}
-  .film-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px -10px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s,opacity .3s;z-index:3;border:none;cursor:pointer}
-  .film:hover .film-play{transform:translate(-50%,-50%) scale(1.08);background:#fff}
-  .film-play svg{width:36px;height:36px;margin-left:6px;fill:var(--ink)}
-  .film-cap{position:absolute;left:56px;bottom:36px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.85);text-transform:uppercase;transition:opacity .3s}
-  .film-cap b{color:#fff;font-weight:500}
-  .film-tag{position:absolute;right:56px;top:36px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);text-transform:uppercase;transition:opacity .3s}
-  .film.playing{cursor:default}
-  .film.playing .film-video{opacity:1;pointer-events:auto;z-index:5}
-  .film.playing .film-img,.film.playing .film-play,.film.playing .film-tag,.film.playing .film-cap{opacity:0;pointer-events:none}
-  .film.playing::after{opacity:0}
-
-  .narrative{padding:130px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
-  .narr-inner{padding:0 56px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
-  .narr-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:14px}
-  .narr-eyebrow::before{content:"";width:30px;height:1px;background:var(--accent)}
-  .narr-h{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,56px);line-height:1.08;letter-spacing:-.02em;margin:0;max-width:14ch}
-  .narr-h em{font-style:italic;color:var(--accent)}
-  .narr-body p{font-size:16px;line-height:1.7;color:var(--ink-soft);margin:0 0 20px;max-width:55ch}
-  .narr-body p:last-child{margin-bottom:0}
-  .narr-body p b{color:var(--ink);font-weight:500}
-
-  .gallery{padding:130px 0;background:var(--bg);border-top:1px solid var(--line)}
-  .gal-head{padding:0 56px 56px;display:flex;align-items:end;justify-content:space-between;gap:60px}
-  .gal-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:18ch}
-  .gal-head h3 em{font-style:italic;color:var(--accent)}
-  .gal-head .gnote{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;line-height:1.8;text-align:right}
-  .gal-head .gnote b{color:var(--ink);font-weight:500}
-  .gal-grid{padding:0 56px;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:120px;gap:20px}
-  .gtile{position:relative;overflow:hidden;border-radius:10px;background:#0b1b3f}
-  .gtile .gimg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
-  .gtile:hover .gimg{transform:scale(1.05)}
-  .gtile .gcap{position:absolute;left:18px;bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:#fff;text-transform:uppercase;background:rgba(11,27,63,.8);padding:6px 10px;border-radius:6px;backdrop-filter:blur(6px)}
-  .gt-a{grid-column:span 4;grid-row:span 4}
-  .gt-b{grid-column:span 2;grid-row:span 2}
-  .gt-c{grid-column:span 2;grid-row:span 2}
-  .gt-d{grid-column:span 3;grid-row:span 3}
-  .gt-e{grid-column:span 3;grid-row:span 3}
-
-  .approach{padding:140px 0;background:#0b1b3f;color:#fff;border-top:1px solid var(--line);position:relative;overflow:hidden}
-  .approach::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 80% 20%, rgba(99,140,255,.16), rgba(99,140,255,0) 60%);pointer-events:none}
-  .approach-inner{position:relative;z-index:1;padding:0 56px}
-  .approach-head{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:end;margin-bottom:80px}
-  .approach-head .clabel{color:#9bb5ff;display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;margin-bottom:20px}
-  .approach-head .clabel::before{content:"";width:30px;height:1px;background:#9bb5ff}
-  .approach-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch;color:#fff}
-  .approach-head h3 em{font-style:italic;color:#9bb5ff}
-  .approach-head p{font-size:16px;line-height:1.65;color:#b8c3df;margin:0;max-width:52ch}
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid rgba(155,181,255,.18);border-bottom:1px solid rgba(155,181,255,.18)}
-  .step{padding:42px 30px;border-left:1px solid rgba(155,181,255,.18);position:relative}
-  .step:first-child{border-left:none;padding-left:0}
-  .step .sn{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#9bb5ff;text-transform:uppercase;font-weight:600;margin-bottom:18px}
-  .step h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.2;margin:0 0 14px;color:#fff;letter-spacing:-.012em}
-  .step h4 em{font-style:italic;color:#9bb5ff}
-  .step p{font-size:14.5px;line-height:1.65;color:#b8c3df;margin:0}
-
-  .metrics{padding:130px 0;background:var(--bg-warm);border-top:1px solid var(--line)}
-  .metrics-head{padding:0 56px;max-width:760px;margin-bottom:50px}
-  .metrics-head .clabel{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:22px}
-  .metrics-head .clabel::before{content:"";width:30px;height:1px;background:var(--accent)}
-  .metrics-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:16ch}
-  .metrics-head h3 em{font-style:italic;color:var(--accent)}
-  .mgrid{padding:0 56px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .mcell{padding:42px 30px 38px;border-left:1px solid var(--line);position:relative}
-  .mcell:first-child{border-left:none;padding-left:0}
-  .mcell .mlabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:18px}
-  .mcell .mnum{font-family:'Instrument Serif',serif;font-style:italic;font-size:64px;line-height:1;color:var(--accent);font-weight:400;letter-spacing:-.025em;margin-bottom:10px}
-  .mcell .mnote{font-size:13.5px;line-height:1.55;color:var(--ink-soft);margin:0}
-  .mcell .mnote b{color:var(--ink);font-weight:500}
-
-  .pullquote{padding:130px 0;background:var(--bg);border-top:1px solid var(--line)}
-  .pullquote-inner{padding:0 56px;display:grid;grid-template-columns:1.7fr 1fr;gap:80px;align-items:center}
-  .pq-stage{position:relative;min-height:380px}
-  .pq-slide{position:absolute;inset:0;opacity:0;transform:translateY(14px);transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1);pointer-events:none}
-  .pq-slide.active{opacity:1;transform:translateY(0);pointer-events:auto}
-  .pq-slide q{display:block;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:clamp(30px,3.4vw,50px);line-height:1.2;color:var(--ink);quotes:"\201C""\201D";letter-spacing:-.012em;margin:0 0 32px;max-width:28ch}
-  .pq-slide q::before{content:open-quote;color:var(--accent);margin-right:6px}
-  .pq-slide q::after{content:close-quote;color:var(--accent);margin-left:4px}
-  .pq-slide .qsig{display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500}
-  .pq-slide .qsig b{color:var(--ink);font-weight:600}
-  .pq-slide .qsig::before{content:"";width:36px;height:1px;background:var(--accent)}
-  .pq-dots{position:absolute;left:0;bottom:-8px;display:flex;gap:8px}
-  .pq-dot{width:24px;height:2px;background:var(--line);border:none;padding:0;cursor:pointer;transition:background .25s}
-  .pq-dot.active{background:var(--accent)}
-  .pq-form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 1px 2px rgba(11,27,63,.04),0 14px 40px -12px rgba(11,27,63,.1)}
-  .pq-form .pflabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:14px}
-  .pq-form .pflabel::before{content:"";width:24px;height:1px;background:var(--accent)}
-  .pq-form h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;line-height:1.15;margin:0 0 12px;color:var(--ink);letter-spacing:-.012em}
-  .pq-form h4 em{font-style:italic;color:var(--accent)}
-  .pq-form > p{font-size:14.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 24px}
-  .pq-field{display:block;margin-bottom:14px}
-  .pq-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:6px}
-  .pq-field input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:8px 0;font-size:15.5px;font-family:'Inter',sans-serif;color:var(--ink);outline:none;transition:border-color .2s}
-  .pq-field input:focus{border-color:var(--accent)}
-  .pq-field input::placeholder{color:var(--muted)}
-  .pq-submit{margin-top:20px;display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;background:var(--ink);color:#fff;border:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:background .2s}
-  .pq-submit:hover{background:var(--accent)}
-  .pq-form .pffine{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;line-height:1.7}
-
-  .related{padding:130px 0 160px;background:var(--bg-warm);border-top:1px solid var(--line)}
-  .related-head{padding:0 56px;display:flex;align-items:end;justify-content:space-between;margin-bottom:50px;gap:40px}
-  .related-head h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,4vw,52px);line-height:1.05;letter-spacing:-.022em;margin:0;max-width:14ch}
-  .related-head h3 em{font-style:italic;color:var(--accent)}
-  .related-head a.go{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:600;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid var(--accent);padding-bottom:3px}
-  .rgrid{padding:0 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  .rcard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease, box-shadow .25s ease}
-  .rcard:hover{transform:translateY(-3px);box-shadow:0 22px 50px -30px rgba(11,27,63,.25)}
-  .rcard .rimg{height:240px;background-size:cover;background-position:center}
-  .rcard .rbody{padding:24px 24px 26px}
-  .rcard .rmeta{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;margin-bottom:10px;display:flex;justify-content:space-between}
-  .rcard .rmeta b{color:var(--accent);font-weight:600}
-  .rcard h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.18;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink)}
-  .rcard h4 em{font-style:italic;color:var(--accent)}
-  .rcard p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0}
-
-  footer{background:#06122e;color:#9aa9c8;padding:50px 0;text-align:center;font-size:13px}
-  footer a{color:#cdd5e8;margin:0 14px}
-
-  @media (max-width:980px){
-    .wrap,.breadcrumb,.hero-content,.hero-foot,.fact-grid,.narr-inner,.gal-head,.gal-grid,.approach-inner,.metrics-head,.mgrid,.pullquote-inner,.related-head,.rgrid{padding-left:24px;padding-right:24px}
-    .hero-foot{left:24px;right:24px}
-    .film{height:60vh;min-height:380px}
-    .film-cap{left:24px;bottom:24px}
-    .film-tag{right:24px;top:24px}
-    .film-play{width:90px;height:90px}
-    .film-play svg{width:28px;height:28px}
-    .fact-grid,.narr-inner,.approach-head,.gal-head,.pullquote-inner{grid-template-columns:1fr;gap:40px}
-    .pq-stage{min-height:0}
-    .pq-slide{position:relative}
-    .pq-slide:not(.active){display:none}
-    .pq-dots{position:relative;bottom:auto;margin-top:24px}
-    .pq-form{padding:28px}
-    .hero-content{grid-template-columns:1fr;align-items:stretch;gap:30px;padding-bottom:60px}
-    .breadcrumb{padding:108px 24px 0;flex-wrap:wrap}
-    .hero-meta{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:20px}
-    .hero-h{font-size:clamp(56px,9vw,88px)}
-    .gal-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}
-    .gt-a,.gt-b,.gt-c,.gt-d,.gt-e{grid-column:span 2;grid-row:span 2}
-    .steps,.mgrid{grid-template-columns:1fr 1fr}
-    .step:nth-child(3),.mcell:nth-child(3){border-left:none;padding-left:0}
-    .step:nth-child(n+3),.mcell:nth-child(n+3){border-top:1px solid rgba(155,181,255,.18)}
-    .mcell:nth-child(n+3){border-top:1px solid var(--line)}
-    .rgrid{grid-template-columns:1fr}
-    .related-head{flex-direction:column;align-items:flex-start;gap:20px}
-    .nav-links{display:none}
-  }
-  @media (max-width:560px){
-    .gal-grid{grid-template-columns:1fr;grid-auto-rows:200px}
-    .gt-a,.gt-b,.gt-c,.gt-d,.gt-e{grid-column:span 1;grid-row:span 1}
-    .steps,.mgrid{grid-template-columns:1fr}
-    .step,.mcell{border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18)}
-    .mcell{border-top:1px solid var(--line)}
-    .step:first-child,.mcell:first-child{border-top:none}
-    .fact-sheet{padding:24px}
-    .pq-form{padding:22px}
-    .film-play{width:72px;height:72px}
-    .film-play svg{width:22px;height:22px}
-    .hero{height:100vh;min-height:0}
-    .breadcrumb{position:absolute;top:64px;left:0;right:0;z-index:5;padding:0 18px;font-size:10px;letter-spacing:.14em;gap:8px;flex-wrap:wrap}
-    .hero-content{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;flex:1;padding:0 18px 56px;gap:22px;margin-top:0}
-    .hero-h{font-size:clamp(48px,11vw,76px);line-height:.98;max-width:100%}
-    .hero-num{font-size:9.5px;letter-spacing:.18em;margin-bottom:14px}
-    .hero-meta{font-size:9.5px;line-height:1.75;letter-spacing:.12em;border-left:none;padding-left:0;border-top:1px solid rgba(155,181,255,.18);padding-top:14px}
-    .hero-foot{font-size:9.5px;letter-spacing:.14em;left:18px;right:18px;flex-direction:column;align-items:flex-start;gap:14px;bottom:24px}
-  }
-</style>
-</head>
-<body>
-
-<div class="scroll-bar" id="scrollBar"></div>
-
-<!-- ============== NAV (shared via js/header.js) ============== -->
-
-<!-- ============== HERO ============== -->
-<section class="hero">
-  <div class="hero-img" id="heroImg"></div>
-  <nav class="breadcrumb mono">
-    <a href="projects.html">Projects</a>
-    <span class="sep">/</span>
-    <span>① App development + ④ Talent</span>
-    <span class="sep">/</span>
-    <span>P—014</span>
-  </nav>
-  <div class="hero-content">
-    <div>
-      <div class="hero-num">P—014 · Running 2026→</div>
-      <h1 class="hero-h">AI agents and human <em>engineers</em>, on the same codebase.</h1>
-    </div>
-    <div class="hero-meta">
-      <b>Dev tooling — JP / VN</b><br>
-      Orchestration · review · onboarding<br>
-      Claude Code-native, multi-agent<br>
-      ① App + ④ Talent / 2026
-    </div>
-  </div>
-  <div class="hero-foot">
-    <div>XRD/PROJ.014 · ① APP + ④ TALENT · DA NANG → JP / VN</div>
-    <div class="scroll">SCROLL <span>↓</span></div>
-  </div>
-</section>
-
-<!-- ============== FACT SHEET ============== -->
-<section class="fact">
-  <div class="fact-grid">
-    <div class="fact-lead">
-      <div class="clabel">Engagement No. 014</div>
-      <h2>One platform where the <em>agents</em> and the engineers actually work together.</h2>
-      <p>Most "AI in dev" today is one engineer with one agent in one editor. That's a productivity tool, not a platform. The interesting question is what happens when a team — humans and agents — operates on the same codebase, with shared context, shared review, and a single source of truth about what's been done and what's next.</p>
-      <p>We built <b>BuildFlow AI</b> to answer it: a development collaboration platform where AI agents pick up tickets, propose code, request reviews, and hand off to engineers — and where engineers can grade agent output, codify standards, and grow new contributors against a real working environment.</p>
-      <p>It's the spine our internal teams use, and the platform we hand to clients standing up their own AI-engineer practice. The Claude Code adoption series sits on top — workshop to onboard, review patterns to operate, individual coaching to internalise.</p>
-    </div>
-    <aside class="fact-sheet">
-      <div class="fact-row"><div class="k">Industry</div><div class="v">Dev tooling<small>JP / VN</small></div></div>
-      <div class="fact-row"><div class="k">Business area</div><div class="v">① App development + ④ Talent<small>Platform + adoption services</small></div></div>
-      <div class="fact-row"><div class="k">Status</div><div class="v">Running · 2026→</div></div>
-      <div class="fact-row"><div class="k">Surface</div><div class="v">Web app + CLI<small>GitHub / Slack / Notion bound</small></div></div>
-      <div class="fact-row"><div class="k">Capability</div><div class="v">Multi-agent · review-aware<small>Engineer-grade workflow</small></div></div>
-      <div class="fact-row"><div class="k">Client</div><div class="v">xR&amp;D + partners<small>Internal use + client deployments</small></div></div>
-      <div class="fact-row"><div class="k">Lead</div><div class="v">xR&amp;D Platform<small>Track 01 + 04</small></div></div>
-      <div class="fact-row"><div class="k">Approach</div><div class="v">Claude Code-native · workflow-orchestrated · grading-aware</div></div>
-    </aside>
-  </div>
-</section>
-
-<!-- ============== FILM ============== -->
-<section class="film" aria-label="Watch the project film">
-  <div class="film-img"></div>
-  <video class="film-video" src="assets/pv.mp4" controls playsinline preload="metadata"></video>
-  <div class="film-tag">Platform film · 2026</div>
-  <button class="film-play" type="button" aria-label="Play platform film">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-  </button>
-  <div class="film-cap"><b>P—014 · BuildFlow AI · Agent-engineer dev collaboration</b> &nbsp;·&nbsp; 2 min 40 sec</div>
-</section>
-
-<!-- ============== NARRATIVE ============== -->
-<section class="narrative">
-  <div class="narr-inner">
-    <div>
-      <div class="narr-eyebrow">The premise</div>
-      <h3 class="narr-h">Solo agents are a tool. <em>Team</em> agents need a platform.</h3>
-    </div>
-    <div class="narr-body">
-      <p>One engineer + one agent in one editor is the current state of the art. It works for that one engineer. It does not solve the team's problem: who picked this up, who reviewed it, who's responsible if it breaks, what standards apply, and how does a junior contributor get up the curve?</p>
-      <p>BuildFlow makes the agent a participant, not a co-pilot. <b>Tickets get picked up by agents or engineers. Reviews are graded. Standards are codified.</b> The platform learns the team's house style and enforces it for both human and machine contributors.</p>
-      <p>The Claude Code adoption services sit on top of the platform — the introduction workshop, the review patterns, the individual coaching, the long-running maturity track. Pilots become practices.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============== GALLERY ============== -->
-<section class="gallery">
-  <div class="gal-head">
-    <h3>The <em>platform</em>.</h3>
-    <div class="gnote">Platform UI + adoption series<br><b>BuildFlow AI</b><br>Claude Code-native · multi-agent</div>
-  </div>
-  <div class="gal-grid">
-    <div class="gtile gt-a"><div class="gimg" style="background-image:url('assets/projects/project-014-dashboard.png')"></div><span class="gcap">Orchestration dashboard</span></div>
-    <div class="gtile gt-b"><div class="gimg" style="background-image:url('assets/projects/project-014-hero.png')"></div><span class="gcap">Marketing · platform shape</span></div>
-    <div class="gtile gt-c"><div class="gimg" style="background-image:url('assets/projects/project-014-claude-flow.png')"></div><span class="gcap">Adoption · dev flow</span></div>
-    <div class="gtile gt-d"><div class="gimg" style="background-image:url('assets/projects/project-014-claude-workshop.png')"></div><span class="gcap">Workshop track</span></div>
-    <div class="gtile gt-e"><div class="gimg" style="background-image:url('assets/projects/project-014-claude-review.png')"></div><span class="gcap">Review-pattern coaching</span></div>
-  </div>
-</section>
-
-<!-- ============== APPROACH ============== -->
-<section class="approach">
-  <div class="approach-inner">
-    <div class="approach-head">
-      <div>
-        <div class="clabel">The approach</div>
-        <h3>Four <em>moves</em>, one platform plus the adoption that lands it.</h3>
-      </div>
-      <p>Platform alone doesn't change a team. Adoption alone doesn't scale. We ship both, in sequence, with one feedback loop between them.</p>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="sn">Move 01</div>
-        <h4>Bind the <em>workflow</em></h4>
-        <p>GitHub, Slack, Notion, ticket tracker. Agents and engineers see the same context, work the same queue.</p>
-      </div>
-      <div class="step">
-        <div class="sn">Move 02</div>
-        <h4>Codify the <em>standards</em></h4>
-        <p>House style, review checklist, blocking rules. Encoded once, applied to humans and agents identically.</p>
-      </div>
-      <div class="step">
-        <div class="sn">Move 03</div>
-        <h4>Grade &amp; <em>route</em></h4>
-        <p>Every PR — agent or human — gets graded against the codified standards. Routing decisions follow.</p>
-      </div>
-      <div class="step">
-        <div class="sn">Move 04</div>
-        <h4>Coach &amp; <em>internalise</em></h4>
-        <p>Workshop to onboard, review pattern to operate, individual coaching to internalise. Pilots become practice.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============== METRICS ============== -->
-<section class="metrics">
-  <div class="metrics-head">
-    <div class="clabel">Outcomes</div>
-    <h3>What the <em>platform</em> changed.</h3>
-  </div>
-  <div class="mgrid">
-    <div class="mcell">
-      <div class="mlabel">Throughput</div>
-      <div class="mnum">+35%</div>
-      <p class="mnote"><b>Average team velocity</b> across early-adopter teams, holding code-quality bar.</p>
-    </div>
-    <div class="mcell">
-      <div class="mlabel">Review</div>
-      <div class="mnum">100%</div>
-      <p class="mnote"><b>PRs graded</b>, agent or human. House standards apply identically.</p>
-    </div>
-    <div class="mcell">
-      <div class="mlabel">Onboarding</div>
-      <div class="mnum">~50%</div>
-      <p class="mnote"><b>Faster time-to-first-merge</b> for new contributors. Coaching against a real working env, not a sandbox.</p>
-    </div>
-    <div class="mcell">
-      <div class="mlabel">Deployments</div>
-      <div class="mnum">2026</div>
-      <p class="mnote">Internal default + initial client deployments. <b>Adoption series</b> ships alongside.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============== QUOTE + FORM ============== -->
-<section class="pullquote">
-  <div class="pullquote-inner">
-    <div class="pq-stage" id="pqStage">
-      <div class="pq-slide active">
-        <q>The agent isn't a co-pilot anymore. It's a contributor with a name on the PR and a grade on the review.</q>
-        <div class="qsig"><b>xR&amp;D Platform</b> · Track 01 lead</div>
-      </div>
-      <div class="pq-slide">
-        <q>Standards codified once means humans and agents are held to the same bar. That's where the throughput comes from — not from looser quality.</q>
-        <div class="qsig"><b>Tomoki</b> · Founder · Engagement lead</div>
-      </div>
-      <div class="pq-slide">
-        <q>Adoption is half the product. Workshop, review pattern, coaching — all in the same loop as the platform.</q>
-        <div class="qsig"><b>xR&amp;D Talent</b> · Track 04 lead</div>
-      </div>
-      <div class="pq-dots" id="pqDots">
-        <button class="pq-dot active" type="button" aria-label="Quote 1"></button>
-        <button class="pq-dot" type="button" aria-label="Quote 2"></button>
-        <button class="pq-dot" type="button" aria-label="Quote 3"></button>
-      </div>
-    </div>
-    <aside class="pq-form">
-      <div class="pflabel">Engagement enquiry</div>
-      <h4>Standing up an <em>AI-engineer</em> practice?</h4>
-      <p>Send a one-line note about the team and the bottleneck. A partner will reply within two working days.</p>
-      <form onsubmit="event.preventDefault();this.querySelector('.pq-submit').innerHTML='Sent &nbsp;✓&nbsp; — we will be in touch'">
-        <div class="pq-field"><label>Name</label><input type="text" placeholder="e.g. Yamada Taro" required></div>
-        <div class="pq-field"><label>Email</label><input type="email" placeholder="you@company.com" required></div>
-        <div class="pq-field"><label>Team · stage</label><input type="text" placeholder="One line — engineer count and agent maturity"></div>
-        <button type="submit" class="pq-submit">Send enquiry
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
-        <div class="pffine">No tracking · No marketing · Replies from a partner</div>
-      </form>
-    </aside>
-  </div>
-</section>
-
-<!-- ============== RELATED ============== -->
-<section class="related">
-  <div class="related-head">
-    <h3>Related <em>projects</em>.</h3>
-    <a class="go" href="projects.html">All projects →</a>
-  </div>
-  <div class="rgrid">
-    <a class="rcard" href="project-006.html">
-      <div class="rimg" style="background-image:url('assets/projects/project-006-academy-hero.png')"></div>
-      <div class="rbody">
-        <div class="rmeta"><span>P—006 · ④ Talent</span><b>Running · 2026→</b></div>
-        <h4>AI-native <em>talent lab</em></h4>
-        <p>Generative AI practical academy with VNUHCM. The training pipeline that feeds the platform.</p>
-      </div>
-    </a>
-    <a class="rcard" href="project-011.html">
-      <div class="rimg" style="background-image:url('assets/projects/project-011-dashboard.png')"></div>
-      <div class="rbody">
-        <div class="rmeta"><span>P—011 · ① App</span><b>Shipped · 2026</b></div>
-        <h4>Japanese learning <em>platform</em></h4>
-        <p>KotobaAI: AI tutor + adaptive curriculum + teacher dashboard, on web + mobile.</p>
-      </div>
-    </a>
-    <a class="rcard" href="project-013.html">
-      <div class="rimg" style="background-image:url('assets/img1.png')"></div>
-      <div class="rbody">
-        <div class="rmeta"><span>P—013 · ① App</span><b>Built · 2026</b></div>
-        <h4>3D spatial <em>placement</em></h4>
-        <p>Browser 3D + AI placement for interior products. Catalog-aware, render-quality, AR-ready.</p>
-      </div>
-    </a>
-  </div>
-</section>
-
-<!-- ============== FOOTER (shared via js/footer.js) ============== -->
-<script src="js/header.js"></script>
-<script src="js/footer.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script>
-(function(){
-  const nav = document.getElementById('nav');
-  const bar = document.getElementById('scrollBar');
-  const heroImg = document.getElementById('heroImg');
-  function onScroll(){
-    const y = window.scrollY;
-    if (nav) nav.classList.toggle('scrolled', y > 80);
-    if (bar){
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      bar.style.transform = `scaleX(${Math.min(1, y/docH)})`;
-    }
-    if (heroImg && y < window.innerHeight){
-      heroImg.style.transform = `scale(1.15) translateY(${y*0.35}px)`;
-    }
-  }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-
-  const slides = document.querySelectorAll('#pqStage .pq-slide');
-  const dots = document.querySelectorAll('#pqDots .pq-dot');
-  let pqIndex = 0;
-  let pqTimer = null;
-  function showSlide(i){
-    slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
-    dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
-    pqIndex = i;
-  }
-  function startPq(){ stopPq(); pqTimer = setInterval(()=>showSlide((pqIndex+1)%slides.length), 6500); }
-  function stopPq(){ if (pqTimer){clearInterval(pqTimer); pqTimer=null;} }
-  if (slides.length > 1){
-    dots.forEach((d,idx)=>d.addEventListener('click',()=>{showSlide(idx); startPq();}));
-    startPq();
-  }
-
-  if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.fromTo('.nav-inner > *',{y:-20,opacity:0},{y:0,opacity:1,duration:.7,ease:'power3.out',stagger:.07,delay:.05});
-    gsap.from('.breadcrumb',{y:14,opacity:0,duration:.6,ease:'power3.out',delay:.2});
-    gsap.from('.hero-num',{y:18,opacity:0,duration:.7,ease:'power3.out',delay:.35});
-    gsap.from('.hero-h',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.45});
-    gsap.from('.hero-meta',{y:24,opacity:0,duration:.9,ease:'power3.out',delay:.7});
-    gsap.from('.hero-foot > *',{y:14,opacity:0,duration:.6,ease:'power3.out',stagger:.1,delay:.9});
-    gsap.from('.fact-lead .clabel',{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.fact',start:'top 80%'}});
-    gsap.from('.fact-lead h2',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.fact',start:'top 80%'}});
-    gsap.from('.fact-lead p',{y:18,opacity:0,duration:.7,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.fact',start:'top 75%'}});
-    gsap.fromTo('.fact-sheet',{y:50,opacity:0},{y:0,opacity:1,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.fact',start:'top 78%'}});
-    gsap.fromTo('.fact-row',{x:-12,opacity:0},{x:0,opacity:1,duration:.5,ease:'power3.out',stagger:.05,delay:.2,scrollTrigger:{trigger:'.fact-sheet',start:'top 80%'}});
-    gsap.fromTo('.film-img',{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:'.film',start:'top 90%'}});
-    gsap.to('.film-img',{yPercent:-8,ease:'none',scrollTrigger:{trigger:'.film',start:'top bottom',end:'bottom top',scrub:true}});
-    gsap.from('.film-play',{scale:.6,opacity:0,duration:.9,ease:'back.out(1.6)',scrollTrigger:{trigger:'.film',start:'top 80%'}});
-    gsap.from('.narr-eyebrow',{y:14,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.narrative',start:'top 80%'}});
-    gsap.from('.narr-h',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.narrative',start:'top 80%'}});
-    gsap.from('.narr-body p',{y:20,opacity:0,duration:.7,ease:'power3.out',stagger:.12,scrollTrigger:{trigger:'.narr-body',start:'top 85%'}});
-    gsap.from('.gal-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.gallery',start:'top 80%'}});
-    gsap.utils.toArray('.gtile').forEach(tile=>{
-      gsap.fromTo(tile,{y:50,opacity:0},{y:0,opacity:1,duration:1,ease:'power4.out',scrollTrigger:{trigger:tile,start:'top 88%'}});
-      const img = tile.querySelector('.gimg');
-      if (img){
-        gsap.fromTo(img,{scale:1.18},{scale:1,duration:1.6,ease:'expo.out',scrollTrigger:{trigger:tile,start:'top 90%'}});
-        gsap.to(img,{yPercent:-6,ease:'none',scrollTrigger:{trigger:tile,start:'top bottom',end:'bottom top',scrub:true}});
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>
+      AI agent × engineer dev collab platform · BuildFlow AI — xR&amp;D
+      Technologies
+    </title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0b1b3f;
+        --ink-soft: #3a4a72;
+        --muted: #6b7591;
+        --line: #e4e8f0;
+        --line-2: #eef1f7;
+        --bg: #fafaf7;
+        --bg-warm: #f4f2ec;
+        --accent: #2563eb;
+        --accent-soft: #9bb5ff;
       }
-    });
-    gsap.from('.approach-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.approach',start:'top 80%'}});
-    gsap.fromTo('.step',{y:40,opacity:0},{y:0,opacity:1,duration:.8,ease:'power4.out',stagger:.1,scrollTrigger:{trigger:'.steps',start:'top 85%'}});
-    gsap.from('.metrics-head h3',{y:36,opacity:0,duration:1,ease:'power4.out',scrollTrigger:{trigger:'.metrics',start:'top 80%'}});
-    gsap.fromTo('.mcell',{y:30,opacity:0},{y:0,opacity:1,duration:.8,ease:'power3.out',stagger:.1,scrollTrigger:{trigger:'.mgrid',start:'top 85%'}});
-    gsap.utils.toArray('.mcell .mnum').forEach(num=>{
-      gsap.fromTo(num,{scale:.85,opacity:0},{scale:1,opacity:1,duration:.9,ease:'back.out(1.6)',scrollTrigger:{trigger:num,start:'top 88%'}});
-    });
-    gsap.from('.pq-stage',{y:30,opacity:0,duration:1.1,ease:'power4.out',scrollTrigger:{trigger:'.pullquote',start:'top 80%'}});
-    gsap.from('.pq-form',{y:40,opacity:0,duration:1.1,ease:'power4.out',delay:.15,scrollTrigger:{trigger:'.pullquote',start:'top 80%'}});
-    gsap.from('.related-head h3',{y:30,opacity:0,duration:.9,ease:'power4.out',scrollTrigger:{trigger:'.related',start:'top 85%'}});
-    gsap.fromTo('.rcard',{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:'power4.out',stagger:.12,scrollTrigger:{trigger:'.rgrid',start:'top 85%'}});
-    window.addEventListener('load',()=>ScrollTrigger.refresh());
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
-  }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        overflow-x: clip;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: clip;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .wrap {
+        width: 100%;
+        margin: 0;
+        padding: 0 56px;
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 11px;
+      }
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        padding: 22px 0;
+        transition: 0.3s;
+        color: #fff;
+      }
+      .nav.scrolled {
+        background: rgba(11, 27, 63, 0.88);
+        backdrop-filter: blur(14px);
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+      }
+      .logo {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 38px;
+      }
+      .nav-links a {
+        font-size: 15px;
+        opacity: 0.85;
+        font-weight: 500;
+        transition: opacity 0.15s;
+      }
+      .nav-links a:hover {
+        opacity: 1;
+      }
+      .nav-links a.active {
+        opacity: 1;
+        color: #9bb5ff;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 22px;
+        border-radius: 999px;
+        font-size: 14.5px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid currentColor;
+        transition: 0.2s;
+      }
+      .btn-fill {
+        background: #fff;
+        color: var(--ink);
+        border-color: #fff;
+      }
+      .scroll-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: var(--accent-soft);
+        z-index: 300;
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 0.1s linear;
+      }
 
-  document.querySelectorAll('.film .film-play').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      e.preventDefault();
-      const sec = btn.closest('.film');
-      if (!sec) return;
-      sec.classList.add('playing');
-      const video = sec.querySelector('.film-video');
-      if (video) video.play().catch(()=>{});
-    });
-  });
-})();
-</script>
+      .hero {
+        position: relative;
+        height: 80vh;
+        min-height: 620px;
+        overflow: hidden;
+        background: #0b1b3f;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+      }
+      .hero-img {
+        position: absolute;
+        inset: 0;
+        background: url("assets/projects/project-014-hero.png") center/cover
+          no-repeat;
+        transform: scale(1.15);
+        will-change: transform;
+        opacity: 0.55;
+      }
+      .hero-img::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 27, 63, 0.6) 0%,
+          rgba(11, 27, 63, 0.45) 35%,
+          rgba(11, 27, 63, 0.92) 100%
+        );
+      }
+      .breadcrumb {
+        position: relative;
+        z-index: 2;
+        padding: 140px 56px 0;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .breadcrumb a {
+        color: #9bb5ff;
+        border-bottom: 1px solid rgba(155, 181, 255, 0.25);
+        padding-bottom: 1px;
+      }
+      .breadcrumb a:hover {
+        border-color: #9bb5ff;
+      }
+      .breadcrumb .sep {
+        opacity: 0.4;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        margin-top: auto;
+        padding: 0 56px 90px;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 60px;
+        align-items: end;
+      }
+      .hero-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: #9bb5ff;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .hero-num::before {
+        content: "";
+        width: 36px;
+        height: 1px;
+        background: #9bb5ff;
+      }
+      .hero-h {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(64px, 8vw, 128px);
+        line-height: 0.94;
+        letter-spacing: -0.025em;
+        margin: 0;
+        max-width: 14ch;
+      }
+      .hero-h em {
+        font-style: italic;
+        color: #9bb5ff;
+      }
+      .hero-meta {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        line-height: 1.95;
+        border-left: 1px solid rgba(155, 181, 255, 0.3);
+        padding-left: 28px;
+      }
+      .hero-meta b {
+        color: #fff;
+        font-weight: 500;
+      }
+      .hero-foot {
+        position: absolute;
+        bottom: 36px;
+        left: 56px;
+        right: 56px;
+        z-index: 3;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.65);
+        text-transform: uppercase;
+      }
+      .hero-foot .scroll {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-</body>
+      .fact {
+        padding: 140px 0 120px;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+      }
+      .fact-grid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .fact-lead .clabel {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+      .fact-lead .clabel::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .fact-lead h2 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(40px, 4.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0 0 32px;
+        max-width: 18ch;
+      }
+      .fact-lead h2 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .fact-lead p {
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--ink-soft);
+        margin: 0 0 18px;
+        max-width: 54ch;
+      }
+      .fact-lead p b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .fact-sheet {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 36px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        box-shadow:
+          0 1px 2px rgba(11, 27, 63, 0.04),
+          0 14px 40px -12px rgba(11, 27, 63, 0.1);
+      }
+      .fact-row {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 20px;
+        padding: 18px 0;
+        border-bottom: 1px dashed var(--line);
+        align-items: baseline;
+      }
+      .fact-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .fact-row:first-child {
+        padding-top: 0;
+      }
+      .fact-row .k {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .fact-row .v {
+        font-size: 15.5px;
+        color: var(--ink);
+        font-weight: 500;
+        line-height: 1.45;
+      }
+      .fact-row .v small {
+        display: block;
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 13px;
+        margin-top: 3px;
+      }
+
+      .film {
+        position: relative;
+        width: 100%;
+        height: 78vh;
+        min-height: 560px;
+        overflow: hidden;
+        background: #0b1b3f;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+        display: block;
+      }
+      .film-img {
+        position: absolute;
+        inset: 0;
+        background: url("assets/projects/project-014-devices.png") center/cover
+          no-repeat;
+        transition:
+          transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+          opacity 0.4s;
+      }
+      .film:hover .film-img {
+        transform: scale(1.03);
+      }
+      .film::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 27, 63, 0.15) 0%,
+          rgba(11, 27, 63, 0.5) 100%
+        );
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.4s;
+      }
+      .film-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        pointer-events: none;
+        background: #000;
+        z-index: 0;
+        transition: opacity 0.4s;
+      }
+      .film-play {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.35);
+        transition:
+          transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+          background 0.3s,
+          opacity 0.3s;
+        z-index: 3;
+        border: none;
+        cursor: pointer;
+      }
+      .film:hover .film-play {
+        transform: translate(-50%, -50%) scale(1.08);
+        background: #fff;
+      }
+      .film-play svg {
+        width: 36px;
+        height: 36px;
+        margin-left: 6px;
+        fill: var(--ink);
+      }
+      .film-cap {
+        position: absolute;
+        left: 56px;
+        bottom: 36px;
+        z-index: 2;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.85);
+        text-transform: uppercase;
+        transition: opacity 0.3s;
+      }
+      .film-cap b {
+        color: #fff;
+        font-weight: 500;
+      }
+      .film-tag {
+        position: absolute;
+        right: 56px;
+        top: 36px;
+        z-index: 2;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        transition: opacity 0.3s;
+      }
+      .film.playing {
+        cursor: default;
+      }
+      .film.playing .film-video {
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 5;
+      }
+      .film.playing .film-img,
+      .film.playing .film-play,
+      .film.playing .film-tag,
+      .film.playing .film-cap {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .film.playing::after {
+        opacity: 0;
+      }
+
+      .narrative {
+        padding: 130px 0;
+        background: var(--bg-warm);
+        border-top: 1px solid var(--line);
+      }
+      .narr-inner {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .narr-eyebrow {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.22em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .narr-eyebrow::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .narr-h {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(36px, 4vw, 56px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 0;
+        max-width: 14ch;
+      }
+      .narr-h em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .narr-body p {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        margin: 0 0 20px;
+        max-width: 55ch;
+      }
+      .narr-body p:last-child {
+        margin-bottom: 0;
+      }
+      .narr-body p b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .gallery {
+        padding: 130px 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+      }
+      .gal-head {
+        padding: 0 56px 56px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 60px;
+      }
+      .gal-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(36px, 4vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 18ch;
+      }
+      .gal-head h3 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .gal-head .gnote {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        line-height: 1.8;
+        text-align: right;
+      }
+      .gal-head .gnote b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .gal-grid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 120px;
+        gap: 20px;
+      }
+      .gtile {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #0b1b3f;
+      }
+      .gtile .gimg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .gtile:hover .gimg {
+        transform: scale(1.05);
+      }
+      .gtile .gcap {
+        position: absolute;
+        left: 18px;
+        bottom: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        color: #fff;
+        text-transform: uppercase;
+        background: rgba(11, 27, 63, 0.8);
+        padding: 6px 10px;
+        border-radius: 6px;
+        backdrop-filter: blur(6px);
+      }
+      .gt-a {
+        grid-column: span 4;
+        grid-row: span 4;
+      }
+      .gt-b {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .gt-c {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .gt-d {
+        grid-column: span 3;
+        grid-row: span 3;
+      }
+      .gt-e {
+        grid-column: span 3;
+        grid-row: span 3;
+      }
+
+      .approach {
+        padding: 140px 0;
+        background: #0b1b3f;
+        color: #fff;
+        border-top: 1px solid var(--line);
+        position: relative;
+        overflow: hidden;
+      }
+      .approach::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          900px 500px at 80% 20%,
+          rgba(99, 140, 255, 0.16),
+          rgba(99, 140, 255, 0) 60%
+        );
+        pointer-events: none;
+      }
+      .approach-inner {
+        position: relative;
+        z-index: 1;
+        padding: 0 56px;
+      }
+      .approach-head {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 60px;
+        align-items: end;
+        margin-bottom: 80px;
+      }
+      .approach-head .clabel {
+        color: #9bb5ff;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .approach-head .clabel::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: #9bb5ff;
+      }
+      .approach-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(40px, 4.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 14ch;
+        color: #fff;
+      }
+      .approach-head h3 em {
+        font-style: italic;
+        color: #9bb5ff;
+      }
+      .approach-head p {
+        font-size: 16px;
+        line-height: 1.65;
+        color: #b8c3df;
+        margin: 0;
+        max-width: 52ch;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        border-top: 1px solid rgba(155, 181, 255, 0.18);
+        border-bottom: 1px solid rgba(155, 181, 255, 0.18);
+      }
+      .step {
+        padding: 42px 30px;
+        border-left: 1px solid rgba(155, 181, 255, 0.18);
+        position: relative;
+      }
+      .step:first-child {
+        border-left: none;
+        padding-left: 0;
+      }
+      .step .sn {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: #9bb5ff;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 18px;
+      }
+      .step h4 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 1.2;
+        margin: 0 0 14px;
+        color: #fff;
+        letter-spacing: -0.012em;
+      }
+      .step h4 em {
+        font-style: italic;
+        color: #9bb5ff;
+      }
+      .step p {
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: #b8c3df;
+        margin: 0;
+      }
+
+      .metrics {
+        padding: 130px 0;
+        background: var(--bg-warm);
+        border-top: 1px solid var(--line);
+      }
+      .metrics-head {
+        padding: 0 56px;
+        max-width: 760px;
+        margin-bottom: 50px;
+      }
+      .metrics-head .clabel {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 22px;
+      }
+      .metrics-head .clabel::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .metrics-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(40px, 4.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 16ch;
+      }
+      .metrics-head h3 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .mgrid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .mcell {
+        padding: 42px 30px 38px;
+        border-left: 1px solid var(--line);
+        position: relative;
+      }
+      .mcell:first-child {
+        border-left: none;
+        padding-left: 0;
+      }
+      .mcell .mlabel {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 18px;
+      }
+      .mcell .mnum {
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-size: 64px;
+        line-height: 1;
+        color: var(--accent);
+        font-weight: 400;
+        letter-spacing: -0.025em;
+        margin-bottom: 10px;
+      }
+      .mcell .mnote {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+      .mcell .mnote b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .pullquote {
+        padding: 130px 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+      }
+      .pullquote-inner {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .pq-stage {
+        position: relative;
+        min-height: 380px;
+      }
+      .pq-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transform: translateY(14px);
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+        pointer-events: none;
+      }
+      .pq-slide.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      .pq-slide q {
+        display: block;
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: clamp(30px, 3.4vw, 50px);
+        line-height: 1.2;
+        color: var(--ink);
+        quotes: "\201C" "\201D";
+        letter-spacing: -0.012em;
+        margin: 0 0 32px;
+        max-width: 28ch;
+      }
+      .pq-slide q::before {
+        content: open-quote;
+        color: var(--accent);
+        margin-right: 6px;
+      }
+      .pq-slide q::after {
+        content: close-quote;
+        color: var(--accent);
+        margin-left: 4px;
+      }
+      .pq-slide .qsig {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .pq-slide .qsig b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .pq-slide .qsig::before {
+        content: "";
+        width: 36px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .pq-dots {
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        display: flex;
+        gap: 8px;
+      }
+      .pq-dot {
+        width: 24px;
+        height: 2px;
+        background: var(--line);
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: background 0.25s;
+      }
+      .pq-dot.active {
+        background: var(--accent);
+      }
+      .pq-form {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 36px;
+        box-shadow:
+          0 1px 2px rgba(11, 27, 63, 0.04),
+          0 14px 40px -12px rgba(11, 27, 63, 0.1);
+      }
+      .pq-form .pflabel {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .pq-form .pflabel::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: var(--accent);
+      }
+      .pq-form h4 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: 30px;
+        line-height: 1.15;
+        margin: 0 0 12px;
+        color: var(--ink);
+        letter-spacing: -0.012em;
+      }
+      .pq-form h4 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .pq-form > p {
+        font-size: 14.5px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        margin: 0 0 24px;
+      }
+      .pq-field {
+        display: block;
+        margin-bottom: 14px;
+      }
+      .pq-field label {
+        display: block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+      .pq-field input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--line);
+        padding: 8px 0;
+        font-size: 15.5px;
+        font-family: "Inter", sans-serif;
+        color: var(--ink);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .pq-field input:focus {
+        border-color: var(--accent);
+      }
+      .pq-field input::placeholder {
+        color: var(--muted);
+      }
+      .pq-submit {
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 22px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        border: none;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .pq-submit:hover {
+        background: var(--accent);
+      }
+      .pq-form .pffine {
+        margin-top: 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9.5px;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        text-transform: uppercase;
+        line-height: 1.7;
+      }
+
+      .related {
+        padding: 130px 0 160px;
+        background: var(--bg-warm);
+        border-top: 1px solid var(--line);
+      }
+      .related-head {
+        padding: 0 56px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        margin-bottom: 50px;
+        gap: 40px;
+      }
+      .related-head h3 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: clamp(36px, 4vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.022em;
+        margin: 0;
+        max-width: 14ch;
+      }
+      .related-head h3 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .related-head a.go {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--accent);
+        padding-bottom: 3px;
+      }
+      .rgrid {
+        padding: 0 56px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .rcard {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+      .rcard:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 22px 50px -30px rgba(11, 27, 63, 0.25);
+      }
+      .rcard .rimg {
+        height: 240px;
+        background-size: cover;
+        background-position: center;
+      }
+      .rcard .rbody {
+        padding: 24px 24px 26px;
+      }
+      .rcard .rmeta {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .rcard .rmeta b {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .rcard h4 {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        margin: 0 0 10px;
+        color: var(--ink);
+      }
+      .rcard h4 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .rcard p {
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+
+      footer {
+        background: #06122e;
+        color: #9aa9c8;
+        padding: 50px 0;
+        text-align: center;
+        font-size: 13px;
+      }
+      footer a {
+        color: #cdd5e8;
+        margin: 0 14px;
+      }
+
+      @media (max-width: 980px) {
+        .wrap,
+        .breadcrumb,
+        .hero-content,
+        .hero-foot,
+        .fact-grid,
+        .narr-inner,
+        .gal-head,
+        .gal-grid,
+        .approach-inner,
+        .metrics-head,
+        .mgrid,
+        .pullquote-inner,
+        .related-head,
+        .rgrid {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .hero-foot {
+          left: 24px;
+          right: 24px;
+        }
+        .film {
+          height: 60vh;
+          min-height: 380px;
+        }
+        .film-cap {
+          left: 24px;
+          bottom: 24px;
+        }
+        .film-tag {
+          right: 24px;
+          top: 24px;
+        }
+        .film-play {
+          width: 90px;
+          height: 90px;
+        }
+        .film-play svg {
+          width: 28px;
+          height: 28px;
+        }
+        .fact-grid,
+        .narr-inner,
+        .approach-head,
+        .gal-head,
+        .pullquote-inner {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .pq-stage {
+          min-height: 0;
+        }
+        .pq-slide {
+          position: relative;
+        }
+        .pq-slide:not(.active) {
+          display: none;
+        }
+        .pq-dots {
+          position: relative;
+          bottom: auto;
+          margin-top: 24px;
+        }
+        .pq-form {
+          padding: 28px;
+        }
+        .hero-content {
+          grid-template-columns: 1fr;
+          align-items: stretch;
+          gap: 30px;
+          padding-bottom: 60px;
+        }
+        .breadcrumb {
+          padding: 108px 24px 0;
+          flex-wrap: wrap;
+        }
+        .hero-meta {
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+          padding-top: 20px;
+        }
+        .hero-h {
+          font-size: clamp(56px, 9vw, 88px);
+        }
+        .gal-grid {
+          grid-template-columns: repeat(2, 1fr);
+          grid-auto-rows: 160px;
+        }
+        .gt-a,
+        .gt-b,
+        .gt-c,
+        .gt-d,
+        .gt-e {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
+        .steps,
+        .mgrid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .step:nth-child(3),
+        .mcell:nth-child(3) {
+          border-left: none;
+          padding-left: 0;
+        }
+        .step:nth-child(n + 3),
+        .mcell:nth-child(n + 3) {
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+        }
+        .mcell:nth-child(n + 3) {
+          border-top: 1px solid var(--line);
+        }
+        .rgrid {
+          grid-template-columns: 1fr;
+        }
+        .related-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+      @media (max-width: 560px) {
+        .gal-grid {
+          grid-template-columns: 1fr;
+          grid-auto-rows: 200px;
+        }
+        .gt-a,
+        .gt-b,
+        .gt-c,
+        .gt-d,
+        .gt-e {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
+        .steps,
+        .mgrid {
+          grid-template-columns: 1fr;
+        }
+        .step,
+        .mcell {
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+        }
+        .mcell {
+          border-top: 1px solid var(--line);
+        }
+        .step:first-child,
+        .mcell:first-child {
+          border-top: none;
+        }
+        .fact-sheet {
+          padding: 24px;
+        }
+        .pq-form {
+          padding: 22px;
+        }
+        .film-play {
+          width: 72px;
+          height: 72px;
+        }
+        .film-play svg {
+          width: 22px;
+          height: 22px;
+        }
+        .hero {
+          height: 100vh;
+          min-height: 0;
+        }
+        .breadcrumb {
+          position: absolute;
+          top: 64px;
+          left: 0;
+          right: 0;
+          z-index: 5;
+          padding: 0 18px;
+          font-size: 10px;
+          letter-spacing: 0.14em;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .hero-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: stretch;
+          flex: 1;
+          padding: 0 18px 56px;
+          gap: 22px;
+          margin-top: 0;
+        }
+        .hero-h {
+          font-size: clamp(48px, 11vw, 76px);
+          line-height: 0.98;
+          max-width: 100%;
+        }
+        .hero-num {
+          font-size: 9.5px;
+          letter-spacing: 0.18em;
+          margin-bottom: 14px;
+        }
+        .hero-meta {
+          font-size: 9.5px;
+          line-height: 1.75;
+          letter-spacing: 0.12em;
+          border-left: none;
+          padding-left: 0;
+          border-top: 1px solid rgba(155, 181, 255, 0.18);
+          padding-top: 14px;
+        }
+        .hero-foot {
+          font-size: 9.5px;
+          letter-spacing: 0.14em;
+          left: 18px;
+          right: 18px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 14px;
+          bottom: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-bar" id="scrollBar"></div>
+
+    <!-- ============== NAV (shared via js/header.js) ============== -->
+
+    <!-- ============== HERO ============== -->
+    <section class="hero">
+      <div class="hero-img" id="heroImg"></div>
+      <nav class="breadcrumb mono">
+        <a href="projects.html">Projects</a>
+        <span class="sep">/</span>
+        <span>① App development + ④ Talent</span>
+        <span class="sep">/</span>
+        <span>P—014</span>
+      </nav>
+      <div class="hero-content">
+        <div>
+          <div class="hero-num">P—014 · Running 2026→</div>
+          <h1 class="hero-h">
+            AI agents and human <em>engineers</em>, on the same codebase.
+          </h1>
+        </div>
+        <div class="hero-meta">
+          <b>Dev tooling — JP / VN</b><br />
+          Orchestration · review · onboarding<br />
+          Claude Code-native, multi-agent<br />
+          ① App + ④ Talent / 2026
+        </div>
+      </div>
+      <div class="hero-foot">
+        <div>XRD/PROJ.014 · ① APP + ④ TALENT · DA NANG → JP / VN</div>
+        <div class="scroll">SCROLL <span>↓</span></div>
+      </div>
+    </section>
+
+    <!-- ============== FACT SHEET ============== -->
+    <section class="fact">
+      <div class="fact-grid">
+        <div class="fact-lead">
+          <div class="clabel">Engagement No. 014</div>
+          <h2>
+            One platform where the <em>agents</em> and the engineers actually
+            work together.
+          </h2>
+          <p>
+            Most "AI in dev" today is one engineer with one agent in one editor.
+            That's a productivity tool, not a platform. The interesting question
+            is what happens when a team — humans and agents — operates on the
+            same codebase, with shared context, shared review, and a single
+            source of truth about what's been done and what's next.
+          </p>
+          <p>
+            We built <b>BuildFlow AI</b> to answer it: a development
+            collaboration platform where AI agents pick up tickets, propose
+            code, request reviews, and hand off to engineers — and where
+            engineers can grade agent output, codify standards, and grow new
+            contributors against a real working environment.
+          </p>
+          <p>
+            It's the spine our internal teams use, and the platform we hand to
+            clients standing up their own AI-engineer practice. The Claude Code
+            adoption series sits on top — workshop to onboard, review patterns
+            to operate, individual coaching to internalise.
+          </p>
+        </div>
+        <aside class="fact-sheet">
+          <div class="fact-row">
+            <div class="k">Industry</div>
+            <div class="v">Dev tooling<small>JP / VN</small></div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Business area</div>
+            <div class="v">
+              ① App development + ④ Talent<small
+                >Platform + adoption services</small
+              >
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Status</div>
+            <div class="v">Running · 2026→</div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Surface</div>
+            <div class="v">
+              Web app + CLI<small>GitHub / Slack / Notion bound</small>
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Capability</div>
+            <div class="v">
+              Multi-agent · review-aware<small>Engineer-grade workflow</small>
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Client</div>
+            <div class="v">
+              xR&amp;D + partners<small
+                >Internal use + client deployments</small
+              >
+            </div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Lead</div>
+            <div class="v">xR&amp;D Platform<small>Track 01 + 04</small></div>
+          </div>
+          <div class="fact-row">
+            <div class="k">Approach</div>
+            <div class="v">
+              Claude Code-native · workflow-orchestrated · grading-aware
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============== FILM ============== -->
+    <section class="film" aria-label="Watch the project film">
+      <div class="film-img"></div>
+      <video
+        class="film-video"
+        src="assets/pv.mp4"
+        controls
+        playsinline
+        preload="metadata"
+      ></video>
+      <div class="film-tag">Platform film · 2026</div>
+      <button class="film-play" type="button" aria-label="Play platform film">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+      </button>
+      <div class="film-cap">
+        <b>P—014 · BuildFlow AI · Agent-engineer dev collaboration</b>
+        &nbsp;·&nbsp; 2 min 40 sec
+      </div>
+    </section>
+
+    <!-- ============== NARRATIVE ============== -->
+    <section class="narrative">
+      <div class="narr-inner">
+        <div>
+          <div class="narr-eyebrow">The premise</div>
+          <h3 class="narr-h">
+            Solo agents are a tool. <em>Team</em> agents need a platform.
+          </h3>
+        </div>
+        <div class="narr-body">
+          <p>
+            One engineer + one agent in one editor is the current state of the
+            art. It works for that one engineer. It does not solve the team's
+            problem: who picked this up, who reviewed it, who's responsible if
+            it breaks, what standards apply, and how does a junior contributor
+            get up the curve?
+          </p>
+          <p>
+            BuildFlow makes the agent a participant, not a co-pilot.
+            <b
+              >Tickets get picked up by agents or engineers. Reviews are graded.
+              Standards are codified.</b
+            >
+            The platform learns the team's house style and enforces it for both
+            human and machine contributors.
+          </p>
+          <p>
+            The Claude Code adoption services sit on top of the platform — the
+            introduction workshop, the review patterns, the individual coaching,
+            the long-running maturity track. Pilots become practices.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== GALLERY ============== -->
+    <section class="gallery">
+      <div class="gal-head">
+        <h3>The <em>platform</em>.</h3>
+        <div class="gnote">
+          Platform UI + adoption series<br /><b>BuildFlow AI</b><br />Claude
+          Code-native · multi-agent
+        </div>
+      </div>
+      <div class="gal-grid">
+        <div class="gtile gt-a">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-014-dashboard.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Orchestration dashboard</span>
+        </div>
+        <div class="gtile gt-b">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-014-hero.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Marketing · platform shape</span>
+        </div>
+        <div class="gtile gt-c">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-014-claude-flow.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Adoption · dev flow</span>
+        </div>
+        <div class="gtile gt-d">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-014-claude-workshop.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Workshop track</span>
+        </div>
+        <div class="gtile gt-e">
+          <div
+            class="gimg"
+            style="
+              background-image: url(&quot;assets/projects/project-014-claude-review.png&quot;);
+            "
+          ></div>
+          <span class="gcap">Review-pattern coaching</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== APPROACH ============== -->
+    <section class="approach">
+      <div class="approach-inner">
+        <div class="approach-head">
+          <div>
+            <div class="clabel">The approach</div>
+            <h3>
+              Four <em>moves</em>, one platform plus the adoption that lands it.
+            </h3>
+          </div>
+          <p>
+            Platform alone doesn't change a team. Adoption alone doesn't scale.
+            We ship both, in sequence, with one feedback loop between them.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="sn">Move 01</div>
+            <h4>Bind the <em>workflow</em></h4>
+            <p>
+              GitHub, Slack, Notion, ticket tracker. Agents and engineers see
+              the same context, work the same queue.
+            </p>
+          </div>
+          <div class="step">
+            <div class="sn">Move 02</div>
+            <h4>Codify the <em>standards</em></h4>
+            <p>
+              House style, review checklist, blocking rules. Encoded once,
+              applied to humans and agents identically.
+            </p>
+          </div>
+          <div class="step">
+            <div class="sn">Move 03</div>
+            <h4>Grade &amp; <em>route</em></h4>
+            <p>
+              Every PR — agent or human — gets graded against the codified
+              standards. Routing decisions follow.
+            </p>
+          </div>
+          <div class="step">
+            <div class="sn">Move 04</div>
+            <h4>Coach &amp; <em>internalise</em></h4>
+            <p>
+              Workshop to onboard, review pattern to operate, individual
+              coaching to internalise. Pilots become practice.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== METRICS ============== -->
+    <section class="metrics">
+      <div class="metrics-head">
+        <div class="clabel">Outcomes</div>
+        <h3>What the <em>platform</em> changed.</h3>
+      </div>
+      <div class="mgrid">
+        <div class="mcell">
+          <div class="mlabel">Throughput</div>
+          <div class="mnum">+35%</div>
+          <p class="mnote">
+            <b>Average team velocity</b> across early-adopter teams, holding
+            code-quality bar.
+          </p>
+        </div>
+        <div class="mcell">
+          <div class="mlabel">Review</div>
+          <div class="mnum">100%</div>
+          <p class="mnote">
+            <b>PRs graded</b>, agent or human. House standards apply
+            identically.
+          </p>
+        </div>
+        <div class="mcell">
+          <div class="mlabel">Onboarding</div>
+          <div class="mnum">~50%</div>
+          <p class="mnote">
+            <b>Faster time-to-first-merge</b> for new contributors. Coaching
+            against a real working env, not a sandbox.
+          </p>
+        </div>
+        <div class="mcell">
+          <div class="mlabel">Deployments</div>
+          <div class="mnum">2026</div>
+          <p class="mnote">
+            Internal default + initial client deployments.
+            <b>Adoption series</b> ships alongside.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== QUOTE + FORM ============== -->
+    <section class="pullquote">
+      <div class="pullquote-inner">
+        <div class="pq-stage" id="pqStage">
+          <div class="pq-slide active">
+            <q
+              >The agent isn't a co-pilot anymore. It's a contributor with a
+              name on the PR and a grade on the review.</q
+            >
+            <div class="qsig"><b>xR&amp;D Platform</b> · Track 01 lead</div>
+          </div>
+          <div class="pq-slide">
+            <q
+              >Standards codified once means humans and agents are held to the
+              same bar. That's where the throughput comes from — not from looser
+              quality.</q
+            >
+            <div class="qsig"><b>Tomoki</b> · Founder · Engagement lead</div>
+          </div>
+          <div class="pq-slide">
+            <q
+              >Adoption is half the product. Workshop, review pattern, coaching
+              — all in the same loop as the platform.</q
+            >
+            <div class="qsig"><b>xR&amp;D Talent</b> · Track 04 lead</div>
+          </div>
+          <div class="pq-dots" id="pqDots">
+            <button
+              class="pq-dot active"
+              type="button"
+              aria-label="Quote 1"
+            ></button>
+            <button class="pq-dot" type="button" aria-label="Quote 2"></button>
+            <button class="pq-dot" type="button" aria-label="Quote 3"></button>
+          </div>
+        </div>
+        <aside class="pq-form">
+          <div class="pflabel">Engagement enquiry</div>
+          <h4>Standing up an <em>AI-engineer</em> practice?</h4>
+          <p>
+            Send a one-line note about the team and the bottleneck. A partner
+            will reply within two working days.
+          </p>
+          <form
+            onsubmit="
+              event.preventDefault();
+              this.querySelector('.pq-submit').innerHTML =
+                'Sent &nbsp;✓&nbsp; — we will be in touch';
+            "
+          >
+            <div class="pq-field">
+              <label>Name</label
+              ><input type="text" placeholder="e.g. Yamada Taro" required />
+            </div>
+            <div class="pq-field">
+              <label>Email</label
+              ><input type="email" placeholder="you@company.com" required />
+            </div>
+            <div class="pq-field">
+              <label>Team · stage</label
+              ><input
+                type="text"
+                placeholder="One line — engineer count and agent maturity"
+              />
+            </div>
+            <button type="submit" class="pq-submit">
+              Send enquiry
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+            <div class="pffine">
+              No tracking · No marketing · Replies from a partner
+            </div>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============== RELATED ============== -->
+    <section class="related">
+      <div class="related-head">
+        <h3>Related <em>projects</em>.</h3>
+        <a class="go" href="projects.html">All projects →</a>
+      </div>
+      <div class="rgrid">
+        <a class="rcard" href="project-006.html">
+          <div
+            class="rimg"
+            style="
+              background-image: url(&quot;assets/projects/project-006-academy-hero.png&quot;);
+            "
+          ></div>
+          <div class="rbody">
+            <div class="rmeta">
+              <span>P—006 · ④ Talent</span><b>Running · 2026→</b>
+            </div>
+            <h4>AI-native <em>talent lab</em></h4>
+            <p>
+              Generative AI practical academy with VNUHCM. The training pipeline
+              that feeds the platform.
+            </p>
+          </div>
+        </a>
+        <a class="rcard" href="project-011.html">
+          <div
+            class="rimg"
+            style="
+              background-image: url(&quot;assets/projects/project-011-dashboard.png&quot;);
+            "
+          ></div>
+          <div class="rbody">
+            <div class="rmeta">
+              <span>P—011 · ① App</span><b>Shipped · 2026</b>
+            </div>
+            <h4>Japanese learning <em>platform</em></h4>
+            <p>
+              KotobaAI: AI tutor + adaptive curriculum + teacher dashboard, on
+              web + mobile.
+            </p>
+          </div>
+        </a>
+        <a class="rcard" href="project-013.html">
+          <div
+            class="rimg"
+            style="background-image: url(&quot;assets/img1.png&quot;)"
+          ></div>
+          <div class="rbody">
+            <div class="rmeta">
+              <span>P—013 · ① App</span><b>Built · 2026</b>
+            </div>
+            <h4>3D spatial <em>placement</em></h4>
+            <p>
+              Browser 3D + AI placement for interior products. Catalog-aware,
+              render-quality, AR-ready.
+            </p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============== FOOTER (shared via js/footer.js) ============== -->
+    <script src="js/header.js"></script>
+    <script src="js/footer.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script>
+      (function () {
+        const nav = document.getElementById("nav");
+        const bar = document.getElementById("scrollBar");
+        const heroImg = document.getElementById("heroImg");
+        function onScroll() {
+          const y = window.scrollY;
+          if (nav) nav.classList.toggle("scrolled", y > 80);
+          if (bar) {
+            const docH =
+              document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.transform = `scaleX(${Math.min(1, y / docH)})`;
+          }
+          if (heroImg && y < window.innerHeight) {
+            heroImg.style.transform = `scale(1.15) translateY(${y * 0.35}px)`;
+          }
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+
+        const slides = document.querySelectorAll("#pqStage .pq-slide");
+        const dots = document.querySelectorAll("#pqDots .pq-dot");
+        let pqIndex = 0;
+        let pqTimer = null;
+        function showSlide(i) {
+          slides.forEach((s, idx) => s.classList.toggle("active", idx === i));
+          dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
+          pqIndex = i;
+        }
+        function startPq() {
+          stopPq();
+          pqTimer = setInterval(
+            () => showSlide((pqIndex + 1) % slides.length),
+            6500,
+          );
+        }
+        function stopPq() {
+          if (pqTimer) {
+            clearInterval(pqTimer);
+            pqTimer = null;
+          }
+        }
+        if (slides.length > 1) {
+          dots.forEach((d, idx) =>
+            d.addEventListener("click", () => {
+              showSlide(idx);
+              startPq();
+            }),
+          );
+          startPq();
+        }
+
+        if (typeof gsap !== "undefined") {
+          gsap.registerPlugin(ScrollTrigger);
+          gsap.fromTo(
+            ".nav-inner > *",
+            { y: -20, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.7,
+              ease: "power3.out",
+              stagger: 0.07,
+              delay: 0.05,
+            },
+          );
+          gsap.from(".breadcrumb", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            delay: 0.2,
+          });
+          gsap.from(".hero-num", {
+            y: 18,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            delay: 0.35,
+          });
+          gsap.from(".hero-h", {
+            y: 40,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power4.out",
+            delay: 0.45,
+          });
+          gsap.from(".hero-meta", {
+            y: 24,
+            opacity: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            delay: 0.7,
+          });
+          gsap.from(".hero-foot > *", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            stagger: 0.1,
+            delay: 0.9,
+          });
+          gsap.from(".fact-lead .clabel", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: ".fact", start: "top 80%" },
+          });
+          gsap.from(".fact-lead h2", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".fact", start: "top 80%" },
+          });
+          gsap.from(".fact-lead p", {
+            y: 18,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.1,
+            scrollTrigger: { trigger: ".fact", start: "top 75%" },
+          });
+          gsap.fromTo(
+            ".fact-sheet",
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1.1,
+              ease: "power4.out",
+              scrollTrigger: { trigger: ".fact", start: "top 78%" },
+            },
+          );
+          gsap.fromTo(
+            ".fact-row",
+            { x: -12, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.5,
+              ease: "power3.out",
+              stagger: 0.05,
+              delay: 0.2,
+              scrollTrigger: { trigger: ".fact-sheet", start: "top 80%" },
+            },
+          );
+          gsap.fromTo(
+            ".film-img",
+            { scale: 1.18 },
+            {
+              scale: 1,
+              duration: 1.6,
+              ease: "expo.out",
+              scrollTrigger: { trigger: ".film", start: "top 90%" },
+            },
+          );
+          gsap.to(".film-img", {
+            yPercent: -8,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".film",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
+          gsap.from(".film-play", {
+            scale: 0.6,
+            opacity: 0,
+            duration: 0.9,
+            ease: "back.out(1.6)",
+            scrollTrigger: { trigger: ".film", start: "top 80%" },
+          });
+          gsap.from(".narr-eyebrow", {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: ".narrative", start: "top 80%" },
+          });
+          gsap.from(".narr-h", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".narrative", start: "top 80%" },
+          });
+          gsap.from(".narr-body p", {
+            y: 20,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.12,
+            scrollTrigger: { trigger: ".narr-body", start: "top 85%" },
+          });
+          gsap.from(".gal-head h3", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".gallery", start: "top 80%" },
+          });
+          gsap.utils.toArray(".gtile").forEach((tile) => {
+            gsap.fromTo(
+              tile,
+              { y: 50, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power4.out",
+                scrollTrigger: { trigger: tile, start: "top 88%" },
+              },
+            );
+            const img = tile.querySelector(".gimg");
+            if (img) {
+              gsap.fromTo(
+                img,
+                { scale: 1.18 },
+                {
+                  scale: 1,
+                  duration: 1.6,
+                  ease: "expo.out",
+                  scrollTrigger: { trigger: tile, start: "top 90%" },
+                },
+              );
+              gsap.to(img, {
+                yPercent: -6,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: tile,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                },
+              });
+            }
+          });
+          gsap.from(".approach-head h3", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".approach", start: "top 80%" },
+          });
+          gsap.fromTo(
+            ".step",
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power4.out",
+              stagger: 0.1,
+              scrollTrigger: { trigger: ".steps", start: "top 85%" },
+            },
+          );
+          gsap.from(".metrics-head h3", {
+            y: 36,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".metrics", start: "top 80%" },
+          });
+          gsap.fromTo(
+            ".mcell",
+            { y: 30, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power3.out",
+              stagger: 0.1,
+              scrollTrigger: { trigger: ".mgrid", start: "top 85%" },
+            },
+          );
+          gsap.utils.toArray(".mcell .mnum").forEach((num) => {
+            gsap.fromTo(
+              num,
+              { scale: 0.85, opacity: 0 },
+              {
+                scale: 1,
+                opacity: 1,
+                duration: 0.9,
+                ease: "back.out(1.6)",
+                scrollTrigger: { trigger: num, start: "top 88%" },
+              },
+            );
+          });
+          gsap.from(".pq-stage", {
+            y: 30,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".pullquote", start: "top 80%" },
+          });
+          gsap.from(".pq-form", {
+            y: 40,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power4.out",
+            delay: 0.15,
+            scrollTrigger: { trigger: ".pullquote", start: "top 80%" },
+          });
+          gsap.from(".related-head h3", {
+            y: 30,
+            opacity: 0,
+            duration: 0.9,
+            ease: "power4.out",
+            scrollTrigger: { trigger: ".related", start: "top 85%" },
+          });
+          gsap.fromTo(
+            ".rcard",
+            { y: 40, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: "power4.out",
+              stagger: 0.12,
+              scrollTrigger: { trigger: ".rgrid", start: "top 85%" },
+            },
+          );
+          window.addEventListener("load", () => ScrollTrigger.refresh());
+          if (document.fonts && document.fonts.ready)
+            document.fonts.ready.then(() => ScrollTrigger.refresh());
+        }
+
+        document.querySelectorAll(".film .film-play").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const sec = btn.closest(".film");
+            if (!sec) return;
+            sec.classList.add("playing");
+            const video = sec.querySelector(".film-video");
+            if (video) video.play().catch(() => {});
+          });
+        });
+      })();
+    </script>
+  </body>
 </html>
